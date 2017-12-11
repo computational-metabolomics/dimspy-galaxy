@@ -1,0 +1,210 @@
+<tool id="dimspy_blank_filter" name="Blank Filter" version="0.1.0">
+    <description>Remove 'blank' peaks from the biological mass spectra</description>
+    <macros>
+        <import>macros.xml</import>
+    </macros>
+    <expand macro="requirements" />
+    <expand macro="stdio" />
+    <command><![CDATA[
+        dimspy blank-filter
+        --input $hdf5_file_in
+        --output $hdf5_file_out
+        --blank-label $blank_label
+        --min-fraction $min_fraction
+        --function $function
+        --min-fold-change $min_fold_change
+        ${remove_blank_samples}
+        #if $hdf5_to_txt.standard
+            &&
+            @HDF5_PM_TO_TXT@
+        #end if
+        #if $hdf5_to_txt.comprehensive
+            &&
+            @HDF5_PM_TO_TXT_COMPREHENSIVE@
+        #end if
+    ]]></command>
+    <inputs>
+        <param name="hdf5_file_in" type="data" format="h5" label="Peak intensity matrix (HDF5 file)" help="" argument="--input"/>
+        <param name="blank_label" type="text" value="blank" label="Label for the blank samples" argument="--blank-label">
+            <validator type="empty_field"/>
+        </param>
+        <param name="min_fraction" type="float" min="0.0" max="1.0" value="1.0" label="Minimum fraction (percentage)" help="The percentage of samples (with a intensity value) that must beat the blank samples (peak by peak basis)" argument="--min-fraction"/>
+        <param name="function" type="select" label="Function" help="Select the function that should be used to calculate the peak intensity threshold (blanks only)" argument="--function">
+            <option value="mean" selected="true">mean</option>
+            <option value="median">median</option>
+            <option value="max">max</option>
+        </param>
+        <param name="min_fold_change" type="float" value="10.0" help="" argument="--min-fold-change"/>
+        <param name="remove_blank_samples" type="boolean" checked="true" truevalue="--remove-blank-samples" falsevalue="" label="Remove blank samples (rows)"  help="" argument="--remove-blank-samples"/>
+        <param name="delimiter" type="hidden" value="tab" argument="--delimiter"/>
+        <expand macro="hdf5_pm_to_txt" />
+    </inputs>
+    <outputs>
+        <data name="hdf5_file_out" format="h5" label="${tool.name} on ${on_string}: Peak matrix (HDF5 file)"/>
+        <data name="matrix_file_out" format="tsv" label="${tool.name} on ${on_string}: Peak matrix">
+            <filter>hdf5_to_txt["standard"] is True</filter>
+        </data>
+        <data name="matrix_comprehensive_file_out" format="tsv" label="${tool.name} on ${on_string}: Peak matrix (comprehensive)" >
+            <filter>hdf5_to_txt["comprehensive"] is True</filter>
+        </data>
+    </outputs>
+    <tests>
+        <test>
+            <param name="hdf5_file_in" value="pm_as.h5" ftype="h5"/>
+            <param name="blank_label" value="blank"/>
+            <param name="min_fraction" value="1.0"/>
+            <param name="function" value="mean"/>
+            <param name="min_fold_change" value="10.0"/>
+            <param name="remove_blank_samples" value="--remove-blank-samples"/>
+            <param name="delimiter" value="tab"/>
+            <param name="hdf5_to_txt|standard" value="True"/>
+            <param name="hdf5_to_txt|comprehensive" value="False"/>
+            <param name="hdf5_to_txt|representation_samples" value="rows"/>
+            <param name="hdf5_to_txt|matrix_attr" value="intensity"/>
+            <output name="hdf5_file_out" file="pm_as_bf_rmbs.h5" ftype="h5" compare="sim_size"/>
+            <output name="matrix_file_out" file="peak_matrix_as_bf_rmbs.txt" ftype="tsv"/>
+        </test>
+        <test>
+            <param name="hdf5_file_in" value="pm_as.h5" ftype="h5"/>
+            <param name="blank_label" value="blank"/>
+            <param name="min_fraction" value="1.0"/>
+            <param name="function" value="mean"/>
+            <param name="min_fold_change" value="10.0"/>
+            <param name="remove_blank_samples" value=""/>
+            <param name="delimiter" value="tab"/>
+            <param name="hdf5_to_txt|standard" value="True"/>
+            <param name="hdf5_to_txt|comprehensive" value="True"/>
+            <param name="hdf5_to_txt|representation_samples" value="rows"/>
+            <param name="hdf5_to_txt|matrix_attr" value="intensity"/>
+            <output name="hdf5_file_out" file="pm_as_bf.h5" ftype="h5" compare="sim_size"/>
+            <output name="matrix_file_out" file="peak_matrix_as_bf.txt" ftype="tsv"/>
+            <output name="matrix_comprehensive_file_out" file="peak_matrix_as_bf_compr.txt" ftype="tsv"/>
+        </test>
+    </tests>
+    <help>
+    
+    .. class:: infomark
+
+**Description**
+
+| Use this tool to remove from the user-specified peak matrix, those peaks that are present in the user-specified 'blank' class.
+| 
+| A peak is subtracted from the matrix when fewer-than the 'minimum fraction' of non-blank samples have an intensity ratio (relative to the blank class) of less-than the user-specified 'min_fold_change'.
+|
+| In the DIMS analysis workflow, this tool is typically applied following: 'Process Scans' -> 'Replicate Filter' -> 'Align Samples'.
+|
+| The reference class defined by the user need not necessarily be a blank class and as such may be any class against which all other classes in the peak matrix are to be compared. e.g. peaks present in a mock class 'time-point-20hr' might be subtracted from classes 'time-point-0hr' and 'time-point-4hr' if the number of samples in the 'time-point-4hr' and 'time-point-0hr' classes that have intensity ratios relative to the 'time-point-20hr' class, is fewer than the user-defined minimum fraction)
+
+
+
+.. class:: infomark
+
+**Parameters**
+
+1) **Peak intensity matrix (HDF5 file)** (REQUIRED)
+
+	* A hdf5-formatted peak matrix, typically returned from the 'Align Samples' tool.
+	
+2) **Label for the blank samples** (REQUIRED)
+
+	* String indicating the name assigned to 'blank' samples in the peaklist (e.g. blank)
+	
+	
+3) **Minimum fraction (percentage)** (REQUIRED; default = 1)
+
+	* Numerical value ranging from 0 to 1
+	* Set to 0 to skip this filtering step.
+
+3) **ppm** (REQUIRED; default = 2.0)
+
+	* A numeric value from 0 upwards.
+	* Peaks with m/z differences (measured in parts-per-million) below this value are clustered together as a single feature. For clustered peaks, their intensity ratio is compared to the user-specified 'mean/median/max' intensity of any correspondingly clustered peaks from the user-specified 'blank' class
+	
+4) **Function** (REQUIRED; default = 'mean')
+
+	* Toggle, where selection of:
+		* 'mean' corresponds to the use of the non-weighted average of 'blank' sample peak intensities (NA values are ignored) when calculating the 'blank' to 'non-blank' peak intensity ratio.
+		* 'median' corresponds to the use of the median of the 'blank' sample peak intensities (NA values are ignored) when calculating the 'blank' to 'non-blank' peak intensity ratio.
+		* 'max' corresponds to the use of the maximum intensity among 'blank' sample peak intensities (NA values are ignored) when calculating the 'blank' to 'non-blank' peak intensity ratio.
+
+5) **min_fold_change** (REQUIRED; default = 10)
+
+	Numeric value from 0 upwards. This value defines the ratio between 'non-blank' and 'blank' peak intensities, above which a peak is regarded as having been reliably detected in a sample.
+
+
+6) **Remove blank samples (rows)** (REQUIRED; default = 'YES')
+
+	* Toggle, where selection of:
+		* 'Yes' removes samples from the output peak matrix that belong to the user-specified 'blank' class.
+		* 'No' retains samples from the user-specified 'blank' class in the output peak matrix.
+
+.. class:: infomark
+
+**Show options for output** (OPTIONAL)
+
+1) **Standard output** (default = 'Yes')
+
+	* Boolean toggle (default = 'No') where selection of: 
+		* 'Yes' will generate a .txt formatted peak matrix. The data contained in this peak matrix is defined by the user-specified option in the 'Comprehensive output' parameters box.
+		* 'No' will prevent the creation of a .txt formatted peak matrix.
+
+2) **Comprehensive output** (default = 'No')
+	
+	* Boolean toggle (default = 'No') where selection of:
+		* 'Yes' generates a peak matrix containing the m/z, intensity, coverage, purity, signal-to-noise ratio and other metrics associated with the aligned peaks.
+		* 'No' generates a peak matrix containing only the m/z and intensity for all clustered (aligned) features. This option ensures compatibility with down-stream statistical analysis tools.
+
+3) **Should rows or columns represent the samples?** (default = 'rows')
+	
+	* Binary toggle (default = 'rows') where selection of:
+		* 'rows' puts sample information in to the rows and m/z values (for aligned mass spectral peaks) in to columns of any output peak matrix.
+		* 'columns' puts sample information in the columns and m/z values (for aligned mass spectral peaks) in to the rows of any output peak matrix.
+
+4) **Matrix type**
+	
+	| Use this option to define which metric is inserted in to the cells of the output peak matrix (if any). For each mass spectral peak and sample combination, selection of:
+	
+		* **'Intensity'** writes the absolute peak intensity to the peak matrix.
+		* **'m/z'** writes the m/z value to the peak matrix.
+		* **'Signal-to-noise ratio (SNR)'** writes the signal-to-noise ratio to the peak matrix. 
+
+
+**Output file(s)**
+
+1)  A peak matrix comprising samples on one axis and m/z values on the perpendicular axis
+	* Tab-delimited text file containing a numeric data matrix, with . as decimal, and NA for missing values.
+	* File only created if user toggles 'Standard Output' to 'Yes'
+	* By default, samples are in rows and peaks are in columns. Altering the 'Should rows or columns represent samples' toggle will transpose this matrix.
+	
+2) 'A peaklist for each file specified in the filelist'
+	* Tab-delimited text file containing a numeric data matrix, with . as decimal, and NA for missing values.
+	* Includes additional information, including the signal-to-noise ratio for each peak in the matrix.
+
+| 
+
+.. class:: infomark
+
+**R packages used within this tool**
+    
+    - None
+
+.. class:: infomark
+
+**Github respository (source code)**
+
+	https://github.com/computational-metabolomics/dimspy-galaxy.git
+
+.. class:: infomark
+
+**Developers and Contributors**
+
+* **Ralf Weber (r.j.weber@bham.ac.uk) - University of Birmingham (UK)**
+* **Albert Zhou (@bham.ac.uk) - University of Birmingham (UK)**
+* **Martin R. Jones (m.r.jones.1@bham.ac.uk) - University of Birmingham (UK)**
+
+    
+    
+    </help>
+    <expand macro="citations" />
+</tool>
+

@@ -1,0 +1,57 @@
+<macros>
+    <xml name="requirements">
+        <requirements>
+            <requirement type="package" version="1.0.0">dimspy</requirement>
+        </requirements>
+    </xml>
+    <xml name="stdio">
+        <stdio>
+            <exit_code range="1:" />
+        </stdio>
+    </xml>
+    
+    <token name="@HDF5_PM_TO_TXT@">
+        dimspy hdf5-pm-to-txt
+        --input "$hdf5_file_out"
+        --output "$matrix_file_out"
+        --delimiter $delimiter
+        --attribute_name $hdf5_to_txt.matrix_attr
+        --representation-samples $hdf5_to_txt.representation_samples
+    </token>
+
+    <token name="@HDF5_PM_TO_TXT_COMPREHENSIVE@">
+        dimspy hdf5-pm-to-txt
+        --input "$hdf5_file_out"
+        --output "$matrix_comprehensive_file_out"
+        --delimiter $delimiter
+        --comprehensive
+        --attribute_name $hdf5_to_txt.matrix_attr
+        --representation-samples $hdf5_to_txt.representation_samples
+    </token>
+
+    <xml name="hdf5_pm_to_txt">
+        <section name="hdf5_to_txt" title="Show options for output (*.tsv files)" expanded="True">
+            <param name="standard" type="boolean" checked="false" truevalue="true" falsevalue="false" label="Standard output?" help="Set to 'yes' to produce a 'standard' peak matrix (i.e. m/z and intensity)."/>
+            <param name="comprehensive" type="boolean" checked="false" truevalue="true" falsevalue="false" label="Comprehensive output?" help="Set to 'yes' to produce a peak matrix with additional information (e.g. rsd, missing values)."/>
+            <param name="representation_samples" type="select" label="Should the rows or columns represent the samples?">
+                <option value="rows" selected="true">Rows</option>
+                <option value="columns">Columns</option>
+            </param>
+            <param name="matrix_attr" type="select" label="Matrix type">
+                <option value="intensity" selected="true">Intensity</option>
+                <option value="mz">m/z</option>
+                <option value="snr">Signal-to-noise ratio (SNR)</option>
+            </param>
+        </section>
+    </xml>
+    
+    <xml name="citations">
+        <citations>
+            <citation type="doi">10.1038/nprot.2016.156</citation>
+            <citation type="doi">10.1038/sdata.2014.12</citation>
+            <citation type="doi">10.1021/ac062446p</citation>
+            <citation type="doi">10.1021/ac2001803</citation>
+            <yield />
+        </citations>
+    </xml>
+</macros>

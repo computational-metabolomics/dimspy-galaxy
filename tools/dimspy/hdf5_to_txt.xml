@@ -1,0 +1,139 @@
+<tool id="dimspy_hdf5_to_text" name="Export text format from dimspy-based HDF5 file" version="0.1.0">
+    <description> -- Convert hdf5-formatted peak matrices to user friendly .tsv format</description>
+    <macros>
+        <import>macros.xml</import>
+    </macros>
+    <expand macro="requirements" />
+    <expand macro="stdio" />
+    <command><![CDATA[
+        #if $input.object_type == "peak_lists"
+            dimspy hdf5-pls-to-txt
+            --input "$hdf5_file_in"
+            --output .
+            --delimiter $delimiter
+        #else
+            dimspy hdf5-pm-to-txt
+            --input "$hdf5_file_in"
+            --output "$matrix_file_out"
+            --delimiter $delimiter
+            --attribute_name $input.hdf5_to_txt.matrix_attr
+            --representation-samples $input.hdf5_to_txt.representation_samples
+            #if $input.hdf5_to_txt.comprehensive
+                &&
+                dimspy hdf5-pm-to-txt
+                --input "$hdf5_file_in"
+                --output "$matrix_comprehensive_file_out"
+                --delimiter $delimiter
+                --comprehensive
+                --attribute_name $input.hdf5_to_txt.matrix_attr
+                --representation-samples $input.hdf5_to_txt.representation_samples
+            #end if
+        #end if
+    ]]></command>
+    <inputs>
+        <param name="hdf5_file_in" type="data" format="h5" label="Peak intensity matrix (HDF5 file)" help="" argument="--input"/>
+        <param name="delimiter" type="hidden" value="tab" argument="--delimiter"/>
+        <conditional name="input">
+            <param name="object_type" type="select" label="Select data type" help="" argument="">
+                <option value="peak_lists" selected="true">peak list</option>
+                <option value="peak_matrix">peak matrix</option>
+            </param>
+            <when value="peak_lists">
+            </when>
+            <when value="peak_matrix">
+                <expand macro="hdf5_pm_to_txt" />
+            </when>
+        </conditional>
+    </inputs>
+    <outputs>
+        <collection name="peaklists_txt" type="list" label="${tool.name} on ${on_string}: Peaklists">
+            <filter>input["object_type"] == "peak_lists"</filter>
+            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.txt" format="tsv" directory="." visible="false" />
+        </collection>
+        <data name="matrix_file_out" format="tsv" label="${tool.name} on ${on_string}: Peak matrix">
+            <filter>input["object_type"] == "peak_matrix" and input["hdf5_to_txt"]["standard"] is True</filter>
+        </data>
+        <data name="matrix_comprehensive_file_out" format="tsv" label="${tool.name} on ${on_string}: Peak matrix (comprehensive)" >
+            <filter>input["object_type"] == "peak_matrix" and input["hdf5_to_txt"]['comprehensive"] is True</filter>
+        </data>
+    </outputs>
+    <tests>
+        <test>
+            <param name="hdf5_file_in" value="pls.h5" ftype="h5"/>
+            <param name="input|object_type" value="peak_lists"/>
+            <output_collection name="peaklists_txt" type="list">
+                <element name="batch04_QC17_rep01_262" file="batch04_QC17_rep01_262.txt" ftype="tsv"/>
+                <element name="batch04_QC17_rep02_263" file="batch04_QC17_rep02_263.txt" ftype="tsv"/>
+                <element name="batch04_QC17_rep03_264" file="batch04_QC17_rep03_264.txt" ftype="tsv"/>
+            </output_collection>
+        </test>
+        <test>
+            <param name="hdf5_file_in" value="pm_as_bf_sf.h5" ftype="h5"/>
+            <param name="delimiter" value="tab"/>
+            <param name="input|object_type" value="peak_matrix"/>           
+            <param name="input|hdf5_to_txt|standard" value="False"/>
+            <param name="input|hdf5_to_txt|comprehensive" value="True"/>
+            <param name="input|hdf5_to_txt|representation_samples" value="columns"/>
+            <param name="input|hdf5_to_txt|matrix_attr" value="intensity"/>
+            <output name="matrix_file_out" file="peak_matrix_hdf5_to_txt_intensity.txt" ftype="tsv"/>
+        </test>
+        <test>
+            <param name="hdf5_file_in" value="pm_as_bf_sf.h5" ftype="h5"/>
+            <param name="delimiter" value="tab"/>
+            <param name="input|object_type" value="peak_matrix"/>
+            <param name="input|hdf5_to_txt|standard" value="True"/>
+            <param name="input|hdf5_to_txt|comprehensive" value="False"/>
+            <param name="input|hdf5_to_txt|representation_samples" value="rows"/>
+            <param name="input|hdf5_to_txt|matrix_attr" value="mz"/>
+            <output name="matrix_comprehensive_file_out" file="peak_matrix_hdf5_to_txt_mz.txt" ftype="tsv"/>
+        </test>
+    </tests>
+    <help>
+    
+.. class:: infomark
+
+**Description**
+
+| Use this tool to convert hdf5-formatted peak matrix objects to user-friendly .tsv output files.
+| 
+
+.. class:: infomark
+
+**Parameters**
+
+1) **Peak intensity matrix (HDF5 file)** (REQUIRED)
+
+	| Selection menu in which user can select the hdf5-formatted peak matrix requiring conversion to .tsv format.
+    
+2) **Select data type** (REQUIRED; default = 'peak list')
+
+	| Selection menu in which user can select:
+		* **peak list** to export a peak list in .tsv format (peak lists contain additional information versus peak matrices)
+		* **peak matrix** to export a peak matrix in .tsv format (peak matrices comprise samples in rows, peak m/z values in columns and peak intensities in cells)
+
+.. class:: infomark
+
+**R packages used within this tool**
+    
+    - None
+
+.. class:: infomark
+
+**Github respository (source code)**
+
+	https://github.com/computational-metabolomics/dimspy-galaxy.git
+
+.. class:: infomark
+
+**Developers and Contributors**
+
+* **Ralf Weber (r.j.weber@bham.ac.uk) - University of Birmingham (UK)**
+* **Albert Zhou (@bham.ac.uk) - University of Birmingham (UK)**
+* **Martin R. Jones (m.r.jones.1@bham.ac.uk) - University of Birmingham (UK)**
+
+|
+    
+    </help>
+    <expand macro="citations" />
+</tool>
+

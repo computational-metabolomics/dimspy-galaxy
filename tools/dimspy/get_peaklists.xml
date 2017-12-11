@@ -1,0 +1,135 @@
+<tool id="dimspy_get_peaklists" name="Get peaklist(s)" version="0.1.0">
+    <description> -- Get the average peaklist or multiple peaklists from a peak matrix</description>
+    <macros>
+        <import>macros.xml</import>
+    </macros>
+    <expand macro="requirements" />
+    <expand macro="stdio" />
+    <command><![CDATA[
+        #if $input.format == "all"
+            dimspy get-peaklists
+        #elif $input.format == "average"
+            dimspy get-average-peaklist
+            --name-peaklist "${input.name_peaklist}"
+        #end if
+        --input "$hdf5_file_in"
+        --output "$hdf5_file_out"
+        #if $input.to_txt
+            &&
+            dimspy hdf5-pls-to-txt
+            --input "$hdf5_file_out"
+            --output .
+            --delimiter $delimiter
+        #end if
+        #if $input.format == "average"
+            &&
+            mv "${input.name_peaklist}.txt" "$tsv_file_out"            
+        #end if
+
+    ]]></command>
+    <inputs>
+        <param name="hdf5_file_in" type="data" format="h5" label="Peak intensity matrix (HDF5 file)" help="" argument="--input" />
+        <conditional name="input">
+            <param name="format" type="select" label="Get..." >
+                <option value="average" selected="true">Average peaklist</option>
+                <option value="all">Multiple peaklists (samples)</option>
+             </param>
+             <when value="average">
+                 <param name="name_peaklist" type="text" value="" label="Name average peaklist" argument="--name-peaklist">
+                     <validator type="empty_field" />
+                 </param>
+                 <param name="to_txt" type="boolean" checked="true" truevalue="true" falsevalue="false" label="Write peaklists to tsv files (data collection)?" help=""/>
+             </when>
+             <when value="all">
+                 <param name="to_txt" type="boolean" checked="true" truevalue="true" falsevalue="false" label="Write peaklists to tsv files?" help=""/>
+             </when>
+        </conditional>
+        <param name="delimiter" type="hidden" value="tab" argument="--delimiter"/>
+    </inputs>
+    <outputs>
+        <data name="hdf5_file_out" format="h5" label="${tool.name} on ${on_string}: Peaklists (HDF5 file)"/>
+        <collection name="peaklists_txt" type="list" label="${tool.name} on ${on_string}: Peaklists">
+            <discover_datasets pattern="(?P&lt;designation&gt;.+)\.txt" format="tsv" directory="." visible="false" />
+            <filter>input['to_txt'] is True</filter>
+            <filter>input['format'] == 'all'</filter>
+        </collection>
+        <data name="tsv_file_out" format="tsv" label="${tool.name} on ${on_string}: Average peaklist">
+            <filter>input['to_txt'] is True</filter>
+            <filter>input['format'] == 'average'</filter>
+        </data>
+    </outputs>
+    <tests>
+        <test>
+            <param name="format" value="all"/>
+            <param name="hdf5_file_in" value="pm_as_bf_sf.h5" ftype="h5"/>
+            <param name="to_txt" value="True"/>
+            <param name="delimiter" value="tab"/>
+            <output_collection name="peaklists_txt" type="list">
+                <element name="batch04_S01_rep01_247_2_248_3_249" file="batch04_S01_rep01_247_2_248_3_249.txt" ftype="tsv"/>
+            </output_collection>
+        </test>
+        <test>
+            <param name="format" value="average"/>
+            <param name="hdf5_file_in" value="pm_as_bf_sf.h5" ftype="h5"/>
+            <param name="name_peaklist" value="batch04_S01_average"/>
+            <param name="to_txt" value="True"/>
+            <param name="delimiter" value="tab"/>
+            <output name="tsv_file_out" file="batch04_S01_average.txt" ftype="tsv"/>
+        </test>
+    </tests>
+    <help>
+    
+.. class:: infomark
+
+**Description**
+
+| Use this tool to extract one or multiple peaklists (in .tsv format) from the user-specified, hdf5-formatted input peak matrix.
+| 
+
+.. class:: infomark
+
+**Parameters**
+
+1) **Get** (REQUIRED; default = 'Average')
+
+	| Toggle where selection of:
+	
+		* **Average** corresponds to extracting an intensity-averaged (non-weighted and with NA values ignored) peaklist from the input peak matrix.
+			* Averaging of intensities is performed across ALL samples in the user-specified hdf5 input peak matrix.
+		* **Multiple** corresponds to extracting independent peaklists for each samples included in the user-specified hdf5 input peak matrix.
+		
+	| **Name average peaklist** (REQUIRED; default = '')
+	
+		* String indicating the name to append to the output peaklist(s)
+		
+	| **Write peaklists to tsv files (data collection)?** (REQUIRED; default = 'Yes') 
+	
+		* Toggle where:
+			* **Yes** corresponds to writing peaklist(s) to .tsv file(s)
+			* **No** corresponds to storing peaklist(s) in the active Galaxy history for later viewing.    
+
+.. class:: infomark
+
+**R packages used within this tool**
+    
+    - None
+
+.. class:: infomark
+
+**Github respository (source code)**
+
+	https://github.com/computational-metabolomics/dimspy-galaxy.git
+
+.. class:: infomark
+
+**Developers and Contributors**
+
+* **Ralf Weber (r.j.weber@bham.ac.uk) - University of Birmingham (UK)**
+* **Albert Zhou (@bham.ac.uk) - University of Birmingham (UK)**
+* **Martin R. Jones (m.r.jones.1@bham.ac.uk) - University of Birmingham (UK)**
+
+|
+
+    </help>
+    <expand macro="citations" />
+</tool>

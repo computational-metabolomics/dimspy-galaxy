@@ -1,0 +1,193 @@
+<tool id="dimspy_align_samples" name="Align Samples" version="0.1.0">
+    <description>Aligns peaks across peaklists</description>
+    <macros>
+        <import>macros.xml</import>
+    </macros>
+    <expand macro="requirements" />
+    <expand macro="stdio" />
+    <command><![CDATA[
+        dimspy align-samples
+        --input "$hdf5_file_in"
+        --output "$hdf5_file_out"
+        #if $filelist
+            --filelist "$filelist"
+        #end if
+        --ppm $ppm
+        #if $hdf5_to_txt.standard
+            &&
+            @HDF5_PM_TO_TXT@
+        #end if
+        #if $hdf5_to_txt.comprehensive
+            &&
+            @HDF5_PM_TO_TXT_COMPREHENSIVE@
+        #end if
+    ]]></command>
+    <inputs>
+        <param name="hdf5_file_in" type="data" format="h5" label="Peaklists (HDF5 file)" help="" argument="--input"/>
+        <param name="filelist" type="data" optional="true" format="tsv,tabular" label="Sample list" argument="--filelist"/>
+        <param name="ppm" type="float" value="2.0" label="ppm" help="Maximum tolerated m/z deviation across samples in parts per million (ppm)." argument="--ppm"/>
+        <param name="delimiter" type="hidden" value="tab" argument="--delimiter"/>
+        <expand macro="hdf5_pm_to_txt" />
+    </inputs>
+    <outputs>
+        <data name="hdf5_file_out" format="h5" label="${tool.name} on ${on_string}: Peak matrix (HDF5 file)"/>
+        <data name="matrix_file_out" format="tsv" label="${tool.name} on ${on_string}: Peak matrix">
+            <filter>hdf5_to_txt["standard"] is True</filter>
+        </data>
+        <data name="matrix_comprehensive_file_out" format="tsv" label="${tool.name} on ${on_string}: Peak matrix (comprehensive)" >
+            <filter>hdf5_to_txt["comprehensive"] is True</filter>
+        </data>
+    </outputs>
+    <tests>
+        <test>
+            <param name="hdf5_file_in" value="pls_rf.h5" ftype="h5"/>
+            <param name="ppm" value="2.0"/>
+            <param name="delimiter" value="tab"/>
+            <param name="hdf5_to_txt|standard" value="True"/>
+            <param name="hdf5_to_txt|comprehensive" value="False"/>
+            <param name="hdf5_to_txt|samples_representations" value="rows"/>
+            <param name="hdf5_to_txt|matrix_attr" value="intensity"/>
+            <output name="hdf5_file_out" file="pm_as.h5" ftype="h5" compare="sim_size"/>
+            <output name="matrix_file_out" file="peak_matrix_as.txt" ftype="tsv"/>
+        </test>
+        <test>
+            <param name="hdf5_file_in" value="pls_rf.h5" ftype="h5"/>
+            <param name="ppm" value="2.0"/>
+            <param name="delimiter" value="tab"/>
+            <param name="hdf5_to_txt|standard" value="True"/>
+            <param name="hdf5_to_txt|comprehensive" value="False"/>
+            <param name="hdf5_to_txt|representation_samples" value="columns"/>
+            <param name="hdf5_to_txt|matrix_attr" value="intensity"/>
+            <output name="hdf5_file_out" file="pm_as.h5" ftype="h5" compare="sim_size"/>
+            <output name="matrix_file_out" file="peak_matrix_as_t.txt" ftype="tsv"/>
+        </test>
+        <test>
+            <param name="hdf5_file_in" value="pls_rf.h5" ftype="h5"/>
+            <param name="ppm" value="2.0"/>
+            <param name="delimiter" value="tab"/>
+            <param name="hdf5_to_txt|standard" value="True"/>
+            <param name="hdf5_to_txt|comprehensive" value="True"/>
+            <param name="hdf5_to_txt|samples_representations" value="rows"/>
+            <param name="hdf5_to_txt|matrix_attr" value="mz"/>
+            <output name="hdf5_file_out" file="pm_as.h5" ftype="h5" compare="sim_size"/>
+            <output name="matrix_file_out" file="peak_matrix_as_mz.txt" ftype="tsv"/>
+            <output name="matrix_comprehensive_file_out" file="peak_matrix_as_mz_compr.txt" ftype="tsv"/>
+        </test>
+    </tests>
+    <help>
+
+.. class:: infomark
+
+**Description**
+
+| Use this tool to align hdf5-formatted peaklists according to their constituent mass spectral peaks.
+| 
+| In the DIMS analysis workflow, align samples typically follows 'replicate_filter'. This tool may, however, be used to align any hdf5-formatted peaklists (e.g. aligning individual peaklists for each replicate of a sample).
+|
+
+.. class:: infomark
+
+**Parameters**
+
+1) **Peaklists (HDF5 file)** (REQUIRED)
+
+	* For the default DIMS analysis pipeline, this comprises a set of peaklists output from the sequential application of the  'process_scans' tools, followed by the 'replicate_filter' tool.
+	
+2) **Sample list** (REQUIRED)
+
+	* A tabular-formatted .txt file with columns: filename, replicate, batch, classLabel, injectionOrder. 
+	* This file must be accessible (in tabular format) in the current history in order allow for its selection in the drop-down menu.
+	* e.g.
+	
+<![CDATA[
+	
+		+-------------------------------+-------------+-------+------------+----------------+
+		| filename                      |  replicate  | batch | classLabel | injectionOrder |
+		+-------------------------------+-------------+-------+------------+----------------+
+		| sample_rep1_rep3_rep4.raw     |   1 3 4     | 1     | sample     | 1              |
+		+-------------------------------+-------------+-------+------------+----------------+
+		| blank_rep1_rep2_rep3.raw      |   1 2 3     | 1     | sample     | 2              |
+		+-------------------------------+-------------+-------+------------+----------------+
+		| ...                           |   ...       | ...   | ...        | ...            |
+		+-------------------------------+-------------+-------+------------+----------------+
+
+|	
+]]>
+
+3) **ppm** (REQUIRED; default = 2.0)
+	* A numeric value from 0 upwards.
+	* Peaks with m/z differences (measured in parts-per-million) below this value are clustered together as a single feature. 
+
+|
+
+.. class:: infomark
+
+**Show options for output** (OPTIONAL)
+
+1) **Standard output** (default = 'No')
+
+	| Boolean toggle where selection of: 
+	
+		* 'Yes' will generate a .txt formatted peak matrix. The data contained in this peak matrix is defined by the user-specified option in the 'Comprehensive output' parameters box.
+		* 'No' will prevent the creation of a .txt formatted peak matrix.
+
+2) **Comprehensive output** (default = 'No')
+	
+	| Boolean toggle where selection of:
+	
+		* 'Yes' generates a peak matrix containing the m/z, intensity, coverage, purity, signal-to-noise ratio and other metrics associated with the aligned peaks.
+		* 'No' generates a peak matrix containing only the m/z and intensity for all clustered (aligned) features. This option ensures compatibility with down-stream statistical analysis tools.
+
+3) **Should rows or columns represent the samples?** (default = 'rows')
+	
+	* Binary toggle (default = 'rows') where selection of:
+		* 'rows' puts sample information in to the rows and m/z values (for aligned mass spectral peaks) in to columns of any output peak matrix.
+		* 'columns' puts sample information in the columns and m/z values (for aligned mass spectral peaks) in to the rows of any output peak matrix.
+
+4) **Matrix type**
+	
+	| Use this option to define which metric is inserted in to the cells of the output peak matrix (if any). For each mass spectral peak and sample combination, selection of:
+	
+		* 'Intensity' writes the absolute peak intensity to the peak matrix.
+		* 'm/z' writes the m/z value to the peak matrix.
+		* Signal-to-noise ratio (SNR) writes the signal-to-noise ratio to the peak matrix. 
+
+
+**Output file(s)**
+
+1)  A peak matrix comprising samples on one axis and m/z values on the perpendicular axis
+	* Tab-delimited text file containing a numeric data matrix, with . as decimal, and NA for missing values.
+	* File only created if user toggles 'Standard Output' to 'Yes'
+	* By default, samples are in rows and peaks are in columns. Altering the 'Should rows or columns represent samples' toggle will transpose this matrix.
+	
+2) 'A peaklist for each file specified in the filelist'
+	* Tab-delimited text file containing a numeric data matrix, with . as decimal, and NA for missing values.
+	* Includes additional information, including the signal-to-noise ratio for each peak in the matrix.
+
+| 
+
+.. class:: infomark
+
+**R packages used within this tool**
+    
+    - None
+
+.. class:: infomark
+
+**Github respository (source code)**
+
+	https://github.com/computational-metabolomics/dimspy-galaxy.git
+
+.. class:: infomark
+
+**Developers and Contributors**
+
+* **Ralf Weber (r.j.weber@bham.ac.uk) - University of Birmingham (UK)**
+* **Albert Zhou (@bham.ac.uk) - University of Birmingham (UK)**
+* **Martin R. Jones (m.r.jones.1@bham.ac.uk) - University of Birmingham (UK)**
+
+|
+  
+    </help>
+    <expand macro="citations" />
+</tool>

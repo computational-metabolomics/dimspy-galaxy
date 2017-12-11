@@ -1,0 +1,16 @@
+categories: [Metabolomics]
+description: "[Metabolomics][Galaxy-M][DIMS] DIMSpy: Tools for processing, filtering and analysing direct-infusion mass spectrometry-based metabolomics data"
+long_description: |
+  DIMSpy: Tools for processing, filtering and analysing direct-infusion mass spectrometry-based metabolomics data"
+
+  Repository-Maintainer: Ralf Weber (r.j.weber@bham.ac.uk)
+
+  https://github.com/computational-metabolomics/dimspy
+name: dimspy
+owner: rjmweber
+remote_repository_url: https://github.com/computational-metabolomics/dimspy
+type: unrestricted
+auto_tool_repositories:
+  name_template: "{{ tool_id }}"
+  description_template: "[Metabolomics][Galaxy-M][DIMS] DIMSpy - {{ tool_name }}: {{ description }}"
+

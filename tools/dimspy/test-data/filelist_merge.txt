@@ -1,0 +1,14 @@
+filename	classLabel
+batch04_B02_rep01_301.mzML	blank
+batch04_B02_rep02_302.mzML	blank
+batch04_B02_rep03_303.mzML	blank
+batch04_S01_rep01_247.mzML	sample
+batch04_S01_rep02_248.mzML	sample
+batch04_S01_rep03_249.mzML	sample
+batch04_QC17_rep01_262.mzML	QC
+batch04_QC17_rep02_263.mzML	QC
+batch04_QC17_rep03_264.mzML	QC
+batch04_QC18_rep01_280.mzML	QC
+batch04_QC18_rep02_281.mzML	QC
+batch04_QC18_rep03_282.mzML	QC
+
