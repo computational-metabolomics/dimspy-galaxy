@@ -6,14 +6,14 @@ Galaxy tools for Python package DIMSpy: data processing of direct-infusion mass 
 
 Galaxy
 ------
-[Galaxy](https://galaxyproject.org/) is an open, web-based platform for data intensive biomedical research. Whether on the free public server or your own instance, you can perform, reproduce, and share complete analyses. 
+`Galaxy <https://galaxyproject.org>`_ is an open, web-based platform for data intensive biomedical research. Whether on the free public server or your own instance, you can perform, reproduce, and share complete analyses. 
 
 
 Developers & Contributors
 -------------------------
- - Ralf J. M. Weber (r.j.weber@bham.ac.uk) - [University of Birmingham (UK)](http://www.birmingham.ac.uk/index.aspx)
- - Thomas N. Lawson (tnl495@bham.ac.uk) - [University of Birmingham (UK)](http://www.birmingham.ac.uk/index.aspx)
- - Martin R. Jones (m.r.jones.1@bham.ac.uk) - [University of Birmingham (UK)](http://www.birmingham.ac.uk/index.aspx)
+ - Ralf J. M. Weber (r.j.weber@bham.ac.uk) - `University of Birmingham (UK) <http://www.birmingham.ac.uk/index.aspx>`_
+ - Thomas N. Lawson (tnl495@bham.ac.uk) - `University of Birmingham (UK) <http://www.birmingham.ac.uk/index.aspx>`_
+ - Martin R. Jones (m.r.jones.1@bham.ac.uk) - `University of Birmingham (UK) <http://www.birmingham.ac.uk/index.aspx>`_
 
 
 Bugs
@@ -26,6 +26,11 @@ will help you to make the PR if you are new to `git`.
 
 Changes
 -------
+
+
+License
+-------
+Released under the GNU General Public License v3.0 (see `LICENSE file <https://github.com/computational-metabolomics/dimspy-galaxy/blob/master/LICENSE>`_)
 
 
 .. |Build Status (Travis)| image:: https://img.shields.io/travis/computational-metabolomics/dimspy-galaxy.svg?style=flat&maxAge=3600&label=Travis-CI
