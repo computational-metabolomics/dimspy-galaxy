@@ -8,4 +8,4 @@ before_install:
  - pip install planemo
 
 script:
- - planemo lint ${TRAVIS_BUILD_DIR}/galaxy/dimspy && planemo test --conda_auto_init --conda_auto_install --conda_dependency_resolution --galaxy_branch release_17.09 --no_cache_galaxy ${TRAVIS_BUILD_DIR}/galaxy/dimspy
+ - planemo lint ${TRAVIS_BUILD_DIR}/tools/dimspy && planemo test --conda_auto_init --conda_auto_install --conda_dependency_resolution --galaxy_branch release_17.09 --no_cache_galaxy ${TRAVIS_BUILD_DIR}/tools/dimspy
