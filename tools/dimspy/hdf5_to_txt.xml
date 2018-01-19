@@ -1,5 +1,5 @@
-<tool id="dimspy_hdf5_to_text" name="Export text format from dimspy-based HDF5 file" version="0.1.0">
-    <description> -- Convert hdf5-formatted peak matrices to user friendly .tsv format</description>
+<tool id="dimspy_hdf5_to_txt" name="Convert DIMSpy-based HDF5 to tsv" version="0.1.0">
+    <description></description>
     <macros>
         <import>macros.xml</import>
     </macros>
@@ -8,40 +8,58 @@
     <command><![CDATA[
         #if $input.object_type == "peak_lists"
             dimspy hdf5-pls-to-txt
-            --input "$hdf5_file_in"
+            --input "$input.hdf5_file_in"
             --output .
             --delimiter $delimiter
-        #else
-            dimspy hdf5-pm-to-txt
-            --input "$hdf5_file_in"
-            --output "$matrix_file_out"
-            --delimiter $delimiter
-            --attribute_name $input.hdf5_to_txt.matrix_attr
-            --representation-samples $input.hdf5_to_txt.representation_samples
-            #if $input.hdf5_to_txt.comprehensive
-                &&
+        #elif $input.object_type == "peak_matrix"
+            #if $input.matrix_format == "standard" or $input.matrix_format == "standard_comprehensive"
                 dimspy hdf5-pm-to-txt
-                --input "$hdf5_file_in"
+                --input "$input.hdf5_file_in"
+                --output "$matrix_file_out"
+                --delimiter $delimiter
+                --attribute_name $input.matrix_attr
+                --representation-samples $input.representation_samples
+            #end if
+            #if $input.matrix_format == "standard_comprehensive"
+                &&
+            #end if
+            #if $input.matrix_format == "comprehensive" or $input.matrix_format == "standard_comprehensive"
+                dimspy hdf5-pm-to-txt
+                --input "$input.hdf5_file_in"
                 --output "$matrix_comprehensive_file_out"
                 --delimiter $delimiter
                 --comprehensive
-                --attribute_name $input.hdf5_to_txt.matrix_attr
-                --representation-samples $input.hdf5_to_txt.representation_samples
+                --attribute_name $input.matrix_attr
+                --representation-samples $input.representation_samples
             #end if
         #end if
     ]]></command>
     <inputs>
-        <param name="hdf5_file_in" type="data" format="h5" label="Peak intensity matrix (HDF5 file)" help="" argument="--input"/>
         <param name="delimiter" type="hidden" value="tab" argument="--delimiter"/>
         <conditional name="input">
-            <param name="object_type" type="select" label="Select data type" help="" argument="">
-                <option value="peak_lists" selected="true">peak list</option>
-                <option value="peak_matrix">peak matrix</option>
+            <param name="object_type" type="select" label="Content HDF5 file" help="" argument="">
+                <option value="peak_matrix" selected="true">Peak intensity matrix</option>
+                <option value="peak_lists">Peak list(s)</option>
             </param>
             <when value="peak_lists">
+                <param name="hdf5_file_in" type="data" format="h5" label="Peaklist(s) (HDF5 file)" help="" argument="--input"/>
             </when>
             <when value="peak_matrix">
-                <expand macro="hdf5_pm_to_txt" />
+                <param name="hdf5_file_in" type="data" format="h5" label="Peak intensity matrix (HDF5 file)" help="" argument="--input"/>
+                <param name="matrix_format" type="select" label="Select format(s) tsv formatted peak instensity matrix" >
+                    <option value="standard" selected="true">Standard peak matrix (i.e. m/z and intensity).</option>
+                    <option value="comprehensive">Comprehensive peak matrix (e.g. m/z and intensity, rsd, missing values).</option>
+                    <option value="standard_comprehensive">Standard and comprehensive</option>
+                </param>
+                <param name="representation_samples" type="select" label="Should the rows or columns represent the samples?">
+                    <option value="rows" selected="true">Rows</option>
+                    <option value="columns">Columns</option>
+                </param>
+                <param name="matrix_attr" type="select" label="The peak matrix should contain ... values">
+                    <option value="intensity" selected="true">Intensity</option>
+                    <option value="mz">m/z</option>
+                    <option value="snr">Signal-to-noise ratio (SNR)</option>
+                </param>
             </when>
         </conditional>
     </inputs>
@@ -51,16 +69,16 @@
             <discover_datasets pattern="(?P&lt;designation&gt;.+)\.txt" format="tsv" directory="." visible="false" />
         </collection>
         <data name="matrix_file_out" format="tsv" label="${tool.name} on ${on_string}: Peak matrix">
-            <filter>input["object_type"] == "peak_matrix" and input["hdf5_to_txt"]["standard"] is True</filter>
+            <filter>input["object_type"] == "peak_matrix" and (input["matrix_format"] == "standard" or input["matrix_format"] == "standard_comprehensive")</filter>
         </data>
         <data name="matrix_comprehensive_file_out" format="tsv" label="${tool.name} on ${on_string}: Peak matrix (comprehensive)" >
-            <filter>input["object_type"] == "peak_matrix" and input["hdf5_to_txt"]['comprehensive"] is True</filter>
+            <filter>input["object_type"] == "peak_matrix" and (input["matrix_format"] == "comprehensive" or input["matrix_format"] == "standard_comprehensive")</filter>
         </data>
     </outputs>
     <tests>
         <test>
-            <param name="hdf5_file_in" value="pls.h5" ftype="h5"/>
             <param name="input|object_type" value="peak_lists"/>
+            <param name="input|hdf5_file_in" value="pls.h5" ftype="h5"/>
             <output_collection name="peaklists_txt" type="list">
                 <element name="batch04_QC17_rep01_262" file="batch04_QC17_rep01_262.txt" ftype="tsv"/>
                 <element name="batch04_QC17_rep02_263" file="batch04_QC17_rep02_263.txt" ftype="tsv"/>
@@ -68,24 +86,29 @@
             </output_collection>
         </test>
         <test>
-            <param name="hdf5_file_in" value="pm_as_bf_sf.h5" ftype="h5"/>
-            <param name="delimiter" value="tab"/>
-            <param name="input|object_type" value="peak_matrix"/>           
-            <param name="input|hdf5_to_txt|standard" value="False"/>
-            <param name="input|hdf5_to_txt|comprehensive" value="True"/>
-            <param name="input|hdf5_to_txt|representation_samples" value="columns"/>
-            <param name="input|hdf5_to_txt|matrix_attr" value="intensity"/>
-            <output name="matrix_file_out" file="peak_matrix_hdf5_to_txt_intensity.txt" ftype="tsv"/>
+            <param name="input|object_type" value="peak_matrix"/>
+            <param name="input|hdf5_file_in" value="pm_as_bf_sf.h5" ftype="h5"/>
+            <param name="input|matrix_format" value="comprehensive"/>
+            <param name="input|representation_samples" value="columns"/>
+            <param name="input|matrix_attr" value="intensity"/>
+            <output name="matrix_comprehensive_file_out" file="peak_matrix_hdf5_to_txt_intensity.txt" ftype="tsv"/>
         </test>
         <test>
-            <param name="hdf5_file_in" value="pm_as_bf_sf.h5" ftype="h5"/>
-            <param name="delimiter" value="tab"/>
             <param name="input|object_type" value="peak_matrix"/>
-            <param name="input|hdf5_to_txt|standard" value="True"/>
-            <param name="input|hdf5_to_txt|comprehensive" value="False"/>
-            <param name="input|hdf5_to_txt|representation_samples" value="rows"/>
-            <param name="input|hdf5_to_txt|matrix_attr" value="mz"/>
-            <output name="matrix_comprehensive_file_out" file="peak_matrix_hdf5_to_txt_mz.txt" ftype="tsv"/>
+            <param name="input|hdf5_file_in" value="pm_as_bf_sf.h5" ftype="h5"/>
+            <param name="input|matrix_format" value="standard"/>
+            <param name="input|representation_samples" value="rows"/>
+            <param name="input|matrix_attr" value="mz"/>
+            <output name="matrix_file_out" file="peak_matrix_hdf5_to_txt_mz.txt" ftype="tsv"/>
+        </test>
+        <test>
+            <param name="input|object_type" value="peak_matrix"/>
+            <param name="input|hdf5_file_in" value="pm_as_bf_sf.h5" ftype="h5"/>
+            <param name="input|matrix_format" value="standard_comprehensive"/>
+            <param name="input|representation_samples" value="rows"/>
+            <param name="input|matrix_attr" value="snr"/>
+            <output name="matrix_file_out" file="peak_matrix_hdf5_to_txt_snr.txt" ftype="tsv"/>
+            <output name="matrix_comprehensive_file_out" file="peak_matrix_hdf5_to_txt_comprehensive_snr.txt" ftype="tsv"/>
         </test>
     </tests>
     <help>
@@ -94,29 +117,19 @@
 
 **Description**
 
-| Use this tool to convert hdf5-formatted peak matrix objects to user-friendly .tsv output files.
+| Use this tool to convert hdf5-formatted peak intensity matrix or peaklist(s) to user-friendly .tsv file(s).
 | 
 
 .. class:: infomark
 
 **Parameters**
 
-1) **Peak intensity matrix (HDF5 file)** (REQUIRED)
+1) **Select content hdf5 file** (default = 'peak intensity matrix')
 
-	| Selection menu in which user can select the hdf5-formatted peak matrix requiring conversion to .tsv format.
+2) **Peak intensity matrix or Peak lists (HDF5 file)** (REQUIRED)
+
+	| Selection menu in which user can select the hdf5-formatted peak intensity matrix or peaklists requiring conversion to .tsv format.
     
-2) **Select data type** (REQUIRED; default = 'peak list')
-
-	| Selection menu in which user can select:
-		* **peak list** to export a peak list in .tsv format (peak lists contain additional information versus peak matrices)
-		* **peak matrix** to export a peak matrix in .tsv format (peak matrices comprise samples in rows, peak m/z values in columns and peak intensities in cells)
-
-.. class:: infomark
-
-**R packages used within this tool**
-    
-    - None
-
 .. class:: infomark
 
 **Github respository (source code)**
@@ -128,8 +141,8 @@
 **Developers and Contributors**
 
 * **Ralf Weber (r.j.weber@bham.ac.uk) - University of Birmingham (UK)**
-* **Albert Zhou (@bham.ac.uk) - University of Birmingham (UK)**
 * **Martin R. Jones (m.r.jones.1@bham.ac.uk) - University of Birmingham (UK)**
+* **Thomas Lawson (tnl495@bham.ac.uk) - University of Birmingham (UK)**
 
 |
     
