@@ -21,7 +21,7 @@
             --output .
             --delimiter $delimiter
         #end if
-        #if $input.format == "average"
+        #if $input.format == "average" and $input.to_txt
             &&
             mv "${input.name_peaklist}.txt" "$tsv_file_out"            
         #end if
