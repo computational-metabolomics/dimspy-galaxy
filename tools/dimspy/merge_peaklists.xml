@@ -1,5 +1,5 @@
 <tool id="dimspy_merge_peaklists" name="Merge peaklists" version="0.1.0">
-    <description>Merge peaklists produced by the tools 'Process scans (and SIM-Stitch)' or 'Replicate filter'</description>
+    <description> produced by the tools 'Process scans (and SIM-Stitch)' or 'Replicate filter'</description>
     <macros>
         <import>macros.xml</import>
     </macros>
@@ -54,83 +54,77 @@
             <output name="hdf5_file_out" value="merged_02.h5" ftype="h5" compare="sim_size" />
         </test>
     </tests>
-    <help><![CDATA[
-=============================================================
-Merge peaklists 
-=============================================================
------------
+    <help>
+---------------
+Merge Peaklists
+---------------
+
 Description
 -----------
-Merge peaklists into a single list of peaklist objects. 
 
-The output of 'process scans' is a python list of dimspy.peaklist objects e.g.
+| Merge (lists of) Peaklists into a single list of Peaklists.
+| If a user has multiple of these lists, they can be merged with this tool and then saved as HDF5 file. 
+| 
+| For example:
+| 
+| [ pl1, pl2, pl3 ] + [ pl4, pl5, pl6 ] = [ pl1, pl2, pl3, pl4, pl5, pl6 ]
+| 
+| Additionally a filelist can be included to provide meta information regarding each file. 
+| 
 
-[ pl1, pl2, pl3 ]
-
-These lists are then saved as hdf5 (.h5) files that can be reloaded. If a user has multiple of these lists, they 
-can be merged with this function.
-
-e.g. 
-
-[ pl1, pl2, pl3 ] + [ pl4, pl5, pl6 ] = [ pl1, pl2, pl3, pl4, pl5, pl6 ]
-
-and then saved as hdf5 file. Additionally a filelist can be included to provide meta information regarding each file. e.g.:
+@example_filelist@
 
 
-=========================== ============= ================
-filename	            batch	  classLabel	 
-=========================== ============= ================ 
-1.mzML                      1	          blank
-2.mzML                      1	          QC
-3.mzML                      1	          sample
-4.mzML                      2	          blank	        
-5.mzML                      2	          QC	        
-6.mzML                      2    	  sample	
-=========================== ============= ================
+**Peakmatrix**
 
+If a Peak Intensity Matrix is merged the individual Peaklists from within the peakmatrix object will be extracted and then merged.
 
------------
-Peakmatrix
------------
-If a dimspy.peakmatrix object is merged the individual peaklists from within the peakmatrix object will be extracted and then merged.
-
-e.g.
+For example:
 
 [ pl1, pl2, pl3 ] + [ pm ] = [ pl1, pl2, pl3 ] + [ pl4, pl5, pl6 ] = [ pl1, pl2, pl3, pl4, pl5, pl6 ]
 
 
+**Multilist**
+If a column named ('multilist') is added in the Filelist then multiple lists of Peaklists can be generated. Each list of Peaklists will generate its own hdf5 file
 
------------
-Multilist
------------
-If a column named ('multilist') is added in the Filelist then multiple lists of peaklists can be generated. Each list of peaklists 
-will generate its own hdf5 file
-e.g. 
+For Example
 
 [ pl1, pl2, pl3, pl4 ] derived from [ 1.mzML, 2.mzML, 3.mzML, 4.mzML ]
 
 Using Filelist:
 
-=========================== ============= =============
-filename	            classLabel    multilist
-=========================== ============= ============= 
-1.mzML                      blank         1
-2.mzML                      blank         2
-3.mzML                      sample        1
-4.mzML                      sample        2
-=========================== ============= =============  
+<![CDATA[
+
+        +-----------+----------+------------+------------+
+        | filename  | batch    | classLabel | multilist  |   
+        +-----------+----------+------------+------------+
+        | 1.mzML    | 1        | blank      | 1          |
+        +-----------+----------+------------+------------+
+        | 2.mzML    | 1        | QC         | 2          |
+        +-----------+----------+------------+------------+
+        | 3.mzML    | 1        | sample     | 1          |
+        +-----------+----------+-------------------------+
+        | 4.mzML    | 2        | blank      | 2          |
+        +-----------+----------+------------+------------+
+
+]]>
 
 
-Will create two peaklist hdf5 files:
+Will create two Peaklist hdf5 files:
 
-[ pl1, pl3 ]
+[ pl1, pl3 ] and [ pl2, pl4 ]
 
-and
+NOTE: it is currently not possible to use the 'Write Peaklists to tsv files (data collection)?' option when performing a multilist merge
 
-[ pl2, pl4 ]
+| 
 
-Note that is currently not possible to use the 'Write peaklists to tsv files (data collection)?' option when performing a multilist merge
+Output file(s)
+--------------
 
-]]></help>
+Single or Multiple HDF5 file(s) containing a list of Peaklists
+
+@github_developers_contributors@
+ 
+    </help>
     <expand macro="citations" />
 </tool>

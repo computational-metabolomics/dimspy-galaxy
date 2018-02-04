@@ -1,5 +1,5 @@
-<tool id="dimspy_missing_values_sample_filter" name="Missing values sample filter" version="0.1.0">
-    <description> - Filter samples with a high percentage of missing values</description>
+<tool id="dimspy_missing_values_sample_filter" name="Missing Values Sample Filter" version="0.1.0">
+    <description> - Remove samples with a high percentage of missing values</description>
     <macros>
         <import>macros.xml</import>
     </macros>
@@ -20,19 +20,13 @@
         #end if
     ]]></command>
     <inputs>
-        <param name="hdf5_file_in" type="data" format="h5" label="Peak intensity matrix (HDF5 file)" help="" argument="--input"/>
+        <param name="hdf5_file_in" type="data" format="h5" label="Peak Intensity Matrix (HDF5 file)" help="" argument="--input"/>
         <param name="max_fraction" min="0" max="1.0" type="float" value="0.8" label="Maximum percentage of missing values." help="" argument="--max-fraction"/>
         <param name="delimiter" type="hidden" value="tab" argument="--delimiter"/>
         <expand macro="hdf5_pm_to_txt" />
     </inputs>
     <outputs>
-        <data name="hdf5_file_out" format="h5" label="${tool.name} on ${on_string}: Peak matrix (HDF5 file)"/>
-        <data name="matrix_file_out" format="tsv" label="${tool.name} on ${on_string}: Peak matrix">
-            <filter>hdf5_to_txt["standard"] is True</filter>
-        </data>
-        <data name="matrix_comprehensive_file_out" format="tsv" label="${tool.name} on ${on_string}: Peak matrix (comprehensive)" >
-            <filter>hdf5_to_txt["comprehensive"] is True</filter>
-        </data>
+        <expand macro="outputs_peak_intensity_matrix" />
     </outputs>
     <tests>
         <test>
@@ -49,101 +43,34 @@
         </test>
     </tests>
     <help>
-    
-    .. class:: infomark
+----------------------------
+Missing Values Sample Filter
+----------------------------
 
-**Description**
+Description
+-----------
 
 | Use this tool to remove samples with greater-than a user-specified percentage of missing values.
-| 
 | In the DIMS analysis workflow, filtering of samples with large numbers of missing values typically occurs following: 'Process Scans' -> 'Replicate filter' -> 'Sample filter'.
-|
 | Samples with large numbers of missing values are often observed where a failed mass spectral acquisition has occurred, the reasons for which are many and diverse.
-|
 
-.. class:: infomark
+Parameters
+----------
 
-**Parameters**
+**\1. Peak Intensity Matrix (HDF5 file)** (REQUIRED)
 
-1) **Peak intensity matrix (HDF5 file)** (REQUIRED)
-
-	* A hdf5-formatted peak matrix. For routine usage, the input matrix should be that generated from the 'Align samples' tool.
+For routine usage, the input matrix should be that generated from the 'Align samples' tool.
 	
-2) **Maximum percentage of missing values** (REQUIRED; default = 0.8)
+**\2. Maximum percentage of missing values** (REQUIRED; default = 0.8)
 
-	* A numeric value ranging from 0 to 1.
-	* A value of 0 corresponds to a very harsh filtering procedure, in which only those samples with zero missing values are retained in the output peak matrix.
-	* A value of 1 corresponds to a very liberal filtering procedure, in which samples with as many as 100% missing values will be retained in the output peak matrix.
+- A numeric value ranging from 0 to 1.
+- A value of 0 corresponds to a very harsh filtering procedure, in which only those samples with zero missing values are retained in the output Peak Intensity Matrix.
+- A value of 1 corresponds to a very liberal filtering procedure, in which samples with as many as 100% missing values will be retained in the output Peak Intensity Matrix.
 
-.. class:: infomark
+@help_options_addtional_output@
 
-**Show options for output** (OPTIONAL)
-
-1) **Standard output** (default = 'No')
-
-	| Boolean toggle where selection of: 
-	
-		* 'Yes' will generate a .txt formatted peak matrix. The data contained in this peak matrix is defined by the user-specified option in the 'Comprehensive output' parameters box.
-		* 'No' will prevent the creation of a .txt formatted peak matrix.
-
-2) **Comprehensive output** (default = 'No')
-	
-	| Boolean toggle where selection of:
-	
-		* 'Yes' generates a peak matrix containing the m/z, intensity, coverage, purity, signal-to-noise ratio and other metrics associated with the aligned peaks.
-		* 'No' generates a peak matrix containing only the m/z and intensity for all clustered (aligned) features. This option ensures compatibility with down-stream statistical analysis tools.
-
-3) **Should rows or columns represent the samples?** (default = 'rows')
-	
-	| Binary toggle where selection of:
-	
-		* 'rows' puts sample information in to the rows and m/z values (for aligned mass spectral peaks) in to columns of any output peak matrix.
-		* 'columns' puts sample information in the columns and m/z values (for aligned mass spectral peaks) in to the rows of any output peak matrix.
-
-4) **Matrix type**
-	
-	| Use this option to define which metric is inserted in to the cells of the output peak matrix (if any). For each mass spectral peak and sample combination, selection of:
-	
-		* **'Intensity'** writes the absolute peak intensity to the peak matrix.
-		* **'m/z'** writes the m/z value to the peak matrix.
-		* **Signal-to-noise ratio (SNR)** writes the signal-to-noise ratio to the peak matrix. 
-
-
-**Output file(s)**
-
-1)  A peak matrix comprising samples on one axis and m/z values on the perpendicular axis
-	* Tab-delimited text file containing a numeric data matrix, with . as decimal, and NA for missing values.
-	* File only created if user toggles 'Standard Output' to 'Yes'
-	* By default, samples are in rows and peaks are in columns. Altering the 'Should rows or columns represent samples' toggle will transpose this matrix.
-	
-2) 'A peaklist for each file specified in the filelist'
-	* Tab-delimited text file containing a numeric data matrix, with . as decimal, and NA for missing values.
-	* Includes additional information, including the signal-to-noise ratio for each peak in the matrix.
-
-| 
-
-.. class:: infomark
-
-**R packages used within this tool**
-    
-    - None
-
-.. class:: infomark
-
-**Github respository (source code)**
-
-	https://github.com/computational-metabolomics/dimspy-galaxy.git
-
-.. class:: infomark
-
-**Developers and Contributors**
-
-* **Ralf Weber (r.j.weber@bham.ac.uk) - University of Birmingham (UK)**
-* **Albert Zhou (@bham.ac.uk) - University of Birmingham (UK)**
-* **Martin R. Jones (m.r.jones.1@bham.ac.uk) - University of Birmingham (UK)**
-
-|   
-    
+@github_developers_contributors@
+        
     </help>
     <expand macro="citations" />
 </tool>

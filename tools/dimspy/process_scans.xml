@@ -1,5 +1,5 @@
 <tool id="dimspy_process_scans" name="Process Scans (and SIM-Stitch)" version="0.1.0">
-    <description>Read, filter and average MS scans</description>
+    <description> - Read, filter and average MS scans</description>
     <macros>
         <import>macros.xml</import>
     </macros>
@@ -41,6 +41,8 @@
         --min_scans $mults.min_scans
         #if float($mults.min_fraction) > 0.0
             --min-fraction $mults.min_fraction
+        #else
+            --min-fraction 0.0
         #end if
         #if float($mults.rsd_threshold) > 0.0
             --rsd-threshold $mults.rsd_threshold
@@ -99,7 +101,7 @@
                 </param>
             </when>
         </conditional>
-        <param name="filelist" type="data" optional="true" format="tsv,tabular" label="Filelist" argument="--filelist" />
+        <param name="filelist" type="data" optional="true" format="tsv,tabular" label="Filelist / Samplelist" argument="--filelist" />
         <param name="function_noise" type="select" label="Function to calculate the noise from each scan" help="" argument="--function-noise">
             <option value="median" selected="true">median intensity</option>
             <option value="mean">mean intensity</option>
@@ -135,7 +137,7 @@
             <param name="rsd_threshold" type="float" value="0.0" min="0.0" label="Relative standard deviation threshold" help="Select '0' to skip this step. Maximum tolerated relative standard deviation (RSD) of the peak intensities across scans." argument="--rsd-threshold" />
         </section>
         <section name="adv" title="Show advanced options" expanded="True">
-            <param name="skip_stitching" type="boolean" value="false" label="Skip SIM-Stitching?" help="When set to 'yes' it will skip the processing step where (SIM) windows are 'stitched' or 'joined' together"/>
+            <param name="skip_stitching" type="boolean" value="false" label="Skip SIM-Stitching?" help="When set to 'yes' it will skip the processing step where (SIM) windows are 'stitched' or 'joined' together. Set this option to 'yes' if you like to proces individual scan/SIM windows (events/ranges) without 'stitching' them."/>
             <repeat name="remove_mz_range" title="Remove m/z range(s)?">
                 <param name="start" type="float" value="0.0" label="Start m/z of removal range"/>
                 <param name="end" type="float" value="0.0" label="End m/z of removal range">
@@ -194,155 +196,102 @@
         </test>
     </tests>
     <help>
-      .. class:: infomark
+-------------
+Process Scans
+-------------
 
-**Description**
+Description
+-----------
 
-| Use this tool to generate a peaklist for each of the files specified in the filelist. This tool is known to work with Thermo scientific .raw files and with .mzML-formatted files.
+| Use this tool to generate a Peaklist for each of the files specified in the filelist. This tool is known to work with Thermo scientific .raw files and with .mzML files.
 | 
-| Peaks are removed from final peaklist if:
+| Peaks are removed from final Peaklist if:
 
 1) they occur in fewer than the user-defined 'Number of technical replicates a peak has to be present in' and/or
-
 2) the relative standard deviation (measured in % and also termed the coefficient of variation) among intensity values for a peak is greater than the user-defined value.
 
-|
+Parameters
+----------
 
-.. class:: infomark
+**\1. Source for the dataset**
 
-**Parameters**
+- **Zip file from history** - use this option if you have uploaded a .zip directory containing ONLY your .mzML or .raw data files
 
-@help_input_files@
+- **Library directory name** - use this option to select data files stored on a data server (e.g. the Research Data Storage at the University of Birmingham).
+  | In the 'Library directory' box that appears on selecting this option, insert a string specifying the path to your data.	
+  | Ensure to exclude the drive letter and user name, and to separate sub-directories using FORWARD SLASHES e.g. '[Y:\\users\\USERNAME]\\my_study_folder\\my_data_folder' becomes 'my_study_folder/my_data_folder'. 
 
-1) **Source for the dataset** (REQUIRED)
-	* **Zip file from history** - use this option if you have uploaded a .zip directory containing ONLY your .mzML or .raw-formatted data files
-	* **Library directory name** - use this option to select data files stored on a data server (e.g. the Research Data Storage at the University of Birmingham).
-	 
-		* In the 'Library directory' box that appears on selecting this option, insert a string specifying the path to your data. 
-		* Ensure to exclude the drive letter and user name, and to separate sub-directories using FORWARD SLASHES e.g. '[Y:\\users\\USERNAME]\\my_study_folder\\my_data_folder' becomes 'my_study_folder/my_data_folder'. 
-
-	* **Data collection** - restricted to administrators
+- **Data collection** - this option will provide a drop-down box in which you may select one of the data collections from your current history. 
 		
-		* For users authorised to use data collections, this option will provide a drop-down box in which you may select one of the data collections linked to your user account. 
-		
-	* **Single .mzML or .raw file** - use this option if you have uploaded a single .mzML or .raw file to the current Galaxy history
+- **Single .mzML or .raw file** - use this option if you have uploaded a single .mzML or .raw file to the current Galaxy history
 
-2) **Filelist** (REQUIRED) - 
-	* Use 'single dataset' option
-	* A tabular-formatted .txt file with columns: filename, replicate, batch, classLabel, injectionOrder. This file must be uploaded in to the current history in order to allow for it to be selected from the drop-down menu.
+**\2. Filelist / Samplelist** (HIGHLY RECOMMENDED)
 
-<![CDATA[
+| A tabular-formatted .txt file with columns: filename, replicate, batch, classLabel, injectionOrder.
+| Additional collumns are allowed but are not used during processing.
+| This file must be uploaded in to (or available from) the current history in order to allow for it to be selected from the drop-down menu.
+| **NOTE:** Only provide a filelist if you like to exclude Peaklist.
+| 
 
-		+-----------------+-----------+-------+------------+----------------+
-		| filename        | replicate | batch | classLabel | injectionOrder |
-		+-----------------+-----------+-------+------------+----------------+
-		| sample_rep1.raw | 1         | 1     | sample     | 1              |
-		+-----------------+-----------+-------+------------+----------------+
-		| sample_rep2.raw | 2         | 1     | sample     | 2              |
-		+-----------------+-----------+-------+------------+----------------+
-		| sample_rep3.raw | 3         | 1     | sample     | 3              |
-		+-----------------+-----------+-------+------------+----------------+
-		| sample_rep4.raw | 4         | 1     | sample     | 4              |
-		+-----------------+-----------+-------+------------+----------------+
-		| blank_rep1.raw  | 1         | 1     | blank      | 5              |
-		+-----------------+-----------+-------+------------+----------------+
-		| blank_rep2.raw  | 2         | 1     | blank      | 6              |
-		+-----------------+-----------+-------+------------+----------------+
-		| blank_rep3.raw  | 3         | 1     | blank      | 7              |
-		+-----------------+-----------+-------+------------+----------------+
-		| blank_rep4.raw  | 4         | 1     | blank      | 8              |
-		+-----------------+-----------+-------+------------+----------------+
-		| ...             | ...       | ...   | ...        | ...            |
-		+-----------------+-----------+-------+------------+----------------+
- 
-|
-]]>
+@example_filelist@
 
+**\3. Function to calculate the noise from each scan** (REQUIRED)
 
+Select one option from the drop-down menu to indicate you prefer for noise calculation algorithm - median, mean, mean absolute deviation and 'Xcalibur' (i.e. noise values as displayed in Thermo Xcalibur software will be used) are the valid options.
 
-3) **Function to calculate the noise from each scan** (REQUIRED)
-	* Select one option from the drop-down menu to indicate you prefer for noise calculation algorithm - median, mean, mean absolute deviation and 'Xcalibur' (i.e. noise values as displayed in Thermo Xcalibur software will be used) are the valid options.
+**\4. Signal-to-noise ratio threshold** (REQUIRED)
 
-4) **Signal-to-noise ratio threshold** (REQUIRED)
-	* A numerical value from 0 upwards. Peaks with signal-to-noise ratios less-than or equal to this value will be removed from output peaklist.
-	
-5) **Filter specific scan windows or scan events?** (OPTIONAL) 
-	* A boolean toggle ('No' = do not perform scan event filtering; 'Yes' = filter specific scan events)
-	
-		* When 'Yes' is selected, users must specify whether to 'Exclude' or 'Include' specific scan events.
-		
-		* Users must then:
-		
-			* click the '+ Description' button and insert the 'Start m/z for scan event' and 'Stop m/z for scan event' for the scan event to be excluded or included.
-			* select the 'scan type' to be filtered from 'Full scan' or 'SIM scan'
-			
-		* Click '+ Description' to 'Exclude/Include' an additional scan event
+A numerical value from 0 upwards. Peaks with signal-to-noise ratios less-than or equal to this value will be removed from output Peaklist.
 
-6) **Show options for multiple scans**
+**\5. Filter specific scan windows or scan events?** (OPTIONAL)
 
-	* **Minimum number of scans required for each m/z window or scan event'**
+| A boolean toggle ('No' = do not perform scan event filtering; 'Yes' = filter specific scan events)
+| When 'Yes' is selected, users must specify whether to 'Exclude' or 'Include' specific scan events.
+   
+Users must then:
+  
+- Click the '+ Description' button and insert the 'Start m/z for scan event' and 'Stop m/z for scan event' for the scan event to be excluded or included.
+- Select the 'scan type' to be filtered from 'Full scan' or 'SIM scan'
+- Click '+ Description' to 'Exclude/Include' an additional scan event
 
-		* A numerical value from 1 upwards to specify the number of instances of a given scan event required in order to peaks in this scan event to be included in the output peaklist.
-		
-	* **ppm error tolerance**
-	
-		* A numerical value from 0 upwards. This option serves to define the maximum allowable difference in m/z values (measured in parts-per-million) for mass spectral peaks to be clustered across replicates of the same scan event.
-		
-	* **Minimum fraction (i.e. percentage) of scans a peak has to be present in**
-	
-		* A numerical value specifying the minimum number of scans a given mass spectral peak must be present in for it to be kept in the output peaklist. The ppm error specified by the user will significantly impact which peaks fulfil this criteria.
-		
-	
-7) **Show advanced options**
+**\6. Show options for multiple scans**
 
-	* **Skip SIM-stitching** (REQUIRED; default = 'NO')
-	
-		* A boolean toggle ('No' = perform SIM stitching; 'Yes' = skip stitching procedure)
-		
-	* **Remove m/z range(s)** (OPTIONAL)
-	
-		* This option allow specific regions of the output peak matrices to be deleted by the user - this option may be useful for removing sections of a spectrum known to correspond to system noise peaks.
-		
-			* **Start m/z of removal range** - a numerical value corresponding to the lowest m/z value in the spectral region to be removed 
-			* **End m/z of removal range** - a numerical value corresponding to the highest m/z value in the spectral region to be removed 
-			
-8) **Relative intensity threshold used to remove ringing artefacts** (OPTIONAL)
+- **Minimum number of scans required for each m/z window or scan event** - A numerical value from 1 upwards to specify the number of instances of a given scan event required in order to peaks in this scan event to be included in the output Peaklist.
+- **ppm error tolerance** - A numerical value from 0 upwards. This option serves to define the maximum allowable difference in m/z values (measured in parts-per-million) for mass spectral peaks to be clustered across replicates of the same scan event.
+- **Minimum fraction (i.e. percentage) of scans a peak has to be present in** - A numerical value specifying the minimum number of scans a given mass spectral peak must be present in for it to be kept in the output Peaklist. The ppm error specified by the user will significantly impact which peaks fulfil this criteria.
 
-	* Fourier transform-based mass spectra often contain many peaks (ringing artefacts) around spectral features corresponding to genuine bio-molecules.
-	* A numerical value indicating the required relative intensity a peak must exceed (with reference to the largest peak in a cluster of peaks) in order to be retained.
+**\7. Show advanced options**
 
-.. class:: infomark
+- **Skip SIM-stitching** (REQUIRED; default = 'NO')
 
-**Output file(s)**
-
-1)  'A peak matrix for each file specified in the filelist'
-	* Tab-delimited text file containing a numeric data matrix, with . as decimal, and NA for missing values.
-	* Samples are in rows, peaks are in columns.
-	
-2) 'A peaklist for each file specified in the filelist'
-	* Tab-delimited text file containing a numeric data matrix, with . as decimal, and NA for missing values.
-	* Includes additional information, including the signal-to-noise ratio for each peak in the matrix.
-
-.. class:: infomark
-
-**R packages used within this tool**
+  | A boolean toggle ('No' = perform SIM stitching; 'Yes' = skip stitching procedure)
+  | When set to 'yes' it will skip the processing step where (SIM) windows are 'stitched' or 'joined' together.
+  | Set this option to 'yes' if you like to proces individual scan/SIM windows (events/ranges) without 'stitching' them. 
     
-    - None
+- **Remove m/z range(s)** (OPTIONAL)
 
-.. class:: infomark
+  This option allow specific regions of the output peak matrices to be deleted by the user - this option may be useful for removing sections of a spectrum known to correspond to system noise peaks.
 
-**Github respository (source code)**
+  - **Start m/z of removal range** - a numerical value corresponding to the lowest m/z value in the spectral region to be removed 
+  - **End m/z of removal range** - a numerical value corresponding to the highest m/z value in the spectral region to be removed 
 
-https://github.com/computational-metabolomics/dimspy-galaxy.git
+- **Relative intensity threshold used to remove ringing artefacts** (OPTIONAL)
 
-.. class:: infomark
+  - Fourier transform-based mass spectra often contain many peaks (ringing artefacts) around spectral features corresponding to genuine bio-molecules.
+  - A numerical value indicating the required relative intensity a peak must exceed (with reference to the largest peak in a cluster of peaks) in order to be retained.
 
-**Developers and Contributors**
+Output file(s)
+--------------
 
-* **Ralf Weber (r.j.weber@bham.ac.uk) - University of Birmingham (UK)**
-* **Albert Zhou (@bham.ac.uk) - University of Birmingham (UK)**
-* **Martin R. Jones (m.r.jones.1@bham.ac.uk) - University of Birmingham (UK)**
-    
+| A HDF5 file containing the processed Peaklists
+| 
+| A processed Peaklist, in .tsv format, for each file specified in the filelist (Data Collection)
+
+- Tab-delimited text file containing a numeric data matrix, with . as decimal, and NA for missing values.
+- Includes additional information, such as the signal-to-noise ratio, relative-standard deviation (rsd) and 'purity' for each peak.
+
+@github_developers_contributors@
+
     </help>
 
     <expand macro="citations" />
