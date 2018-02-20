@@ -56,7 +56,7 @@
             <param name="rsd_threshold" value=""/>
             <output name="hdf5_file_out" value="pls_rf.h5" ftype="h5" compare="sim_size" />
             <output name="report" value="report_pls_rf_01.txt" ftype="txt"/>
-            <output name="samplelist" value="samplelist.txt" ftype="tsv"/>
+            <output name="samplelist" value="samplelist_1.txt" ftype="tsv"/>
             <output_collection name="peaklists_txt" type="list">
                 <element name="batch04_QC17_rep01_262_2_263_3_264" file="batch04_QC17_rep01_262_2_263_3_264.txt" ftype="tsv"/>
             </output_collection>
@@ -70,7 +70,7 @@
             <param name="rsd_threshold" value=""/>
             <output name="hdf5_file_out" value="pls_rf.h5" ftype="h5" compare="sim_size" />
             <output name="report" value="report_pls_rf_02.txt" ftype="txt"/>
-            <output name="samplelist" value="samplelist.txt" ftype="tsv"/>
+            <output name="samplelist" value="samplelist_2.txt" ftype="tsv"/>
             <output_collection name="peaklists_txt" type="list">
                 <element name="batch04_QC17_rep01_262_2_263_3_264" file="batch04_QC17_rep01_262_2_263_3_264.txt" ftype="tsv"/>
             </output_collection>
