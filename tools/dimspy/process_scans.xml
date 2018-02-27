@@ -230,7 +230,6 @@ Parameters
 | A tabular-formatted .txt file with columns: filename, replicate, batch, classLabel, injectionOrder.
 | Additional collumns are allowed but are not used during processing.
 | This file must be uploaded in to (or available from) the current history in order to allow for it to be selected from the drop-down menu.
-| **NOTE:** Only provide a filelist if you like to exclude Peaklist.
 | 
 
 @example_filelist@
