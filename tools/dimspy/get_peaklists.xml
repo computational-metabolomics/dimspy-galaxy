@@ -1,4 +1,4 @@
-<tool id="dimspy_get_peaklists" name="Get peaklists" version="0.1.0">
+<tool id="dimspy_get_peaklists" name="Get peaklists" version="1.0.0">
     <description> or an average peaklist from a Peak Intensity Matrix</description>
     <macros>
         <import>macros.xml</import>

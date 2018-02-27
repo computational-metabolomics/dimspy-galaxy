@@ -1,4 +1,4 @@
-<tool id="dimspy_blank_filter" name="Blank Filter" version="0.1.0">
+<tool id="dimspy_blank_filter" name="Blank Filter" version="1.0.0">
     <description> - Remove 'blank' peaks from the biological mass spectra</description>
     <macros>
         <import>macros.xml</import>

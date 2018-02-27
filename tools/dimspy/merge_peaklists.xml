@@ -1,4 +1,4 @@
-<tool id="dimspy_merge_peaklists" name="Merge peaklists" version="0.1.0">
+<tool id="dimspy_merge_peaklists" name="Merge peaklists" version="1.0.0">
     <description> produced by the tools 'Process scans (and SIM-Stitch)' or 'Replicate filter'</description>
     <macros>
         <import>macros.xml</import>

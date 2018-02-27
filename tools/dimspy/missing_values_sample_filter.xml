@@ -1,4 +1,4 @@
-<tool id="dimspy_missing_values_sample_filter" name="Missing Values Sample Filter" version="0.1.0">
+<tool id="dimspy_missing_values_sample_filter" name="Missing Values Sample Filter" version="1.0.0">
     <description> - Remove samples with a high percentage of missing values</description>
     <macros>
         <import>macros.xml</import>

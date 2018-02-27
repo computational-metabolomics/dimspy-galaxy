@@ -1,4 +1,4 @@
-<tool id="dimspy_hdf5_to_txt" name="Convert DIMSpy-based HDF5 to tsv" version="0.1.0">
+<tool id="dimspy_hdf5_to_txt" name="Convert DIMSpy-based HDF5 to tsv" version="1.0.0">
     <description></description>
     <macros>
         <import>macros.xml</import>

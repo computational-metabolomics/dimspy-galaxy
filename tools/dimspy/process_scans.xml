@@ -1,4 +1,4 @@
-<tool id="dimspy_process_scans" name="Process Scans (and SIM-Stitch)" version="0.1.0">
+<tool id="dimspy_process_scans" name="Process Scans (and SIM-Stitch)" version="1.0.0">
     <description> - Read, filter and average MS scans</description>
     <macros>
         <import>macros.xml</import>
