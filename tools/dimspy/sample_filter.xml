@@ -51,8 +51,8 @@
             <param name="hdf5_to_txt|representation_samples" value="rows"/>
             <param name="hdf5_to_txt|matrix_attr" value="intensity"/>
             <output name="hdf5_file_out" file="pm_as_bf_sf.h5" ftype="h5" compare="sim_size"/>
-            <output name="matrix_file_out" file="peak_matrix_as_bf_sf.txt" ftype="tsv"/>
-            <output name="matrix_comprehensive_file_out" file="peak_matrix_as_bf_sf_compr.txt" ftype="tsv"/>
+            <output name="matrix_file_out" file="peak_matrix_as_bf_sf.txt" ftype="tsv" compare="sim_size"/>
+            <output name="matrix_comprehensive_file_out" file="peak_matrix_as_bf_sf_compr.txt" ftype="tsv" compare="sim_size"/>
         </test>
         <test>
             <param name="hdf5_file_in" value="pm_as_bf.h5" ftype="h5"/>
@@ -66,8 +66,8 @@
             <param name="hdf5_to_txt|representation_samples" value="columns"/>
             <param name="hdf5_to_txt|matrix_attr" value="mz"/>
             <output name="hdf5_file_out" file="pm_as_bf_sf.h5" ftype="h5" compare="sim_size"/>
-            <output name="matrix_file_out" file="peak_matrix_as_bf_sf_mz.txt" ftype="tsv"/>
-            <output name="matrix_comprehensive_file_out" file="peak_matrix_as_bf_sf_mz_compr.txt" ftype="tsv"/>
+            <output name="matrix_file_out" file="peak_matrix_as_bf_sf_mz.txt" ftype="tsv" compare="sim_size"/>
+            <output name="matrix_comprehensive_file_out" file="peak_matrix_as_bf_sf_mz_compr.txt" ftype="tsv" compare="sim_size"/>
         </test>
     </tests>
     <help>
