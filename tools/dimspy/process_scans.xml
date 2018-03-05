@@ -4,8 +4,8 @@
         <import>macros.xml</import>
     </macros>
     <expand macro="requirements" />
-    <expand macro="stdio" />
-    <command><![CDATA[
+    <command detect_errors="exit_code">
+    <![CDATA[
         #if $input.format == "data_collection"
             #for $fn in $input.source
                 #if str( $fn ).endswith(".dat")
@@ -71,7 +71,8 @@
         --input "$hdf5_file_out"
         --output .
         --delimiter $delimiter
-    ]]></command>
+    ]]>
+    </command>
     <inputs>
         <conditional name="input">
             <param name="format" type="select" label="Choose the source for the dataset" >

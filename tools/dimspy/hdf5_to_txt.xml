@@ -4,8 +4,8 @@
         <import>macros.xml</import>
     </macros>
     <expand macro="requirements" />
-    <expand macro="stdio" />
-    <command><![CDATA[
+    <command detect_errors="exit_code">
+    <![CDATA[
         #if $input.object_type == "peak_lists"
             dimspy hdf5-pls-to-txt
             --input "$input.hdf5_file_in"
@@ -33,7 +33,8 @@
                 --representation-samples $input.representation_samples
             #end if
         #end if
-    ]]></command>
+    ]]>
+    </command>
     <inputs>
         <param name="delimiter" type="hidden" value="tab" argument="--delimiter"/>
         <conditional name="input">

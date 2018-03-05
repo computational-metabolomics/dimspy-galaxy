@@ -4,8 +4,8 @@
         <import>macros.xml</import>
     </macros>
     <expand macro="requirements" />
-    <expand macro="stdio" />
-    <command><![CDATA[
+    <command detect_errors="exit_code">
+    <![CDATA[
         dimspy sample-filter
         --input "$hdf5_file_in"
         --output "$hdf5_file_out"
@@ -25,7 +25,8 @@
             &&
             @HDF5_PM_TO_TXT_COMPREHENSIVE@
         #end if
-    ]]></command>
+    ]]>
+    </command>
     <inputs>
         <param name="hdf5_file_in" type="data" format="h5" label="Peak Intensity Matrix (HDF5 file)" help="" argument="--input"/>
         <param name="within" type="boolean" checked="false" truevalue="--within" falsevalue="" label="Apply sample filter within each sample class."  help="" argument="--within"/>

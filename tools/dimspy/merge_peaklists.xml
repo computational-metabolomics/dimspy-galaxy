@@ -4,8 +4,8 @@
         <import>macros.xml</import>
     </macros>
     <expand macro="requirements" />
-    <expand macro="stdio" />
-    <command><![CDATA[
+    <command detect_errors="exit_code">
+    <![CDATA[
         dimspy merge-peaklists
         #for $fn in $hdf5_files_in
             --input "$fn"
@@ -19,7 +19,8 @@
                 --filelist "$multilist.filelist"
             #end if
 	    #end if
-    ]]></command>
+    ]]>
+    </command>
     <inputs>
         <param name="hdf5_files_in" type="data" multiple="true" format="h5" min="2" label="Peaklist to merge" help="Select a minimum of two hdf5 files" argument="--input" />
         <conditional name="multilist">

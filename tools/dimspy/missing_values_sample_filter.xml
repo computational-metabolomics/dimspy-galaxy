@@ -4,8 +4,8 @@
         <import>macros.xml</import>
     </macros>
     <expand macro="requirements" />
-    <expand macro="stdio" />
-    <command><![CDATA[
+    <command detect_errors="exit_code">
+    <![CDATA[
         dimspy mv-sample-filter
         --input "$hdf5_file_in"
         --output "$hdf5_file_out"
@@ -18,7 +18,8 @@
             &&
             @HDF5_PM_TO_TXT_COMPREHENSIVE@
         #end if
-    ]]></command>
+    ]]>
+    </command>
     <inputs>
         <param name="hdf5_file_in" type="data" format="h5" label="Peak Intensity Matrix (HDF5 file)" help="" argument="--input"/>
         <param name="max_fraction" min="0" max="1.0" type="float" value="0.8" label="Maximum percentage of missing values." help="" argument="--max-fraction"/>

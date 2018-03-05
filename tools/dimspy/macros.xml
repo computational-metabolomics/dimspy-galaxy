@@ -4,11 +4,6 @@
             <requirement type="package" version="1.1.0">dimspy</requirement>
         </requirements>
     </xml>
-    <xml name="stdio">
-        <stdio>
-            <exit_code range="1:" />
-        </stdio>
-    </xml>
     
     <token name="@HDF5_PM_TO_TXT@">
         dimspy hdf5-pm-to-txt
