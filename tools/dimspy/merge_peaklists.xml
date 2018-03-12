@@ -8,15 +8,15 @@
     <![CDATA[
         dimspy merge-peaklists
         #for $fn in $hdf5_files_in
-            --input "$fn"
+            --input '$fn'
         #end for
         #if $multilist.flag == "true"
 	        --output .
-	        --filelist "$multilist.filelist"
+	        --filelist $multilist.filelist'
 	    #else
-	        --output "$hdf5_file_out"
+	        --output '$hdf5_file_out'
             #if $filelist
-                --filelist "$multilist.filelist"
+                --filelist '$multilist.filelist'
             #end if
 	    #end if
     ]]>

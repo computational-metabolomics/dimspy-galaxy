@@ -7,10 +7,10 @@
     <command detect_errors="exit_code">
     <![CDATA[
         dimspy align-samples
-        --input "$hdf5_file_in"
-        --output "$hdf5_file_out"
+        --input '$hdf5_file_in'
+        --output '$hdf5_file_out'
         #if $filelist
-            --filelist "$filelist"
+            --filelist '$filelist'
         #end if
         --ppm $ppm
         #if $hdf5_to_txt.standard

@@ -8,14 +8,14 @@
     <![CDATA[
         #if $input.object_type == "peak_lists"
             dimspy hdf5-pls-to-txt
-            --input "$input.hdf5_file_in"
+            --input '$input.hdf5_file_in'
             --output .
             --delimiter $delimiter
         #elif $input.object_type == "peak_matrix"
             #if $input.matrix_format == "standard" or $input.matrix_format == "standard_comprehensive"
                 dimspy hdf5-pm-to-txt
-                --input "$input.hdf5_file_in"
-                --output "$matrix_file_out"
+                --input '$input.hdf5_file_in'
+                --output '$matrix_file_out'
                 --delimiter $delimiter
                 --attribute_name $input.matrix_attr
                 --representation-samples $input.representation_samples
@@ -25,11 +25,11 @@
             #end if
             #if $input.matrix_format == "comprehensive" or $input.matrix_format == "standard_comprehensive"
                 dimspy hdf5-pm-to-txt
-                --input "$input.hdf5_file_in"
-                --output "$matrix_comprehensive_file_out"
+                --input '$input.hdf5_file_in'
+                --output '$matrix_comprehensive_file_out'
                 --delimiter $delimiter
                 --comprehensive
-                --attribute_name $input.matrix_attr
+                --attribute_name '$input.matrix_attr'
                 --representation-samples $input.representation_samples
             #end if
         #end if

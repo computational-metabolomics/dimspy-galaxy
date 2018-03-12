@@ -7,15 +7,15 @@
     <command detect_errors="exit_code">
     <![CDATA[
         dimspy sample-filter
-        --input "$hdf5_file_in"
-        --output "$hdf5_file_out"
+        --input '$hdf5_file_in'
+        --output '$hdf5_file_out'
         --min-fraction $min_fraction
         ${within}
         #if $rsd_threshold
             --rsd-threshold $rsd_threshold
         #end if
         #if $qc_label
-            --qc-label $qc_label
+            --qc-label '$qc_label'
         #end if
         #if $hdf5_to_txt.standard
             &&

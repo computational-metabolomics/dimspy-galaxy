@@ -7,8 +7,8 @@
     <command detect_errors="exit_code">
     <![CDATA[
         dimspy blank-filter
-        --input "$hdf5_file_in"
-        --output "$hdf5_file_out"
+        --input '$hdf5_file_in'
+        --output '$hdf5_file_out'
         --blank-label $blank_label
         --min-fraction $min_fraction
         --function $function
@@ -17,8 +17,8 @@
             $remove_blank_samples
             &&
             dimspy create-sample-list
-            --input "$hdf5_file_out"
-            --output "$samplelist"
+            --input '$hdf5_file_out'
+            --output '$samplelist'
             --delimiter tab
         #end if
         #if $hdf5_to_txt.standard

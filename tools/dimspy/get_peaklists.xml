@@ -10,20 +10,20 @@
             dimspy get-peaklists
         #elif $input.format == "average"
             dimspy get-average-peaklist
-            --name-peaklist "${input.name_peaklist}"
+            --name-peaklist '${input.name_peaklist}'
         #end if
-        --input "$hdf5_file_in"
-        --output "$hdf5_file_out"
+        --input '$hdf5_file_in'
+        --output '$hdf5_file_out'
         #if $input.to_txt
             &&
             dimspy hdf5-pls-to-txt
-            --input "$hdf5_file_out"
+            --input '$hdf5_file_out'
             --output .
             --delimiter $delimiter
         #end if
         #if $input.format == "average" and $input.to_txt
             &&
-            mv "${input.name_peaklist}.txt" "$tsv_file_out"            
+            mv '${input.name_peaklist}.txt' '$tsv_file_out'
         #end if
 
     ]]>

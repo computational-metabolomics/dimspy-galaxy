@@ -7,8 +7,8 @@
     <command detect_errors="exit_code">
     <![CDATA[
         dimspy mv-sample-filter
-        --input "$hdf5_file_in"
-        --output "$hdf5_file_out"
+        --input '$hdf5_file_in'
+        --output '$hdf5_file_out'
         --max-fraction $max_fraction
         #if $hdf5_to_txt.standard
             &&

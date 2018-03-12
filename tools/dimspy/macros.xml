@@ -7,8 +7,8 @@
     
     <token name="@HDF5_PM_TO_TXT@">
         dimspy hdf5-pm-to-txt
-        --input "$hdf5_file_out"
-        --output "$matrix_file_out"
+        --input '$hdf5_file_out'
+        --output '$matrix_file_out'
         --delimiter $delimiter
         --attribute_name $hdf5_to_txt.matrix_attr
         --representation-samples $hdf5_to_txt.representation_samples
@@ -16,8 +16,8 @@
 
     <token name="@HDF5_PM_TO_TXT_COMPREHENSIVE@">
         dimspy hdf5-pm-to-txt
-        --input "$hdf5_file_out"
-        --output "$matrix_comprehensive_file_out"
+        --input '$hdf5_file_out'
+        --output '$matrix_comprehensive_file_out'
         --delimiter $delimiter
         --comprehensive
         --attribute_name $hdf5_to_txt.matrix_attr

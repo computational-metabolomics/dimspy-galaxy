@@ -7,10 +7,10 @@
     <command detect_errors="exit_code">
     <![CDATA[
         dimspy replicate-filter
-        --input "$hdf5_file_in"
-        --output "$hdf5_file_out"
+        --input '$hdf5_file_in'
+        --output '$hdf5_file_out'
         #if $filelist
-            --filelist "$filelist"
+            --filelist '$filelist'
         #end if
         --ppm $ppm
         --replicates $replicates
@@ -18,15 +18,15 @@
         #if $rsd_threshold
             --rsd-threshold $rsd_threshold
         #end if
-        --report "$report"
+        --report '$report'
         &&
         dimspy create-sample-list
-        --input "$hdf5_file_out"
-        --output "$samplelist"
+        --input '$hdf5_file_out'
+        --output '$samplelist'
         --delimiter tab
         &&
         dimspy hdf5-pls-to-txt
-        --input "$hdf5_file_out"
+        --input '$hdf5_file_out'
         --output .
         --delimiter $delimiter
     ]]>
