@@ -51,7 +51,7 @@
             --skip-stitching
         #end if
         #if float($adv.ringing_threshold) > 0.0
-            --ringing_threshold $adv.ringing_threshold
+            --ringing-threshold $adv.ringing_threshold
         #end if
         #for $mzr in $adv.remove_mz_range
             --remove-mz-range $mzr.start $mzr.end
