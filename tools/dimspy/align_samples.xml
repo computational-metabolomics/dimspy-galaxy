@@ -25,7 +25,7 @@
     </command>
     <inputs>
         <param name="hdf5_file_in" type="data" format="h5" label="Peaklists (HDF5 file)" help="" argument="--input"/>
-        <param name="filelist" type="data" optional="true" format="tsv,tabular" label="Filelist / Samplelist" argument="--filelist"/>
+        <param name="filelist" type="data" optional="true" format="tsv,tabular" label="Filelist / Samplelist" help="Only provide a filelist if you like to exclude Peaklists, update the metadata (e.g. classLabel), or if you have not provided a filelist for  Process Scans or Replicate Filter." argument="--filelist"/>
         <param name="ppm" type="float" value="2.0" label="ppm" help="Maximum tolerated m/z deviation across samples in parts per million (ppm)." argument="--ppm"/>
         <param name="delimiter" type="hidden" value="tab" argument="--delimiter"/>
         <expand macro="hdf5_pm_to_txt" />
@@ -94,7 +94,7 @@ For the default DIMS analysis workflow, this comprises a set of Peaklists output
 | A tabular-formatted .txt file with columns: filename, batch, classLabel, injectionOrder.
 | Additional collumns are allowed but are not used during processing.
 | This file must be uploaded in to (or available from) the current history in order to allow for it to be selected from the drop-down menu.
-| **NOTE:** Only provide a filelist if you like to exclude Peaklist or if you have not provided a filelist for 'Process Scans' or Replicate Filter'.
+| **NOTE:** Only provide a filelist if you like to exclude Peaklist, update the metadata (e.g. classLabel), or if you have not provided a filelist for 'Process Scans' or Replicate Filter'.
 | 
 	
 <![CDATA[
