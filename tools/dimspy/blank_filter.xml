@@ -49,7 +49,7 @@
     </inputs>
     <outputs>
         <expand macro="outputs_peak_intensity_matrix" />
-        <data name="samplelist" format="tsv" label="${tool.name} on ${on_string}: Sample Metadata (updated)"  >
+        <data name="samplelist" format="tsv" label="${tool.name} on ${on_string}: Sample Metadata (updated)" >
             <filter>str($remove_blank_samples) == "--remove-blank-samples"</filter>
         </data>
     </outputs>

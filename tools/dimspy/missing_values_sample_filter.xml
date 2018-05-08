@@ -10,6 +10,11 @@
         --input '$hdf5_file_in'
         --output '$hdf5_file_out'
         --max-fraction $max_fraction
+        &&
+        dimspy create-sample-list
+        --input '$hdf5_file_out'
+        --output '$samplelist'
+        --delimiter tab
         #if $hdf5_to_txt.standard
             &&
             @HDF5_PM_TO_TXT@
@@ -28,12 +33,12 @@
     </inputs>
     <outputs>
         <expand macro="outputs_peak_intensity_matrix" />
+        <data name="samplelist" format="tsv" label="${tool.name} on ${on_string}: Sample Metadata (updated)" />
     </outputs>
     <tests>
         <test>
             <param name="hdf5_file_in" value="pm_as_bf_sf.h5" ftype="h5"/>
             <param name="max_fraction" value="0.8"/>
-            <param name="delimiter" value="tab"/>
             <param name="delimiter" value="tab"/>
             <param name="hdf5_to_txt|standard" value="True"/>
             <param name="hdf5_to_txt|comprehensive" value="False"/>
@@ -41,6 +46,7 @@
             <param name="hdf5_to_txt|matrix_attr" value="intensity"/>
             <output name="hdf5_file_out" file="pm_as_bf_sf_mv.h5" ftype="h5" compare="sim_size"/>
             <output name="matrix_file_out" file="peak_matrix_as_bf_sf_mv.txt" ftype="tsv" compare="sim_size"/>
+            <output name="samplelist" file="sample_list_after_mv_filter.txt" ftype="tsv" compare="sim_size"/>
         </test>
     </tests>
     <help>
