@@ -70,6 +70,21 @@
             <output name="matrix_file_out" file="peak_matrix_as_bf_sf_mz.txt" ftype="tsv" compare="sim_size"/>
             <output name="matrix_comprehensive_file_out" file="peak_matrix_as_bf_sf_mz_compr.txt" ftype="tsv" compare="sim_size"/>
         </test>
+        <test>
+            <param name="hdf5_file_in" value="pm_as_bf.h5" ftype="h5"/>
+            <param name="within" value="--within"/>
+            <param name="min_fraction" value="0.5"/>
+            <param name="rsd_threshold" value=""/>
+            <param name="qc_label" value=""/>
+            <param name="delimiter" value="tab"/>
+            <param name="hdf5_to_txt|standard" value="True"/>
+            <param name="hdf5_to_txt|comprehensive" value="True"/>
+            <param name="hdf5_to_txt|representation_samples" value="rows"/>
+            <param name="hdf5_to_txt|matrix_attr" value="intensity"/>
+            <output name="hdf5_file_out" file="pm_as_bf_sf_within.h5" ftype="h5" compare="sim_size"/>
+            <output name="matrix_file_out" file="peak_matrix_as_bf_sf_within.txt" ftype="tsv" compare="sim_size"/>
+            <output name="matrix_comprehensive_file_out" file="peak_matrix_as_bf_sf_within_compr.txt" ftype="tsv" compare="sim_size"/>
+        </test>
     </tests>
     <help>
 -------------
