@@ -78,24 +78,37 @@
         </test>
     </tests>
     <help>
+		
 ----------------
 Replicate filter
 ----------------
 
 | 
 
+--------------------
+
 Description
 -----------
 
-| This tools is typically applied following the 'process_scans' tool.
-| Under the DIMS analysis workflow, biological samples are often analysed as a set of technical replicates. This tool is used to combine the Peaklists for each of these technical replicates, in to a single Peaklist.
-| 
-| In combining technical replicate Peaklists, peaks are clustered together where the difference in their m/z values (measured in parts-per-million, 'ppm'), is less-than or equal to the user-defined threshold.
-| 
-| Peaks are removed from final Peaklist if:
+|
 
-1) they occur in fewer than the user-defined 'Number of technical replicates a peak has to be present in' and/or
-2) the relative standard deviation (measured in % and also termed the coefficient of variation) among intensity values for a peak is greater than the user-defined value.
+* This tool is typically applied following the 'Process scans (and SIM stitch)' tool.
+
+* Under the DIMS analysis workflow, biological samples are often analysed as a set of technical replicates, i.e. independent analyses of the same study sample using the same analytical instrument and method files. This tool combines the peaklists output from the Process scans (and SIM stitch) tool, for each of these replicate analyses, in to a single replicate-filtered peaklist for each study sample.
+
+* When combining technical replicate peaklists, peaks with identical or similar mass-to-charge ratios are aligned with one another. In order for a peak in one technical replicate to be aligned with a peak in a separate technical replicate, the difference in their mass-to-charge ratios, when divided by the average of their mass-to-charge ratios and multiplied by 1 × 106 (i.e. when measured in units of parts-per-million, ppm), must be less-than or equal-to the user-defined ‘ppm error tolerance’. 
+
+* The primary output from this tool is a replicate-filtered peaklist per input study sample. In each, rows correspond to replicate-filtered mass spectral peaks, while columns provide a range of metrics for each of the detected peaks (see outputs section, below).
+
+	* **Note**: the final replicate-filtered peaklist contains only those peaks that:
+	
+		occur in equal-to or more-than the user-defined 'Number of technical replicates a peak has to be present in', i.e. if set to 2, then a peak must be detected in at least two of the replicate analyses, and/or
+
+		have relative standard deviations (measured in %; may otherwise be referred to as the percent coefficient of variation) of intensity values, across technical replicates, that is equal-to or less-than the user-defined ‘relative standard deviation threshold’. 
+
+	* **Note**: if a specific scan event has been replicated within a given file, then users should not use this tool for filtering and aligning peaks. In this case, users should instead FIRST use the Process Scans (and SIM stitch) tool - see the documentation for the Process Scans tool for a description of how to perform this.
+
+------------------
 
 Parameters
 ----------
