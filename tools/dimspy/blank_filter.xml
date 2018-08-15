@@ -92,60 +92,95 @@
 Blank Filter
 ------------
 
+..
+
+------------------------------
+
 Description
 -----------
 
-| Use this tool to remove from the user-specified peak matrix, those peaks that are present in the user-specified 'blank' class.
-| A peak is subtracted from the matrix when fewer-than the 'minimum fraction' of non-blank samples have an intensity ratio (relative to the blank class) of less-than the user-specified 'min_fold_change'.
-| 
-| In the DIMS analysis workflow, this tool is typically applied following: 
-| 'Process Scans' -> 'Replicate Filter' -> 'Align Samples'.
-| 
-| The reference class defined by the user need not necessarily be a blank class and as such may be any class against which all other classes in the peak matrix are to be compared. 
-| For example, peaks present in a mock class 'time-point-20hr' might be subtracted from classes 'time-point-0hr' and 'time-point-4hr' if the number of samples in the 'time-point-4hr' and 'time-point-0hr' classes that have intensity ratios relative to the 'time-point-20hr' class, is fewer than the user-defined minimum fraction)
+|
+
+Standard DIMS processing workflow: Process Scans -> Replicate Filter -> Align Samples -> **Blank Filter** -> Sample Filter -> Matrix processing and statistics
+
+|
+
+This tool is typically used to subtract peaks from the input peak intensity matrix that are believed to originate from non-biological sources e.g. leachables/extractables from pipette tips, plates, tubes and other consumables, as well as electrical noise peaks and peaks originating from solvents, infusion instrumentation etc. 
+
+In a routine DIMS analytical workflow, a set of extraction blank samples are prepared and analysed alongside other study samples. These “reference” samples are equivalent to the other study samples, with the exception that they do not contain the biological material to be analysed in the study. Peaks detected in these samples are therefore likely to be of non-biological origin. These peaks are removed from the peak intensity matrix if fewer-than the user-defined 'minimum fraction' of non-reference study samples have an intensity ratio (relative to the blank class) greater-than the user-specified 'min_fold_change'; e.g. a minimum fraction of 0.5 and min_fold_change of 10 requires that, for any given peak, at least 50% of the non-reference study samples have an intensity value at least 10 times greater than average intensity value calculated from “reference” samples.
+
+|
+
+**Note** - while extraction blank samples are typically used to filter peaks from the peak intensity matrix, this tool can in principle be used to filter peaks originating from any class defined in the Process Scans or Replicate Filter metadata file. The class used for filtering the peak intensity matrix is defined using the **Label for the blank samples** parameter.
+
+-------------------------------
 
 Parameters
 ----------
 
-**\1. Peak Intensity Matrix (HDF5 file)** (REQUIRED)
+|
 
-A Peak Intensity Matrix (.h5), typically returned from the 'Align Samples' tool.
+	**Peak Intensity Matrix (HDF5 file)** (REQUIRED) - a peak intensity matrix (in .hdf5 format), typically returned from the 'Align Samples' tool.
+
+	|
+
+	**Label for the blank samples** (REQUIRED) - a string indicating the name of the class to be used for filtering (e.g. blank), i.e. the “reference” class. This string must have been included in the “classLabel” column of the metadata file associated with the Process Scans or Replicate Filter tool(s).
+
+	|
+
+	**Minimum fraction (percentage)** (REQUIRED; default = 1) - a numeric value ranging from 0 to 1. Setting this value to 0 will skip this filtering step. A value greater than 0 requires that for each peak in the peak intensity matrix, at least this proportion of non-reference samples have to have an intensity value that exceeds the product of: (A) the average intensity of “reference” class intensities and (B)  the user-defined “min_fold_change”. If this condition is not met, the peak is removed from the peak intensity matrix.
+
+	|
+
+	 **Function** (REQUIRED; default = **mean**) - toggle, where selection of:
+
+		**mean** - corresponds to using the non-weighted average of “reference” sample peak intensities (NA values are ignored) in calculating the “reference” to “non-reference” peak intensity ratio.
+
+		**median** - corresponds to using the median of “reference” sample peak intensities (NA values are ignored) in calculating the “reference” to “non-reference” peak intensity ratio.
+
+		**max** corresponds to the use of the maximum intensity among “reference” sample peak intensities (NA values are ignored) in calculating the “reference” to “non-reference” peak intensity ratio.
+
+	|
 	
-**\2. Label for the blank samples** (REQUIRED)
+	**min_fold_change** (REQUIRED; default = 10) - numeric value from 0 upwards. When minimum fraction filtering is enabled, this value defines the minimum required ratio between the intensity of a peak in a “non-reference” sample and the average intensity of the “reference” sample(s). Peaks with ratios exceeding this threshold are considered to have been reliably detected in a “non-reference” sample.
 
-String indicating the name assigned to 'blank' samples in the Filelist (e.g. blank)
-	
-**\3. Minimum fraction (percentage)** (REQUIRED; default = 1)
+	|
 
-| Numerical value ranging from 0 to 1
-| Set to 0 to skip this filtering step.
+	**Remove blank samples (rows)** (REQUIRED; default = **Yes**) - toggle:
 
-**\4. ppm** (REQUIRED; default = 2.0)
+		**Yes** - samples belonging to the user-defined “reference” class are removed from the output peak matrix
 
-| A numeric value from 0 upwards.
-| Peaks with m/z differences (measured in parts-per-million) below this value are clustered together as a single feature. For clustered peaks, their intensity ratio is compared to the user-specified 'mean/median/max' intensity of any correspondingly clustered peaks from the user-specified 'blank' class.
+		**No** - samples belonging to the user-defined “reference” class are retained in the output peak matrix.
 
-**\5. Function** (REQUIRED; default = 'mean')
+	|	
 
-Toggle, where selection of:
-	
-- 'mean' corresponds to the use of the non-weighted average of 'blank' sample peak intensities (NA values are ignored) when calculating the 'blank' to 'non-blank' peak intensity ratio.
-- 'median' corresponds to the use of the median of the 'blank' sample peak intensities (NA values are ignored) when calculating the 'blank' to 'non-blank' peak intensity ratio.
-- 'max' corresponds to the use of the maximum intensity among 'blank' sample peak intensities (NA values are ignored) when calculating the 'blank' to 'non-blank' peak intensity ratio.
-
-**\6. min_fold_change** (REQUIRED; default = 10)
-
-Numeric value from 0 upwards. This value defines the ratio between 'non-blank' and 'blank' peak intensities, above which a peak is regarded as having been reliably detected in a sample.
-
-
-**\7. Remove blank samples (rows)** (REQUIRED; default = 'YES')
-
-Toggle, where selection of:
-  
-- 'Yes' removes samples from the output peak matrix that belong to the user-specified 'blank' class.
-- 'No' retains samples from the user-specified 'blank' class in the output peak matrix.
 
 @help_options_addtional_output@
+
+----------------------------
+
+Output file(s)
+--------------
+
+**IMPORTANT** - in all outputs except for the (optional) comprehensive output, if fewer-than the user-defined “Minimum fraction” of “non-reference” samples had an intensity value that, when divided by the average “reference” class peak intensity value, were less than the user-defined “min_fold_change” parameter, then that peak will be removed from the output peak matrix.
+
+	**Default output** - a HDF5 file containing the sample-filtered peak intensity matrix is exported to the active Galaxy history.
+
+	**Optional outputs** - the metric recorded in the optional output peak matrix/matrices is defined using the parameter "The peak matrix should contain intensity | m/z | SNR values".
+
+		**Standard output** - exports a blank-filtered peak matrix to the active Galaxy history as a tab-delimited text file (“.” as decimal and NA for missing values). By default, study samples are listed row-wise, while mass-to-charge ratios of the aligned mass spectral peaks are presented in columns (to adjust, users must adjust the "Should rows or columns represent samples" toggle to “columns”). 
+
+		**Comprehensive output** - exports a blank-filtered peak matrix, as described for the "standard output" (above). All peaks included in the input peak matrix are retained in this output. The following additional columns are included:
+
+
+		@comprehensive_explanation@
+
+			**blank_flag** - a boolean value where 0 = reject peak, 1 = accept peak. A peak is accepted during sample filtering if a user-defined minimum proportion of study samples had recorded intensity values for that peak.
+
+
+
+
+-----------------------------
 
 @github_developers_contributors@  
     

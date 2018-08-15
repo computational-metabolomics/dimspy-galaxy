@@ -60,69 +60,89 @@
 Merge Peaklists
 ---------------
 
+..
+
+-----------------------------------
+
 Description
 -----------
 
-| Merge (lists of) Peaklists into a single list of Peaklists.
-| If a user has multiple of these lists, they can be merged with this tool and then saved as HDF5 file. 
+This tool allows users to extract and export specific peaklists from one or more .hdf5, to one or more .hdf5 files. If more-than one .hdf5 file is exported, users can control which subset of peaklists are exported to which .hdf5 file.
+
+
+-----------------------------------
+
+Parameters
+----------
+
+|
+
+**Peaklist to merge** (REQUIRED; minimally requires two .hdf5 files) - selection menu from which the user must select two or more .hdf5 files from the active Galaxy history.
+
+	**NOTE**: if a .hdf5 file containing a peak intensity matrix is selected, then the peaklists used in generating that matrix are extracted from the file e.g. [pl1, pl2, pl3] + [pm456] = [pl1, pl2, pl3] + [pl4, pl5, pl6] = [pl1, pl2, pl3, pl4, pl5, pl6] .
+
+|
+
+**Create multiple merged peaklists** (REQUIRED; default = “No”) - binary toggle:
+
+	**No** - all extracted peaklists are exported to a single .hdf5 file in the active Galaxy history. Metadata associated with each peaklist is also captured in this file.
+
+	**Yes** - multiple .hdf5 files are exported to the active Galaxy history, each of which containing a user-defined subset of the extracted peaklist(s) in accordance with the “multilist” column of the input “Filelist”, e.g. using the mock filelist shown below, two .hdf5 files would be exported to history:
+
+	* The first .hdf5 file would contain peaklists from [sample_rep1.raw, sample_rep2.raw, blank1_rep1.raw and blank1_rep2.raw], i.e. all filenames associated with multilist value '1'
+
+	* The second .hdf5 file would contain peaklists from [blank_rep1.raw, blank_rep2.raw, blank_rep3.raw and blank_rep4.raw], i.e. all filenames associated with multilist value '2'
+	
+	|
+	
+	
+	**NOTE** - if for each analysed study sample a corresponding blank sample has been analysed, then the multilist column can be used to pair these together in an output .hdf5 file. This enables sample-specific blank filtering at a later stage.
+
+
+|
+
+**Filelist / Samplelist** (OPTIONAL) - a selection menu from which one or more filelists can be selected.
+
+	**Mock example of a filelist** - the optional multilist column determines which peaklists are exported together in .hdf5 format. 
+	
+	|
+	
+	+-----------------+------------+-----------+-------+----------------+-----------+-------+
+	| filename        | classLabel | replicate | batch | injectionOrder | multilist | [...] |
+	+-----------------+------------+-----------+-------+----------------+-----------+-------+
+	| sample_rep1.raw | sample     | 1         | 1     | 1              | 1         | [...] |
+	+-----------------+------------+-----------+-------+----------------+-----------+-------+
+	| sample_rep2.raw | sample     | 2         | 1     | 2              | 1         | [...] |
+	+-----------------+------------+-----------+-------+----------------+-----------+-------+
+	| sample_rep3.raw | sample     | 3         | 1     | 3              | 1         | [...] |
+	+-----------------+------------+-----------+-------+----------------+-----------+-------+
+	| sample_rep4.raw | sample     | 4         | 1     | 4              | 1         | [...] |
+	+-----------------+------------+-----------+-------+----------------+-----------+-------+
+	| blank_rep1.raw  | blank      | 1         | 1     | 5              | 2         | [...] |
+	+-----------------+------------+-----------+-------+----------------+-----------+-------+
+	| blank_rep2.raw  | blank      | 2         | 1     | 6              | 2         | [...] |
+	+-----------------+------------+-----------+-------+----------------+-----------+-------+
+	| blank_rep3.raw  | blank      | 3         | 1     | 7              | 2         | [...] |
+	+-----------------+------------+-----------+-------+----------------+-----------+-------+
+	| blank_rep4.raw  | blank      | 4         | 1     | 8              | 2         | [...] |
+	+-----------------+------------+-----------+-------+----------------+-----------+-------+
+	| ...             | ...        | ...       | ...   | ...            | ...       | [...] |
+	+-----------------+------------+-----------+-------+----------------+-----------+-------+
+
 | 
-| For example:
-| 
-| [ pl1, pl2, pl3 ] + [ pl4, pl5, pl6 ] = [ pl1, pl2, pl3, pl4, pl5, pl6 ]
-| 
-| Additionally a filelist can be included to provide meta information regarding each file. 
-| 
 
-@example_filelist@
-
-
-**Peakmatrix**
-
-If a Peak Intensity Matrix is merged the individual Peaklists from within the peakmatrix object will be extracted and then merged.
-
-For example:
-
-[ pl1, pl2, pl3 ] + [ pm ] = [ pl1, pl2, pl3 ] + [ pl4, pl5, pl6 ] = [ pl1, pl2, pl3, pl4, pl5, pl6 ]
-
-
-**Multilist**
-If a column named ('multilist') is added in the Filelist then multiple lists of Peaklists can be generated. Each list of Peaklists will generate its own hdf5 file
-
-For Example
-
-[ pl1, pl2, pl3, pl4 ] derived from [ 1.mzML, 2.mzML, 3.mzML, 4.mzML ]
-
-Using Filelist:
-
-<![CDATA[
-
-        +-----------+----------+------------+------------+
-        | filename  | batch    | classLabel | multilist  |   
-        +-----------+----------+------------+------------+
-        | 1.mzML    | 1        | blank      | 1          |
-        +-----------+----------+------------+------------+
-        | 2.mzML    | 1        | QC         | 2          |
-        +-----------+----------+------------+------------+
-        | 3.mzML    | 1        | sample     | 1          |
-        +-----------+----------+-------------------------+
-        | 4.mzML    | 2        | blank      | 2          |
-        +-----------+----------+------------+------------+
-
-]]>
-
-
-Will create two Peaklist hdf5 files:
-
-[ pl1, pl3 ] and [ pl2, pl4 ]
-
-NOTE: it is currently not possible to use the 'Write Peaklists to tsv files (data collection)?' option when performing a multilist merge
-
-| 
+-----------------------------------
 
 Output file(s)
 --------------
 
-Single or Multiple HDF5 file(s) containing a list of Peaklists
+|
+
+One or more .hdf5 file(s), each containing one or more peaklists.
+
+|
+
+-----------------------------------
 
 @github_developers_contributors@
  
