@@ -117,57 +117,88 @@
 Convert DIMSpy-based HDF5 to tsv
 --------------------------------
 
+..
+
+----------------------------------
+
 Description
 -----------
 
-| Use this tool to convert Peak Intensity Matrix or Peaklist(s) to user-friendly .tsv file(s).
+|
+
+This tool is used to convert a .hdf5 file, containing either peaklist(s) or a peak intensity matrix, to user-friendly .tsv file(s).
+
+|
+
+----------------------------------
 
 Parameters
 ----------
 
-**\1. Select the content of the specified hdf5 file** (default = 'Peak Intensity Matrix')
+|
 
-**\2. Peak Intensity Matrix or Peak Lists (HDF5 file)** (REQUIRED)
+	**Contents of hdf5 file** (REQUIRED; default = **peak intensity matrix**) - selection menu in which the user defines whether the input .hdf5 file contains:
+	
+		**a peak intensity matrix**
+		
+		**peaklist(s)**
+		
+	|
 
-Selection menu in which user can select the Peak Intensity Matrix or Peaklists requiring conversion to .tsv format.
+	**Peak intensity matrix or peaklists (HDF5 file)** (REQUIRED) - selection menu in which the user chooses the .hdf5 file (from the active Galaxy history) to be converted to .tsv formatted output(s). 
 
-**\3. output type** (default = &quot;Standard&quot; - Peak Intensity Matrix specific)
+	|
 
- - **Comprehensive output** - a Peak Intensity Matrix containing the m/z, intensity, missing values and other metrics associated with the aligned peaks. 
- - **Standard ouptut** - a .txt formatted Peak Intensity Matrix (i.e. m/z and intensity).    
- - **Standard and Comprehensive**
+	**Select format(s) tsv formatted peak intensity matrix** (REQUIRED; default = **Standard Peak Matrix**) - selection menu in which the user chooses from the following export options:
+		 
+		**Standard peak matrix** - a peak intensity matrix with samples as rows, peak mass-to-charge ratios of peaks as columns, and the recorded peak intensity values (if any) given at the intersections.
 
+		**Comprehensive peak matrix** (e.g. m/z and intensity, rsd, missing valies) - as per standard peak matrix, but with the following additional columns:
 
-**\4) Should rows or columns represent the samples?** (default = &quot;rows&quot;  - Peak Intensity Matrix specific)
+			**m/z** - a numeric value indicating the recorded mass-to-charge ratio of a given peak in the given sample
+			
+			**rsd** - a numeric value indicating the percent relative standard deviation (otherwise termed the percent coefficient of variation) of a given peak across technical replicates of the given study sample
+			
+			**missing values** - a numeric value indicating the number of peaks for which no intensity value was recorded in the given sample.
 
-Binary toggle (default = &quot;rows&quot;) where selection of:
+		**Standard and Comprehensive** - both the standard peak matrix and comprehensive peak matrix (described above) are exported to the active Galaxy history.
 
- - &quot;rows&quot; puts sample information in to the rows and m/z values (for aligned mass spectral peaks) in to columns of any output Peak Matrix.           
- - &quot;columns&quot; puts sample information in the columns and m/z values (for aligned mass spectral peaks) in to the rows of any output Peak Matrix.
+	|
 
-**\5) **The Peak Intensity Matrix should contain ... values** (Peak Intensity Matrix specific)
+	**Should rows or columns represent the samples?** (REQUIRED; default = **rows**) - binary toggle where selection of:
+	
+		**rows** - puts sample information in to the rows and m/z values (for aligned mass spectral peaks) in to columns of any output peak matrix.
+		
+		**columns** - puts sample information in the columns and m/z values (for aligned mass spectral peaks) in to the rows of any output peak matrix.
 
-Use this option to define which metric is inserted in to the cells of the output Peak Matrix.
+	|
 
- - &quot;Intensity&quot; writes the absolute peak intensity to the Peak Matrix.
- - &quot;m/z&quot; writes the m/z value to the Peak Matrix.
- - &quot;Signal-to-noise ratio (SNR)&quot; writes the signal-to-noise ratio to the Peak Matrix.
+	**The peak matrix should contain intensity | m/z | SNR values** (REQUIRED) - this option defines which of the following peak metrics is recorded in the exported peak matrix:
+
+		**Intensity** - write the absolute peak intensity to the output peak matrix
+		
+		**m/z** - write the mass-to-charge ratio to the output peak matrix
+		
+		**signal-to-noise ratio (SNR)** - write the signal-to-noise ratio to the output peak matrix
+
+|
+
+----------------------------------
 
 Output file(s)
 --------------
 
-A (standard and/or comprehenstive) peak matrix comprising samples on one axis and m/z values on the perpendicular axis
-   
-- Tab-delimited text file containing a numeric data matrix, with . as decimal, and NA for missing values.
-- File only created if user toggles &quot;Standard output&quot; and/or &quot;Comprehensive output&quot; to &quot;Yes&quot;
-- By default, samples are in rows and peaks are in columns. Altering the &quot;Should rows or columns represent samples&quot; toggle will transpose this matrix.
+|
 
-| **OPTIONAL**
-| A Data Collection containing Peaklists, in .tsv format
-| 
+**Important** - the metric recorded output peak matrix/matrices is adjusted using the "The peak matrix should contain intensity | m/z | SNR values" parameter. By default, samples are presented row-wise and peak mass-to-charge ratio values are presented column-wise in each peak matrix, though this may be adjusted using the "Should rows or columns represent samples" parameter toggle. 
 
-- Tab-delimited text file containing a numeric data matrix, with . as decimal, and NA for missing values.
-- Includes additional information, such as the signal-to-noise ratio, relative-standard deviation (rsd) and 'purity' for each peak.
+	**Standard output** - a peak matrix, in tab-delimited .tsv format with ".” as decimal and NA for missing values.
+	
+	**Comprehensive output** - the standard output (described above) is expanded to include the measured m/z of each peak in each sample, the rsd of each peak across all samples and the total number of missing values in each study sample.
+
+|
+
+----------------------------------------------
 
 @github_developers_contributors@
     

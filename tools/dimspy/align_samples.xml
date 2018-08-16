@@ -73,51 +73,126 @@
 -------------
 Align Samples
 -------------
+	
+..	
+	
+-------------------------------
 
 Description
 -----------
 
-| Use this tool to align Peaklists according to their constituent mass spectral peaks. 
-| In the DIMS analysis workflow, align samples typically follows 'Replicate Filter'.
-| This tool may, however, be used to align any Peaklists (e.g. aligning individual Peaklists for each replicate of a sample).
+|
+
+
+The “Align Samples” tool is usually applied after the “Replicate filter” tool. 
+
+This tool takes the peaklists for all study samples and merges them in to single aligned peaklist. The merged peaklist comprises a table, with samples along one axis and the mass-to-charge ratios of detected mass spectral peaks along the opposite axis. At the intersection of sample and mass-to-charge ratio, the intensity is given for a specific peak in a specific sample (if no intensity recorded, then ‘nan’ is inserted). 
+
+
+-------------------------------
 
 Parameters
 ----------
 
-**\1. Set of Peaklists (HDF5 file)** (REQUIRED)
-
-For the default DIMS analysis workflow, this comprises a set of Peaklists output from the sequential application of the  'process_scans' tools, followed by the 'replicate_filter' tool.
-
-	
-**\2. Filelist / Samplelist** (OPTIONAL)
-   
-| A tabular-formatted .txt file with columns: filename, batch, classLabel, injectionOrder.
-| Additional collumns are allowed but are not used during processing.
-| This file must be uploaded in to (or available from) the current history in order to allow for it to be selected from the drop-down menu.
-| **NOTE:** Only provide a filelist if you like to exclude Peaklist, update the metadata (e.g. classLabel), or if you have not provided a filelist for 'Process Scans' or Replicate Filter'.
-| 
-	
-<![CDATA[
-	
-		+-------------------------------+-------+------------+----------------+
-		| filename                      | batch | classLabel | injectionOrder |
-		+-------------------------------+-------+------------+----------------+
-		| sample_rep1_rep3_rep4         | 1     | sample     | 1              |
-		+-------------------------------+-------+------------+----------------+
-		| blank_rep1_rep2_rep3          | 1     | sample     | 2              |
-		+-------------------------------+-------+------------+----------------+
-		| ...                           | ...   | ...        | ...            |
-		+-------------------------------+-------+------------+----------------+
-
-]]>
-
-**\3. ppm** (REQUIRED; default = 2.0)
-   
-| A numeric value from 0 upwards.
-| Peaks with m/z differences (measured in parts-per-million) below this value are clustered together as a single feature. 
 |
 
-@help_options_addtional_output@
+Standard DIMS processing workflow: Process Scans -> Replicate Filter -> **Align Samples** -> Blank Filter -> Sample Filter -> Matrix processing and statistics
+
+|
+
+	**Peaklists (HDF5 file)** (REQUIRED) - a HDF5 file containing all peaklists to undergo alignment.
+
+	|
+
+	**Filelist / Samplelist** (REQUIRED) - a file of type ‘tabular’ with the following required columns (additional metadata columns may also be included, e.g. “collectionTime”, “patientID”, etc.):
+
+		**filename** - the name of the .raw or .mzML files from which peaklists were extracted using the “Process Scans” tool
+		
+		**batch** - a numeric value indicating the analysis batches samples were analysed in (if a single large analytica run then the default = 1)
+
+		**classLabel** = a string indicating the experiment classes the samples belong to (e.g. control, QC, blank/placebo, exposed/treatment)
+
+		**injectionOrder** - a numeric value indicating the order in which samples were analysed.
+
+	|
+
+	**ppm error tolerance** (REQUIRED; default = 2.0) - a numeric value equal-to or greater-than 0. 
+
+		This parameter will influence the alignment of peaks from input peaklists. Peaks from distinct peaklists (corresponding to individual study samples) are aligned if the difference between their mass-to-charge ratios, when divided by the average of their mass-to-charge ratios and multiplied by 1 × 10\ :sup:`6` \, is equal-to or less-than than this parameter value (i.e. the difference between the mass-to-charge ratios, measured on the ppm scale, is less than the user-defined “ppm error tolerance”). 
+
+	|
+
+	**Show options for additional output**:
+		
+		**Standard output** (default = **No**) - by setting this option to “Yes”, the aligned peak matrix will be exported to the active Galaxy history in .txt format. 
+
+		**Comprehensive output?** (default = **No**) - by setting this option to “Yes”, an aligned peak matrix will be exported to the active Galaxy history, in .txt format, that includes additional metrics to those included in to the standard output (as described above)
+
+		**Should the rows or columns represent the samples?** (default = **rows**) - use this option to adjust whether study samples are presented row-wise or column-wise in the output peak matrix. 
+
+		**The peak matrix should contain intensity | m/z | SNR values** - use this option to define which peak metric is inserted in to the cells of the output peak matrix:
+
+			**Intensity** - writes the absolute peak intensity to the peak matrix
+
+			**m/z** - writes the mass-to-charge ratio to the peak matrix
+
+			**signal-to-noise ratio (SNR)** - writes the signal-to-noise ratio to the peak matrix
+
+------------------------------
+
+Output file(s)
+--------------
+
+|
+
+1) **A HDF5 file** containing the aligned peak intensity matrix. 
+
+|
+
+2) **Optional outputs**: if a user had selected to create a “Standard output” and/or a “Comprehensive output” under the “Show options for additional output” sub-menu, then:
+
+	**Standard output** - exports an aligned peak matrix to the active Galaxy history as a tab-delimited text file (“.” as decimal and NA for missing values). By default, study samples are listed row-wise, while mass-to-charge ratios of the aligned mass spectral peaks are presented in columns (to adjust, users must adjust the "Should rows or columns represent samples" toggle to “columns”). The intersection of each study sample and mass spectral peak entry in the table corresponds to the recorded intensity for that mass spectral peak, in that specific sample, unless the user has selected an alternative metrix using the parameter "**The peak matrix should contain intensity | m/z | SNR values**". 
+
+	**Comprehensive output** - exports an aligned peak matrix, as described for the "standard output" (above), with the following additional columns included:
+
+		@comprehensive_explanation@		
+
+		+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
+		| mz          | missing values | tags_batch | tags_replicates | tags_replicate | tags_injectionOrder | tags_classLabel | tags_untyped | 96.04216 | 99.08062 | 100.0759 | 100.8672 |
+		+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
+		| present*    |                |            |                 |                |                     |                 |              | 1        | 4        | 3        | 1        |
+		+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
+		| occurrence* |                |            |                 |                |                     |                 |              | 1        | 4        | 4        | 1        |
+		+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
+		| purity*     |                |            |                 |                |                     |                 |              | 1        | 1        | 1        | 1        |
+		+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
+		| rsd_all*    |                |            |                 |                |                     |                 |              | nan      | nan      | 10.98    | nan      |
+		+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
+		| flags*      |                |            |                 |                |                     |                 |              | 1        | 1        | 1        | 1        |
+		+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
+		| QC_1        | 2901           | 1          | 2_3_4           | 2              | 2                   | QC              |              | 0        | 0        | 0        | 0        |
+		+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
+		| Blank_1     | 2948           | 1          | 1_2_4           | 1              | 5                   | Blank           |              | 3342.626 | 0        | 0        | 0        |
+		+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
+		| Control_10  | 2921           | 1          | 2_3_4           | 2              | 10                  | Control         |              | 0        | 0        | 45432.2  | 0        |
+		+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
+		| Sample_2    | 2819           | 1          | 1_2_4           | 1              | 13                  | Exposed         |              | 0        | 3423.3   | 0        | 0        |
+		+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
+		| Control_5   | 2877           | 1          | 2_3_4           | 2              | 18                  | Control         |              | 0        | 0        | 49759    | 0        |
+		+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
+		| Control_10  | 2856           | 1          | 1_2_3           | 1              | 21                  | Control         |              | 0        |          | 39890.5  | 0        |
+		+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
+		| Sample_20   | 2855           | 1          | 1_2_4           | 1              | 25                  | Exposed         |              | 0        | 14563.7  | 0        | 0        |
+		+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
+		| Sample_2    | 2814           | 1          | 1_2_4           | 1              | 29                  | Exposed         |              | 0        | 34676.4  | 0        | 0        |
+		+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
+		| Sample_14   | 2870           | 1          | 1_2_3           | 1              | 33                  | Exposed         |              | 0        | 13134.9  | 0        | 521.4    |
+		+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
+		| ...         | ...            | ...        | ...             | ...            | ...                 | ...             | ...          | ...      | ...      | ...      | ...      |
+		+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
+
+|
+
 
 @github_developers_contributors@
 

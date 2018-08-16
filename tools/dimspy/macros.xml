@@ -87,93 +87,60 @@
      ]]></token>
 
 
-	<token name="@example_comprehensive_peaklist@">
-	  <![CDATA[
 
-	+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-	| mz        | intensity | snr  | present | fraction | rsd   | occurrence | purity | snr_flag | fraction_flag | flags |
-	+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-	| 90.44000  | 4744.0    | 3.06 | 1       | 0.063    | nan   | 1          | 1      | 1        | 0             | 0     |
-	+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-	| 97.07380  | 5423.6    | 3.52 | 1       | 0.063    | nan   | 1          | 1      | 1        | 0             | 0     |
-	+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-	| 99.04180  | 4105.8    | 3.60 | 1       | 0.063    | nan   | 1          | 1      | 1        | 0             | 0     |
-	+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-	| 99.49800  | 4775.7    | 3.05 | 1       | 0.063    | nan   | 1          | 1      | 1        | 0             | 0     |
-	+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-	| 99.95020  | 5657.8    | 3.63 | 1       | 0.063    | nan   | 1          | 1      | 1        | 0             | 0     |
-	+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-	| 100.40660 | 5489.5    | 3.57 | 3       | 0.188    | 14.51 | 3          | 1      | 1        | 0             | 0     |
-	+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-	| 100.8672  | 4841.18   | 3.27 | 7       | 0.4375   | 16.36 | 7          | 1      | 1        | 0             | 0     |
-	+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-	| 101.0027  | 9047.79   | 5.99 | 16      | 1        | 21.53 | 19         | 0.8125 | 1        | 1             | 1     |
-	+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-	| 101.0033  | 271893.9  | 182  | 16      | 1        | 4.17  | 16         | 1      | 1        | 1             | 1     |
-	+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-	| 101.0038  | 8738.03   | 5.9  | 14      | 0.875    | 9.71  | 14         | 1      | 1        | 1             | 1     |
-	+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-	| 101.004   | 5166.67   | 3.5  | 5       | 0.3125   | 18.02 | 6          | 0.8    | 1        | 0             | 0     |
-	+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-	| 101.0599  | 5894.69   | 3.88 | 2       | 0.125    | 15.06 | 2          | 1      | 1        | 0             | 0     |
-	+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-	| 101.2728  | 6846.28   | 4.44 | 1       | 0.0625   | nan   | 1          | 1      | 1        | 0             | 0     |
-	+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-
-	  ]]>
-	    </token>
-
-
-
+	 
 
     <token name="@help_options_addtional_output@">
-| 
-| **Show options for additonal output(s)** (OPTIONAL)
-| 
 
-**\A. Standard output** (default = &quot;No&quot;)
 
-Boolean toggle where selection of: 
+	**Show options for additional output(s)** (OPTIONAL):
 
-- &quot;Yes&quot; will generate a .txt formatted Peak Matrix (i.e. m/z and intensity).	
-- &quot;No&quot; will prevent the creation of a .txt formatted Peak Matrix.
+			**Standard output** (default = **No**) - boolean toggle where selection of:
 
-**\B. Comprehensive output** (default = &quot;No&quot;)
+				**No** - prevent the export of a .txt formatted peak matrix to the active Galaxy history.
 
-Boolean toggle where selection of:
+				**Yes** - export a .txt formatted peak matrix to the active Galaxy history that includes only those peaks from the input peak intensity matrix that passed the filtering procedure.
 
-- &quot;Yes&quot; generates a Peak Matrix containing the m/z, intensity, missing values and other metrics associated with the aligned peaks.
-- &quot;No&quot; will prevent the creation of a .txt formatted comprehensive Peak Matrix..
+			**Comprehensive output** (default = "No") - boolean toggle where selection of:
 
-**\C. Should rows or columns represent the samples?** (default = &quot;rows&quot;)
+				**No** - prevents export of a .txt formatted comprehensive peak matrix.
 
-Binary toggle (default = &quot;rows&quot;) where selection of:
+				**Yes** - exports a .txt formatted comprehensive peak matrix to the active Galaxy history that contains the m/z, missing values and other metrics associated with all peaks included in the input peak intensity matrix, including the metric defined by the "The peak matrix should contain intensity | m/z | SNR values" parameter.
 
-- &quot;rows&quot; puts sample information in to the rows and m/z values (for aligned mass spectral peaks) in to columns of any output Peak Matrix.			
-- &quot;columns&quot; puts sample information in the columns and m/z values (for aligned mass spectral peaks) in to the rows of any output Peak Matrix.
+			**Should rows or columns represent the samples?** (default = **rows**) - binary toggle where selection of:
 
-**\D. The Peak Matrix should contain ... values**
+				**rows** - sample information is presented in the rows and m/z values (for aligned mass spectral peaks) in the columns of any output peak matrix.
 
-Use this option to define which metric is inserted in to the cells of the output Peak Matrix.
+				**columns** - sample information is presented in the columns and m/z values (for aligned mass spectral peaks) in the rows of any output peak matrix.
 
-- &quot;Intensity&quot; writes the absolute peak intensity to the Peak Matrix.
-- &quot;m/z&quot; writes the m/z value to the Peak Matrix.
-- &quot;Signal-to-noise ratio (SNR)&quot; writes the signal-to-noise ratio to the Peak Matrix. 
+			**The peak matrix should contain intensity | m/z | SNR values** - use this option to define which peak metric is inserted in to the cells of any optionally-output peak matrix:
 
-Output file(s)
---------------
+				**Intensity** - writes the absolute peak intensity to the cells of the peak matrix
 
-| A HDF5 file containing a Peak Matrix
-| 
-| **OPTIONAL**
-| A (standard and/or comprehenstive) Peak Matrix comprising samples on one axis and m/z values on the perpendicular axis
-| 
+				**m/z** - writes the mass-to-charge ratio to the cells of the peak matrix
 
-- Tab-delimited text file containing a numeric data matrix, with . as decimal, and NA for missing values.
-- File only created if user toggles &quot;Standard output&quot; and/or &quot;Comprehensive output&quot; to &quot;Yes&quot;
-- By default, samples are in rows and peaks are in columns. Altering the &quot;Should rows or columns represent samples&quot; toggle will transpose this matrix.
+				**signal-to-noise ratio (SNR)** - writes the signal-to-noise ratio to the cells of the peak matrix
+
+
 
     </token>
+
+	<token name="@comprehensive_explanation@">
+
+			**present** - a positive integer value (0 <![CDATA[ < ]]> value <![CDATA[ < ]]> total number of study samples in the filelist / samplelist) that indicates the total number of study samples in which a peak was detected with the specified mass-to-charge ratio, plus or minus the user-defined ppm error tolerance.
+
+			**occurrence** - a positive integer value indicating the number of peaks that were grouped together during the alignment procedure and thus, that were used to calculate the average mass-to-charge ratio indicated for the aligned peak. A value greater than given in the “Present” metric indicates that one or more peaklists contained more-than one mass spectral peak with the specified mass-to-charge, plus or minus the user-defined ppm error tolerance.
+
+			**purity** - a proportion ranging from 0 to 1 that indicates the number of scans in which only a single peak was detected during the peaklist alignment process. If the value in the “occurrence” metric is greater than the “present” metric, purity will be <![CDATA[ < ]]> 1. A purity <![CDATA[ < ]]> 1 means that in at least one peaklist there was more-than one mass spectral peak with the specified mass-to-charge, plus or minus the user-defined ppm error tolerance.
+
+			**rsd_all** - a numeric value indicating the percent relative standard deviation (otherwise termed the percent coefficient of variation) of peak intensities for peaks aligned together using the Align Samples tool. If fewer than 2 peaks were aligned across samples, then the rsd_all column will be filled in with ‘nan’
+
+			**flags** - a boolean value indicating whether a peak should be included (“1”) or excluded (“0”) from downstream processing procedures. Exclusion of a peak occurs if the thresholds for “relative standard deviation” and/or “minimum number of technical replicates a peak has to be present in” were not met.
+
+			
+
+	</token>
+
 
     <token name="@github_developers_contributors@"> 
 Github respository (source code)
