@@ -101,7 +101,7 @@ Description
 
 |
 
-Standard DIMS processing workflow: Process Scans -> Replicate Filter -> Align Samples -> **Blank Filter** -> Sample Filter -> Matrix processing and statistics
+Standard DIMS processing workflow: Process Scans -> Replicate Filter -> Align Samples -> [Missing values sample filter] -> **Blank Filter** -> Sample Filter -> Matrix processing -> Statistics
 
 |
 

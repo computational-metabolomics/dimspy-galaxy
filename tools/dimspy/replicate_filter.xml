@@ -82,6 +82,7 @@
 ----------------
 Replicate filter
 ----------------
+
 |
 
 --------------------
@@ -93,29 +94,39 @@ Description
 
 |
 
-Standard DIMS processing workflow: Process Scans -> **Replicate Filter** -> Align Samples -> Blank Filter -> Sample Filter -> Matrix processing and statistics
+Standard DIMS processing workflow: Process Scans -> **Replicate Filter** -> Align Samples -> [Missing value sample filter] -> Blank Filter -> Sample Filter -> Matrix processing -> Statistics
 
 |
 
 
-Under the DIMS analysis workflow each study sample is typically divided in to a series of equivalent aliquots, each of which is analysed independently under defined and consistent analytical conditions, i.e. technical replicates. This tool is used to combine the peaklists extracted (using the Process Scans tool) from each technical replicate data file for a given study sample, in to a single replicate-filtered peaklist.
-
-**Replicate filter process**: peaks from each technical replicate (for a given study sample) are aligned using a one-dimensional hierarchical clustering procedure (applied on the mass-to-charge scale). Peaks are aligned only if the difference in their mass-to-charge ratios, when divided by the average of their mass-to-charge ratios and multiplied by 1 × 10\ :sup:`6` \(i.e. when measured in units of parts-per-million, ppm), is less-than or equal-to the user-defined ‘ppm error tolerance’. After alignment, a set of user-defined filters are applied to retain only those peaks that:
-
-	* occur in equal-to or more-than the user-defined 'Number of technical replicates a peak has to be present in', i.e. if set to 2, then a peak must be detected in at least two of the replicate analyses, and/or
-		
-	* have relative standard deviation (measured in %; may otherwise be referred to as the percent coefficient of variation) of intensity values, across technical replicates, that is equal-to or less-than the user-defined ‘relative standard deviation threshold’ (if defined, otherwise ignored). 
-
-The primary output from this tool is a replicate-filtered peaklist per input study sample. In each, rows correspond to replicate-filtered mass spectral peaks, while columns provide a range of metrics for each of the detected peaks (see outputs section, below). 
-
-|
-
-**IMPORTANT**:
-
-	* when a user sets the parameter “number of technical replicates for each sample” to a value less-than the total number of technical replicates actually acquired for each study sample, this tool will automatically determine which combination of technical replicates to combine. See the parameter description (below) for further details.
+	To draw robust conclusions from DIMS-based metabolomics datasets, the data itself must be collected and processed in a robust and reproducible way. To support this aim, study samples are often divided in to a set of equivalent aliquots, each of which is analysed under defined and consistent analytical conditions. As aliquots of the same sample are assumed to comprise identical biological material, differences in their resulting spectra are assumed to arise due to technical variability. Removing artifacts associated with this technical variability, and removing mass spectral peaks that are detected irreproducible, is possible by filtering across these technical replicate spectra. The Replicate Filter tools facilitates this process, combining the peaklists extracted (using the Process Scans tool) from each technical replicate of a given study in to a single merged peaklist, before applying a series of user-defined filters to yield a replicate-filtered peaklist.
 	
-	* If a specific scan event has been replicated within a given file, then users should not use this tool for filtering and aligning peaks. In this case, users should instead FIRST use the Process Scans (and SIM stitch) tool - see the documentation for the Process Scans tool for a description of how to perform this.
+	|
+	
+	**Replicate filter process**: peaks from each technical replicate (for a given study sample) are aligned using a one-dimensional hierarchical clustering procedure (applied on the mass-to-charge scale). Peaks are aligned only if the difference in their mass-to-charge ratios, when divided by the average of their mass-to-charge ratios and multiplied by 1 × 10\ :sup:`6` \ (i.e. when measured in units of parts-per-million, ppm), is less-than or equal-to the user-defined ‘ppm error tolerance’. After alignment, a set of user-defined filters are applied to retain only those peaks that:
 
+		* occur in equal-to or more-than the user-defined 'Number of technical replicates a peak has to be present in', i.e. if set to 2, then a peak must be detected in at least two of the replicate analyses, **and/or**
+		
+		|
+		
+		* have relative standard deviation (measured in %; may otherwise be referred to as the percent coefficient of variation) of intensity values, across technical replicates, that is equal-to or less-than the user-defined ‘relative standard deviation threshold’ (if defined, otherwise ignored). 
+
+	|
+	
+	
+	**IMPORTANT**:	
+	
+		* When a user sets the parameter “number of technical replicates for each sample” to a value less-than the total number of technical replicates actually acquired for each study sample, this tool will automatically determine which combination of technical replicates to combine. See the parameter description (below) for further details.
+		
+		|
+		
+		* If a specific scan event has been replicated within a given file, then users should not use this tool for filtering and aligning peaks. In this case, users should instead FIRST use the Process Scans (and SIM stitch) tool - see the documentation for the Process Scans tool for a description of how to perform this.
+
+	|
+
+	**Output** - a replicate-filtered peaklist per input study sample. In each, rows correspond to replicate-filtered mass spectral peaks, while columns provide a range of metrics for each of the detected peaks (see “Output file(s)” section, below). 
+
+	|
 
 ------------------
 
@@ -147,77 +158,84 @@ Output file(s)
 
 The Replicate Filter tool will output three file types:
 
-1) **A HDF5 file containing the replicate-filtered Peaklists**
+	|
 
-2) **A replicate-filtered peaklist**, in .tsv format, for each biological sample defined in the filelist/samplelist. Tab-delimited text file containing a numeric data matrix, with . as decimal, and NA for missing values. Each row corresponds to a mass spectral peak. Columns provide metrics associated with each mass spectral peak. Metrics include:
+	1) **A HDF5 file containing the replicate-filtered Peaklists**
 
-	**mz** - the mass-to-charge ratio of a mass spectral peak, or the mean average mass-to-charge ratio of aligned mass spectral peaks from distinct technical replicates. 
+	|
 
-	**intensity** - the intensity of a mass spectral peak, or the mean average of the intensities values of aligned mass spectral peaks from distinct technical replicates
+	2) **A replicate-filtered peaklist**, in .tsv format, for each biological sample defined in the filelist/samplelist. Tab-delimited text file containing a numeric data matrix, with . as decimal, and NA for missing values. Each row corresponds to a mass spectral peak. Columns provide metrics associated with each mass spectral peak. Metrics include:
 
-	**snr** - the signal-to-noise ratio (snr) of a mass spectral peak, or the mean average of the signal-to-noise ratios of aligned mass-spectral peaks from distinct technical replicates.
+		**mz** - the mass-to-charge ratio of a mass spectral peak, or the mean average mass-to-charge ratio of aligned mass spectral peaks from distinct technical replicates. 
 
-	**present**: a positive numeric value indicating the total number of peaks aligned, across technical replicates, according to the user-defined ‘ppm error threshold’ value.
+		**intensity** - the intensity of a mass spectral peak, or the mean average of the intensities values of aligned mass spectral peaks from distinct technical replicates
 
-	**fraction**: a numerical value from 0 to 1 indicating the proportion of technical replicates in which the peak was detected (e.g. peak detected in 2 out of 3 replicates has a fraction of 0.66).
+		**snr** - the signal-to-noise ratio (snr) of a mass spectral peak, or the mean average of the signal-to-noise ratios of aligned mass-spectral peaks from distinct technical replicates.
 
-	**rsd**: the percent relative standard deviation for a set of aligned peaks across technical replicates. Where a peak is detected in only one technical replicate (as indicated by a ‘present’ value of ‘1’), the rsd is non-calculable and a ‘nan’ is inserted instead.
+		**present**: a positive numeric value indicating the total number of peaks aligned, across technical replicates, according to the user-defined ‘ppm error threshold’ value.
 
-	**occurrence**: a positive integer value indicating the total number of distinct mass spectral peaks aligned during replicate filtering. This number may occasionally be greater than the total number of replicates. This occurs when a peak with a highly-similar mass-to-charge ratio falls within the user-defined ppm error threshold for a group of aligned peaks.
+		**fraction**: a numerical value from 0 to 1 indicating the proportion of technical replicates in which the peak was detected (e.g. peak detected in 2 out of 3 replicates has a fraction of 0.66).
 
-	**purity**: a numeric value between 0 and 1 indicating the proportion of replicate peaklists that have only a single peak within the user-defined ppm error range.
+		**rsd**: the percent relative standard deviation for a set of aligned peaks across technical replicates. Where a peak is detected in only one technical replicate (as indicated by a ‘present’ value of ‘1’), the rsd is non-calculable and a ‘nan’ is inserted instead.
 
-	**present_flag**: a boolean value indicating whether a peak is retained or discarded based on whether it was detect in equal-to or greater-than the user-defined ‘minimum fraction’ of samples (1 = keep, 0 = discard).
+		**occurrence**: a positive integer value indicating the total number of distinct mass spectral peaks aligned during replicate filtering. This number may occasionally be greater than the total number of replicates. This occurs when a peak with a highly-similar mass-to-charge ratio falls within the user-defined ppm error threshold for a group of aligned peaks.
 
-	**flags**: a boolean value indicating whether a peak should be retained or discarded based upon its ‘present_flag’ and its rsd value. E.g. if ‘present_flag’ is set to 0, or if the rsd value for the peak is greater than the user-defined rsd threshold, then the ‘flags’ column should be set to 0 (1 = keep, 0 = discard).
+		**purity**: a numeric value between 0 and 1 indicating the proportion of replicate peaklists that have only a single peak within the user-defined ppm error range.
 
-	|	
+		**present_flag**: a boolean value indicating whether a peak is retained or discarded based on whether it was detect in equal-to or greater-than the user-defined ‘minimum fraction’ of samples (1 = keep, 0 = discard).
 
-		+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
-		| mz        | intensity | snr    | present | fraction | rsd  | occurrence | purity | present_flag | flags |
-		+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
-		| 101.00277 | 12722.3   | 7.60   | 3       | 1.00     | 0.43 | 3          | 1      | 1            | 1     |
-		+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
-		| 101.00335 | 369876.5  | 221.78 | 3       | 1.00     | 2.26 | 3          | 1      | 1            | 1     |
-		+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
-		| 101.00380 | 11137.6   | 6.64   | 3       | 1.00     | 4.31 | 3          | 1      | 1            | 1     |
-		+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
-		| 101.00405 | 6101.1    | 3.65   | 3       | 1.00     | 3.76 | 3          | 1      | 1            | 1     |
-		+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
-		| 101.28928 | 6791.5    | 4.01   | 1       | 0.33     | nan  | 1          | 1      | 0            | 0     |
-		+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
-		| 101.33201 | 5522.2    | 3.26   | 1       | 0.33     | nan  | 1          | 1      | 0            | 0     |
-		+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
-		| 101.68588 | 8264.1    | 5.07   | 1       | 0.33     | nan  | 1          | 1      | 0            | 0     |
-		+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
-		| 101.68656 | 6681.2    | 4.15   | 1       | 0.33     | nan  | 1          | 1      | 0            | 0     |
-		+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
-		| 101.68690 | 7092.3    | 4.22   | 2       | 0.67     | 7.73 | 2          | 1      | 1            | 1     |
-		+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
-		| ...       | ...       | ...    | ...     | ...      | ...  | ...        | ...    | ...          | ...   |
-		+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
+		**flags**: a boolean value indicating whether a peak should be retained or discarded based upon its ‘present_flag’ and its rsd value. E.g. if ‘present_flag’ is set to 0, or if the rsd value for the peak is greater than the user-defined rsd threshold, then the ‘flags’ column should be set to 0 (1 = keep, 0 = discard).
+
+		|	
+		
+		
+		**Example of a replicate-filtered peaklist**:
+
+			+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
+			| mz        | intensity | snr    | present | fraction | rsd  | occurrence | purity | present_flag | flags |
+			+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
+			| 101.00277 | 12722.3   | 7.60   | 3       | 1.00     | 0.43 | 3          | 1      | 1            | 1     |
+			+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
+			| 101.00335 | 369876.5  | 221.78 | 3       | 1.00     | 2.26 | 3          | 1      | 1            | 1     |
+			+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
+			| 101.00380 | 11137.6   | 6.64   | 3       | 1.00     | 4.31 | 3          | 1      | 1            | 1     |
+			+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
+			| 101.00405 | 6101.1    | 3.65   | 3       | 1.00     | 3.76 | 3          | 1      | 1            | 1     |
+			+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
+			| 101.28928 | 6791.5    | 4.01   | 1       | 0.33     | nan  | 1          | 1      | 0            | 0     |
+			+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
+			| 101.33201 | 5522.2    | 3.26   | 1       | 0.33     | nan  | 1          | 1      | 0            | 0     |
+			+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
+			| 101.68588 | 8264.1    | 5.07   | 1       | 0.33     | nan  | 1          | 1      | 0            | 0     |
+			+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
+			| 101.68656 | 6681.2    | 4.15   | 1       | 0.33     | nan  | 1          | 1      | 0            | 0     |
+			+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
+			| 101.68690 | 7092.3    | 4.22   | 2       | 0.67     | 7.73 | 2          | 1      | 1            | 1     |
+			+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
+			| ...       | ...       | ...    | ...     | ...      | ...  | ...        | ...    | ...          | ...   |
+			+-----------+-----------+--------+---------+----------+------+------------+--------+--------------+-------+
 
 
-|
+	|
 
 
-3) **A tabular “report” file** that details, for each biological sample included in the filelist/samplelist:
-	
-	**Set** - a numeric index value that is unique to a specific biological sample
+	3) **A tabular “report” file** that details, for each biological sample included in the filelist/samplelist:
+		
+		**Set** - a numeric index value that is unique to a specific biological sample
 
-	**Rank** - a positive integer indicating which combination of technical replicates offered the best-ranked replicate-filtered peaklist.
+		**Rank** - a positive integer indicating which combination of technical replicates offered the best-ranked replicate-filtered peaklist.
 
-	**Name** - a string indicating which of the technical replicates for a given biological sample were combined together.
+		**Name** - a string indicating which of the technical replicates for a given biological sample were combined together.
 
-	**Peaks** -
+		**Peaks** -
 
-	**Peaks_[XooY]** - a numeric value indicating the total number of peaks that were present in X-out-of-Y technical replicates.
+		**Peaks_[XooY]** - a numeric value indicating the total number of peaks that were present in X-out-of-Y technical replicates.
 
-	**Median_rsd_[XooY]** - the median of the percent relative standard deviations of all peaks in the replicate-filtered peaklist that were present in X-out-of-Y technical replicates.
+		**Median_rsd_[XooY]** - the median of the percent relative standard deviations of all peaks in the replicate-filtered peaklist that were present in X-out-of-Y technical replicates.
 
-	**Score** - a numeric value between 0 and 1 that serves to indicate the best combination of technical replicates for a given biological sample (as defined by the ‘name’ column)
+		**Score** - a numeric value between 0 and 1 that serves to indicate the best combination of technical replicates for a given biological sample (as defined by the ‘name’ column)
 
-|
+	|
 
 --------------------------
 

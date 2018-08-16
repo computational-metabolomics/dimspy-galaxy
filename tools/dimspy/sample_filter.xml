@@ -100,7 +100,7 @@ Description
 
 |
 
-Standard DIMS processing workflow: Process Scans -> Replicate Filter -> Align Samples -> Blank Filter -> **Sample Filter** -> Matrix processing and statistics
+Standard DIMS processing workflow: Process Scans -> Replicate Filter -> Align Samples -> [Missing values sample filter] -> Blank Filter -> **Sample Filter** -> Matrix processing -> Statistics
 
 |
 
@@ -147,9 +147,9 @@ Output file(s)
 
 	**Optional outputs** - the metric recorded in any optionally output peak matrix/matrices is defined using the parameter "The peak matrix should contain intensity | m/z | SNR values".
 
-		**Standard output** - exports a sample-filtered peak matrix to the active Galaxy history as a tab-delimited text file (“.” as decimal and NA for missing values). By default, study samples are listed row-wise, while mass-to-charge ratios of the aligned mass spectral peaks are presented in columns (to adjust, users must adjust the "Should rows or columns represent samples" toggle to “columns”). 
+		**Standard output** - a sample-filtered peak matrix in tab-delimited format (“.” as decimal and NA for missing values). By default, study samples are listed row-wise, while mass-to-charge ratios of the aligned mass spectral peaks are presented in columns (to adjust, users must adjust the "Should rows or columns represent samples" toggle to “columns”). 
 
-		**Comprehensive output** - exports a sample-filtered peak matrix, as described for the "standard output" (above). All peaks included in the input peak matrix are retained in this output. The following additional columns are included:
+		**Comprehensive output** - a sample-filtered peak matrix, as described for the "standard output" (above). All peaks included in the input peak matrix are retained in this output. Furthermore, all metadata from the "Process Scans" Filelist/samplelist and the following additional mass spectral peak metrics are included:
 
 
 		@comprehensive_explanation@

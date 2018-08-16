@@ -211,13 +211,17 @@ Description
 
 |
 
+Standard DIMS processing workflow: **Process Scans** -> Replicate Filter -> Align Samples -> [Missing values sample filter] -> Blank Filter -> Sample Filter -> Matrix processing -> Statistics
+
+|
+
 This tool is used to generate a single mass spectral peaklist for each of the data files defined in the ‘Filelist/Samplelist’. The tool extracts mass spectral peaks from a data file (in either .mzML or .RAW format) and then filters these in accordance with user-defined parameter settings. All peaks remaining after filtering are hierarchically clustered in one-dimension, during which pairs of peaks with similar m/z values are grouped together if the difference between their m/z values, when divided by the average of their m/z values and multiplied by 1 x 10\ :sup:`6` \, equates to less-than the user-defined ppm error tolerance.
 
 |
 
-	**IMPORTANT:** when using .mzML files generated using the Proteowizard tool, SIM-type scans will only be treated as spectra if, during the conversion process, the ‘simAsSpectra’ filter was set to true, for example:
+	**IMPORTANT:** when using .mzML files generated using the Proteowizard tool, SIM-type scans will only be treated as spectra if the ‘simAsSpectra’ filter was set to true during the conversion process, e.g.:
 
-		*msconvert.exe example.raw --simAsSpectra --64 --zlib --filter "peakPicking true 1-”*
+		*msconvert.exe example.raw* **--simAsSpectra** *--64 --zlib --filter "peakPicking true 1-”*
 
 -----------------
 
@@ -230,14 +234,20 @@ Parameters
 **Choose the source for the dataset** (REQUIRED) - select from one of the following options:
 
 	**Zip file from history** - use this option if you have uploaded a .zip directory containing ONLY .mzML or .raw data files
+	
+		In the **Zip file containing .mzML or .raw files** drop-down menu, select the .zip file containing the files to process.
 
 	**Library directory name** - use this option if data files are stored at a remote server location linked to your Galaxy instance (e.g. on the Research Data Storage [RDS] at the University of Birmingham). 
 	
-	* In the 'Library directory' box that appears on selecting this option, insert a string specifying the path to your data files. Be sure to exclude the drive letter and user name from this path and to separate sub-directories using FORWARD SLASHES e.g. Y:\users\USERNAME\my_study_folder\my_data_folder' becomes 'my_study_folder/my_data_folder'.
+		In the **Library directory** box, insert a string specifying the path to your data files. Be sure to exclude the drive letter and user name from this path and to separate sub-directories using FORWARD SLASHES e.g. Y:\\users\\USERNAME\\my_study_folder\\my_data_folder' becomes 'my_study_folder/my_data_folder'.
 
 	**Data collection** - use this option if data files are contained within a Galaxy dataset collection. Dataset collections may be generated within the Galaxy environment.
+	
+		In the **Data collection of .mzML or .raw files** drop-down menu that appears, select the dataset collection to process.
 
 	**Single .mzML or .raw file** - use this option if the Process Scans tool is to be applied to a single .mzML or .raw file. This file must have been uploaded to the active Galaxy history.
+	
+		In the **Single .mzML or .raw** drop-down menu that appears, select the .mzML or .raw file to process.
 
 |
 
@@ -248,28 +258,32 @@ Parameters
 
 |
 
-	For a standard DIMS experiment, users are advised to also include the following columns:
+	For a standard DIMS experiment, users are advised to also include the following additional columns in order to ensure their data remains compatible with future versions of the dimspy processing pipeline:
 
 		**injectionOrder** - integer values ranging from 1 to i, where i is the total number of independent infusions performed as part of a DIMS experiment. e.g. if a study included 20 samples, each of which was injected as four independent replicates, there would be at least 20 * 4 injections, so i = 80 and the range for injection order would be from 1 to 80 in steps of 1.
 
 		**replicate** - integer value from 1 to r, indicating the order in which technical replicates of each study sample were injected in to the mass spectrometer, e.g. if study samples were analysed in quadruplicate, r = 4 and integer values are accordingly 1, 2, 3, 4.
 
-		**batch** - integer value from 1 to b, where b corresponds to the total number of batches analysed under define analysis conditions, for any given experiment. e.g. : if 4 independent plates of polar extracts were analysed in the positive ionisation mode, then valid values for batch are 1, 2, 3 and 4. NOTE: for DIMS experiments, “batch” is synonymous with plate, i.e. each independent plate analysed under a given analytical configuration may be considered an individual “batch”.
+		**batch** - integer value from 1 to b, where b corresponds to the total number of batches analysed under define analysis conditions, for any given experiment. e.g. : if 4 independent plates of polar extracts were analysed in the positive ionisation mode, then valid values for batch are 1, 2, 3 and 4. 
+		
+			**NOTE**: for DIMS experiments, “batch” is synonymous with plate, i.e. each independent plate analysed under a given analytical configuration may be considered an individual “batch”.
 
 	This file:
 	
-	* must be uploaded to (or be accessible to) the active Galaxy history in order to allow for its selection in the **Filelist / Samplelist drop-down menu**. The file list / sample list may be created in .txt format, however, when imported in to the active Galaxy history, users must ensure to select ‘.tabular’ format.
+	* must be uploaded to (or be accessible to) the active Galaxy history in order to allow for its selection in the Filelist / Samplelist drop-down menu. The file list / sample list may be created in .txt format, however, when imported in to the active Galaxy history, users must ensure to select ‘.tabular’ format.
 
 
-	* may include additional columns, e.g. additional metadata relating to study samples. Ensure that the name assigned to additional columns does not conflict with the names of required columns.
-		
+	* may include additional columns, e.g. additional metadata relating to study samples. Ensure that columns names do not conflict with existing column names.
+	
 	|
+	
+@example_filelist@
 
-	@example_filelist@
+|
 
 |
 
-|
+
 
 **Function to calculate the noise from each scan** (REQUIRED; default = **median**) - toggle requiring selection of one option from the drop-down menu to indicate the preferred algorithm to apply for spectral noise calculation. The following options are available:
 
@@ -279,7 +293,7 @@ Parameters
 
 	**Mean absolute deviation (MAD)** - the noise value is set as the mean of the absolute differences between peak intensities and the mean peak intensity (calculated across all peak intensities within a given file).
 
-	**Xcalibur** - the noise value is calculated using the proprietary algorithms contained in Thermo Fisher Scientific’s msFileReader.dll. This option is only available when using Thermo Fisher Scientific vendor .RAW files 
+	**Xcalibur** - the noise value is calculated using the proprietary algorithms contained in Thermo Fisher Scientific’s msFileReader.dll. This option should only be applied when you are processing .RAW files.
 
 |
 
@@ -356,11 +370,11 @@ Output file(s)
 
 The Process scans (and SIM stitch) tool will output three file types:
 
-	1) A HDF5 file containing the processed peaklists
+	1) **A HDF5 file** containing the processed peaklists
 
 	|
 
-	2) A processed peaklist, presented in tabular format, for each sample specified in the filelist/samplelist. Each row corresponds to a single peak. Where multiple peaks were grouped together during the hierarchical clustering process, each peaklist metric constitutes an average of the groups’ values. Metrics included in the peaklist are: 
+	2) **A processed peaklist**, presented in tabular format, for each study sample specified in the filelist/samplelist. Each row corresponds to a single peak. Where multiple peaks were grouped together during the hierarchical clustering process, each peaklist metric constitutes an average of the groups’ values. Metrics included in the peaklist are: 
 
 		**mz** - the mass-to-charge ratio of the extracted mass spectral peak
 
@@ -382,6 +396,7 @@ The Process scans (and SIM stitch) tool will output three file types:
 
 		**flags** - a boolean value indicating whether a peak should be retained or discarded based upon both its ‘snr_flag’ and ‘fraction_flag’ boolean values (if either is set to ‘0’ i.e. discard peak,  then the ‘flags’ boolean should also be 0).
 
+		|
 	
 		+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
 		| mz        | intensity | snr  | present | fraction | rsd   | occurrence | purity | snr_flag | fraction_flag | flags |
@@ -416,7 +431,7 @@ The Process scans (and SIM stitch) tool will output three file types:
 		|
 		
 
-	3) A tabular “report” file that details, for each scan event processed in each file:
+	3) **A tabular “report” file** that details, for each scan event processed in each file:
 		
 		* Scan range of scan event
 		
@@ -424,7 +439,7 @@ The Process scans (and SIM stitch) tool will output three file types:
 
 		* Number of peaks detected in scan event
 
-		* Median RSD of peaks detected in each scan event type (only applied if number of scans for a given scan event is greater than 1)
+		* Median RSD of peaks detected in each scan event type (only applied if number of scans for a given scan event is <![CDATA[ > ]]> 1
 
 -----------------------------------
 
@@ -436,3 +451,4 @@ The Process scans (and SIM stitch) tool will output three file types:
     <expand macro="citations" />
 
 </tool>
+
