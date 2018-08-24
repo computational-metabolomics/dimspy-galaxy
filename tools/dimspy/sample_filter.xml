@@ -91,34 +91,74 @@
 Sample Filter
 -------------
 
+..
+
+----------------------------------------------
+
 Description
 -----------
 
-| Use this tool to align Peaklists according to their constituent mass spectral peaks.
-| In the DIMS analysis workflow, align samples typically follows 'replicate_filter'. This tool may, however, be used to align any Peaklists (e.g. aligning individual Peaklists for each replicate of a sample).
+|
+
+Standard DIMS processing workflow: Process Scans -> Replicate Filter -> Align Samples -> [Missing values sample filter] -> Blank Filter -> **Sample Filter** -> Matrix processing -> Statistics
+
+|
+
+There are many and varied reasons why a peak may not have been detected in all study samples, including: due to having an intensity (concentration) close to the signal-to-noise limit of the system; due to having been present in only one of the study classes (e.g. a drug administered to the ‘treatment’ class samples); due to ion suppression/enhancement effects in the mass spectrometer source region; etc. The Sample Filter tool allows users to remove peaks from the input peak intensity matrix that were detected in fewer-than a user-defined minimum number of study samples. 
+
+------------------------------------
 
 Parameters
 -----------
 
-**\1. Peak Intensity Matrix (HDF5 file)** (REQUIRED)
+|
 
-A Peak Intensity Matrix (HDF5 format), typically an output from the 'Align samples' tool.
-		
-**\2. Apply sample filter within each class** (REQUIRED; default = 'No')
+	**Peak Intensity Matrix (HDF5 file)** (REQUIRED) - a HDF5 file containing the peak intensity matrix to undergo sample filtering.
 
-Boolean toggle where:
+	|
 
-- **Yes** corresponds to checking, on a class-by-class basis, whether greater-than the user-defined 'Minimum fraction' of samples within an experimental class contain an intensity value for a specific mass spectral peak. If less than this number, the intensity value in that class is set to zero.
-- **No** corresponds to checking, across ALL classes simultaneously, whether greater-than the user-defined 'Minimum fraction' of samples contain an intensity value for a specific mass spectral peak. If less than this number, the intensity value is ALL classes is set to zero.
-		
-**\3. Minimum fraction** (REQUIRED; default = 0.5)
+	**Apply sample filter within each sample class** (REQUIRED; default **No**) 
 
-Numeric value ranging from 0 to 1.
+		**No** - check across ALL classes simultaneously whether greater-than the user-defined “Minimum fraction” of samples contained an intensity value for a specific mass spectral peak.
 
-- A value of 0 corresponds to a minimum of 0 samples across or within experimental classes (as defined by the 'Sample filter within each class' toggle) having an intensity value of greater-than 0.
-- A value of 1 correspond to 100% of samples across or within experimental classes (as defined by the 'Sample filter within each class' toggle) having an intensity value of greater-than 0.
+		**Yes** - check within EACH class separately whether greater-than the user-defined “Minimum fraction” of samples contained an intensity value for a specific mass spectral peak. 
 
-@help_options_addtional_output@
+			**IMPORTANT**: if in ANY class a peak is detected in greater-than the user-defined minimum fraction of samples, then the peak is retained in the output peak matrix. For classes in which this condition is not met, the peak intensity recorded for that peak (if any) will still be presented in the output peak matrix. If no peak intensity was recorded in a sample, then a ‘0’ is inserted in to the peak matrix.
+
+	|
+
+	**Minimum fraction** (REQUIRED, default 0.5) - a numeric value between 0 and 1 indicating the proportion of study samples in which a peak must have a recorded intensity value in order for it to be retained in the output peak intensity matrix; e.g. 0.5 means that at least 50% of samples (whether assessed across all classes, or within each class individually) must have a recorded intensity value for a specific peak in order for it to be retained in the output peak matrix.
+
+	|
+
+	@help_options_addtional_output@
+
+-------------------------------
+
+
+Output file(s)
+--------------
+
+|
+
+**IMPORTANT** - in all outputs except for the (optional) comprehensive output, if fewer-than the user-defined “Minimum fraction” of samples (whether assessed within a class, or across all classes) had a recorded intensity value (either within or across classes) for a given peak, then that peak will be removed from the output peak matrix. Note that when assessing within classes, only one class needs to have recorded intensity values in greater-than the "Minimum fraction" of samples in order for the peak to be retained in the output peak matrix.
+
+	**Default output** - a HDF5 file containing the sample-filtered peak intensity matrix is exported to the active Galaxy history.
+
+	**Optional outputs** - the metric recorded in any optionally output peak matrix/matrices is defined using the parameter "The peak matrix should contain intensity | m/z | SNR values".
+
+		**Standard output** - a sample-filtered peak matrix in tab-delimited format (“.” as decimal and NA for missing values). By default, study samples are listed row-wise, while mass-to-charge ratios of the aligned mass spectral peaks are presented in columns (to adjust, users must adjust the "Should rows or columns represent samples" toggle to “columns”). 
+
+		**Comprehensive output** - a sample-filtered peak matrix, as described for the "standard output" (above). All peaks included in the input peak matrix are retained in this output. Furthermore, all metadata from the "Process Scans" Filelist/samplelist and the following additional mass spectral peak metrics are included:
+
+
+		@comprehensive_explanation@
+
+			**blank_flag** (may be absent if "Blank filter” tool was not applied prior to “Sample filter” tool) - a boolean value where 0 = reject peak, 1 = accept peak. A peak is accepted during blank filtering if a user-defined minimum proportion of study samples had peak intensity values greater-than the product of the average of “reference” sample peak intensities and the “min_fold_change” parameter.
+
+			**fraction_flag** - a boolean value where 0 = reject peak, 1 = accept peak. If greater-than a user-defined minimum fraction of samples (whether checked across ALL experimental classes, or within ANY of the individual experimental classes) had recorded intensity values for a given peak, then this peak is accepted, i.e. it is considered in downstream processing procedures, while rejected peaks are not.
+
+-------------------------------------
 
 @github_developers_contributors@
    

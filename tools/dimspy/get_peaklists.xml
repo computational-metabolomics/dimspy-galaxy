@@ -83,42 +83,127 @@
 Get Peaklists
 -------------
 
+..
+
+--------------------------------------
+
 Description
 -----------
 
-Use this tool to extract Peaklists or an average Peaklist from a Peak Intensity Matrix.
+|
+
+Use this tool to extract all individual peaklists, or an average of the individual peaklists, that were used in generating the input peak intensity matrix (.hdf5 format).
+
+|
+
+--------------------------------------
 
 Parameters
 ----------
 
-**\1. Get** (REQUIRED; default = 'Average')
+|
 
-Toggle where selection of:	
+**Peak Intensity Matrix (HDF5 file)** (REQUIRED) - a selection menu from which a specific peak intensity matrix (in .hdf5 format) can be selected from the active Galaxy history.
 
-- **Average** corresponds to extracting an intensity-averaged (non-weighted and with NA values ignored) Peaklist from the input Peak Intensity Matrix.
-  Averaging of intensities is performed across ALL samples in the user-specified input Peak Intensity Matrix (HDF5 format).
-- **Multiple** corresponds to extracting independent Peaklists for each of the samples included in the user-specified HDF5 input Peak Intensity Matrix.
+|
 
-**\2. Name average Peaklist** (REQUIRED; default = '')
+**Get…** (REQUIRED; default **Average peaklist**) - a selection menu with options:
 
-String indicating the name to append to the output Peaklist(s)		
+		**Average peaklist** - extract an intensity-averaged (non-weighted mean average and with NA values ignored) peaklist from the input peak intensity matrix. Averaging of intensities is performed across ALL samples included in the input peak intensity matrix (.hdf5 format).
 
-**\3. Write Peaklists to tsv files (data collection)?** (REQUIRED; default = 'Yes') 
+			**Name average peaklist** (REQUIRED if “average peaklist” selected; default = “'') - string indicating the name to append to the exported average peaklist (if any).
 
-Toggle where:
- - **Yes** corresponds to writing Peaklist(s) to .tsv file(s)
- - **No** skips writing to Peaklists to .tsv files(s )
+		**Multiple peaklists (samples)** - extract independent peaklists from the input .hdf5 file for each of the samples used in generating the peak intensity matrix.
+
+|
+
+**Write peaklists to tsv files (data collection)?** (REQUIRED; default = **Yes**)  - binary toggle where:
+
+	**Yes** - corresponds to exporting peaklists(s) to the active Galaxy history in .tsv format
+
+	**No** - corresponds to skipping the export of peaklist(s) to the active Galaxy history in .tsv format
+
+|
+
+**NOTE** - it is currently not possible to use the 'Write Peaklists to tsv files (data collection)?' option when selecting “Multiple Peaklists (samples)” from the “Get…” drop down menu.
+
+|
+
+--------------------------------------
 
 Output file(s)
 --------------
 
-| A HDF5 file containing the Peaklists
-| 
-| **OPTIONAL**
-| Peaklists (data colleciton) or an average Peaklists (in .tsv format)
+|
 
-- Tab-delimited text file containing a numeric data matrix, with . as decimal, and NA for missing values.
-- Includes additional information, such as the signal-to-noise ratio, relative-standard deviation (rsd) and 'purity' for each peak.
+	**Default output** - a .hdf5 file containing individual peaklists or an average peaklist.
+	
+	|
+	
+	**Optional output** - peaklists (data collection), or an average peaklist, in .tsv format (tab-delimited text file) comprising a numeric data matrix (“.” as decimal, and NA for missing values). Each row corresponds to a peak detected in a specific file, or in the case of an average peaklist, a peak that was detected in AT LEAST one of the study samples. There is no filtering based on a minimum fraction of samples having a measured peak intensity value for a given peak.
+
+
+		**Example of an individual peaklist (i.e. corresponding to an individual study sample)**:
+	
+		|
+		
+		+----------+-----------+--------+---------+----------+-------+------------+--------+-------------+-------+
+		| mz       | intensity | snr    | present | fraction | rsd   | occurrence | purity | intra_count | flags |
+		+----------+-----------+--------+---------+----------+-------+------------+--------+-------------+-------+
+		| 101.0028 | 9366.9    | 6.49   | 3       | 1        | 5.77  | 3          | 1      | 1           | 1     |
+		+----------+-----------+--------+---------+----------+-------+------------+--------+-------------+-------+
+		| 101.0033 | 266850.1  | 184.68 | 3       | 1        | 4.87  | 3          | 1      | 1           | 1     |
+		+----------+-----------+--------+---------+----------+-------+------------+--------+-------------+-------+
+		| 101.0038 | 8375.1    | 5.78   | 3       | 1        | 6.99  | 3          | 1      | 1           | 1     |
+		+----------+-----------+--------+---------+----------+-------+------------+--------+-------------+-------+
+		| 101.6965 | 6352.2    | 4.26   | 2       | 0.67     | 2.82  | 2          | 1      | 1           | 1     |
+		+----------+-----------+--------+---------+----------+-------+------------+--------+-------------+-------+
+		| 101.6972 | 7249.1    | 4.89   | 2       | 0.67     | 10.15 | 2          | 1      | 1           | 1     |
+		+----------+-----------+--------+---------+----------+-------+------------+--------+-------------+-------+
+		| 101.698  | 6715.5    | 4.48   | 2       | 0.67     | 1.06  | 2          | 1      | 1           | 1     |
+		+----------+-----------+--------+---------+----------+-------+------------+--------+-------------+-------+
+		| 101.7007 | 7312.5    | 4.87   | 2       | 0.67     | 4.02  | 2          | 1      | 1           | 1     |
+		+----------+-----------+--------+---------+----------+-------+------------+--------+-------------+-------+
+		| 101.7015 | 7752.5    | 5.2    | 2       | 0.67     | 8.25  | 2          | 1      | 1           | 1     |
+		+----------+-----------+--------+---------+----------+-------+------------+--------+-------------+-------+
+		| ...      | ...       | ...    | ...     | ...      | ...   | ...        | ...    | ...         | ...   |
+		+----------+-----------+--------+---------+----------+-------+------------+--------+-------------+-------+
+			
+		|
+		
+		|
+		
+		**Example of an average peaklist (i.e. averaged across all study samples)**:
+
+		|
+
+		+----------+-----------+---------+----------+------------+--------+-------+
+		| mz       | intensity | present | fraction | occurrence | purity | flags |
+		+----------+-----------+---------+----------+------------+--------+-------+
+		| 104.0708 | 8664.8    | 67      | 0.99     | 67         | 1      | 1     |
+		+----------+-----------+---------+----------+------------+--------+-------+
+		| 104.1072 | 43752.8   | 67      | 0.99     | 67         | 1      | 1     |
+		+----------+-----------+---------+----------+------------+--------+-------+
+		| 112.0871 | 26062     | 67      | 0.99     | 67         | 1      | 1     |
+		+----------+-----------+---------+----------+------------+--------+-------+
+		| 114.0608 | 19788.4   | 67      | 0.99     | 67         | 1      | 1     |
+		+----------+-----------+---------+----------+------------+--------+-------+
+		| 116.0708 | 11018.1   | 67      | 0.99     | 67         | 1      | 1     |
+		+----------+-----------+---------+----------+------------+--------+-------+
+		| 116.9773 | 47668.6   | 58      | 0.85     | 58         | 1      | 1     |
+		+----------+-----------+---------+----------+------------+--------+-------+
+		| 120.0199 | 6623.4    | 56      | 0.82     | 56         | 1      | 1     |
+		+----------+-----------+---------+----------+------------+--------+-------+
+		| 130.0501 | 19205.3   | 67      | 0.99     | 67         | 1      | 1     |
+		+----------+-----------+---------+----------+------------+--------+-------+
+		| ...      | ...       | ...     | ...      | ...        | ...    | ...   |
+		+----------+-----------+---------+----------+------------+--------+-------+
+		
+		|
+
+|
+
+--------------------------------------
 
 @github_developers_contributors@
 
