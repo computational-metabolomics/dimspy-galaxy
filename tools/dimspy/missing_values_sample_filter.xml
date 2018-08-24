@@ -63,11 +63,13 @@ Description
 
 |
 
-This tool is typically applied following the “Align samples” tool.
+Standard DIMS processing workflow: Process Scans -> Replicate Filter -> Align Samples -> **[Missing values sample filter]** -> Blank Filter -> Sample Filter -> Matrix processing -> Statistics
 
-This tool is used to remove study samples with greater-than a user-defined “Maximum percentage of missing values” from the peak intensity matrix. A missing value is defined as the absence of a recorded peak intensity value for a specific mass spectral peak, in a specific study sample.
+|
 
-Samples with large numbers of missing values are often observed where a failed mass spectral acquisition has occurred, the reasons for which are many and diverse.
+	This tool is used to remove study samples with greater-than a user-defined “Maximum percentage of missing values” from the peak intensity matrix. A missing value is defined as the absence of a recorded peak intensity value for a specific mass spectral peak, in a specific study sample.
+
+	Samples with large numbers of missing values are often observed where a failed mass spectral acquisition has occurred, the reasons for which are many and diverse.
 
 |
 
