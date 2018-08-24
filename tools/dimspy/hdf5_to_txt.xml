@@ -153,7 +153,7 @@ Parameters
 		 
 		**Standard peak matrix** - a peak intensity matrix with samples as rows, peak mass-to-charge ratios of peaks as columns, and the recorded peak intensity values (if any) given at the intersections.
 
-		**Comprehensive peak matrix** (e.g. m/z and intensity, rsd, missing valies) - as per standard peak matrix, but with the following additional columns:
+		**Comprehensive peak matrix** (e.g. m/z and intensity, rsd, missing values) - as per standard peak matrix, but with the following additional columns:
 
 			**m/z** - a numeric value indicating the recorded mass-to-charge ratio of a given peak in the given sample
 			

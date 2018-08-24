@@ -330,8 +330,8 @@ Parameters
 
 **Show options for multiple scans** (OPTIONAL)
 
-	**Minimum number of scans required for each m/z window or scan event** (default = 1) - A positive integer equal-to or greater-than 1 that specifies the number of times a peak must be detected in a given scan event type in order for it to be flagged as valid (i.e. flag = 1) in the output .tsv-formatted peaklist.
-
+	**Minimum number of scans required for each m/z window or event within a raw/mzML data file** (default = 1) - A positive integer equal-to or greater-than 1 that specifies the number of times a given scan event must occur in a given file in order for this scan event to be included in downstream processing steps and in the output .tsv-formatted peaklist.
+	
 	**ppm error tolerance** (default = 2.0) - A positive numerical value equal-to or greater-than zero. This option impacts the clustering of peaks extracted from an input file. If the mass-to-charge ratios of two peaks, when divided by the average of their mass-to-charge ratios and then multiplied by 1 × 106, is equal-to or less-than this user-defined value, then these peaks are clustered together as a single peak. Clustering is applied across all replicates of a given scan event type i.e. with a given input file, all peaks detected in the three replicates of a 50-400 m/z scan event would undergo assessment for the need for clustering.
 
 	**Minimum fraction (i.e. percentage; default = 0, i.e. skip) of scans a peak has to be present in** - A numerical value from 0 to 1 that specifies the minimum proportion of scans a given mass spectral peak must be detected in, in order for it to be kept in the output peaklist. Here, scans refers to replicates of the same scan event type, i.e. if set to 0.33, then a peak would need to be detected in at least 1 of the 3 replicates of a given scan event type. The ppm error specified by the user will significantly impact which peaks fulfil this criteria.
@@ -392,7 +392,7 @@ The Process scans (and SIM stitch) tool will output three file types:
 
 		**snr_flag** - a boolean value indicating whether to keep (“1”) or discard (“0”) a peak according to its signal-to-noise ratio value.
 
-		**fraction_flag** - a boolean value indicating whether a peak should be kept or discarded according to the ratio of the number of scans in which is was detected, to the the number of scans in which it was not detected.
+		**fraction_flag** - a boolean value indicating whether a peak should be kept or discarded according to the ratio of the number of scans in which it was detected, to the the number of scans in which it was not detected.
 
 		**flags** - a boolean value indicating whether a peak should be retained or discarded based upon both its ‘snr_flag’ and ‘fraction_flag’ boolean values (if either is set to ‘0’ i.e. discard peak,  then the ‘flags’ boolean should also be 0).
 
