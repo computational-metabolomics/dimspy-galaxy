@@ -1,4 +1,4 @@
-<tool id="dimspy_merge_peaklists" name="Merge peaklists" version="1.0.0">
+<tool id="dimspy_merge_peaklists" name="Merge peaklists" version="@TOOL_VERSION@+galaxy@GALAXY_TOOL_VERSION@">
     <description> produced by the tools 'Process scans (and SIM-Stitch)' or 'Replicate filter'</description>
     <macros>
         <import>macros.xml</import>

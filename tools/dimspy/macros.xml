@@ -1,9 +1,14 @@
 <macros>
+    <token name="@TOOL_VERSION@">2.0.0</token>
+    <token name="@GALAXY_TOOL_VERSION@">1.0.1</token>
+
     <xml name="requirements">
         <requirements>
-            <requirement type="package" version="1.3.0">dimspy</requirement>
+           <requirement type="package" version="@TOOL_VERSION@" >dimspy</requirement>
+            <yield />
         </requirements>
     </xml>
+
     
     <token name="@HDF5_PM_TO_TXT@">
         dimspy hdf5-pm-to-txt
