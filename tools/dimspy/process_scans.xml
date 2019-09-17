@@ -37,8 +37,8 @@
         #elif $input.format == "library"
             --input '$__app__.config.user_library_import_dir/$__user_email__/$input.source'
         #elif $input.format == "zip_file"
-            #for $fn in os.listdir()
-              --input $fn
+            #for $fn in os.listdir('tmp')
+              --input os.path.join('tmp', $fn)
 	    #end for
         #else
             --input '$input.source'
