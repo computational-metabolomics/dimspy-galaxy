@@ -7,10 +7,7 @@
     <command detect_errors="exit_code">
     <![CDATA[
 
-
-        #if $input.format == "zip_file"
-            unzip $fn -d tmp
-        #end if
+	
 
         #if $input.format == "data_collection"
             #for $fn in $input.source
@@ -24,9 +21,14 @@
                 ln -s '$input.source' '$input.source.name'
                 &&
             #end if
-        #end if
+        #elif $input.format == "zip_file"
+	    mkdir tmp &&
+            unzip $input.source -d tmp &&
+	#end if
+	
         dimspy process-scans
-        #if $input.format == "data_collection"
+        
+	#if $input.format == "data_collection"
             #for $fn in $input.source
                 --input '$fn.name'
             #end for
@@ -35,8 +37,8 @@
         #elif $input.format == "library"
             --input '$__app__.config.user_library_import_dir/$__user_email__/$input.source'
         #elif $input.format == "zip_file"
-            #for $fn in os.listdir('tmp')
-              --input os.path.join('tmp', '$fn')
+            #for $fn in os.listdir()
+              --input $fn
 	    #end for
         #else
             --input '$input.source'
