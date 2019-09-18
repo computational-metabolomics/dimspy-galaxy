@@ -8,7 +8,6 @@
     <![CDATA[
 
 	
-
         #if $input.format == "data_collection"
             #for $fn in $input.source
                 #if str( $fn ).endswith(".dat")
@@ -22,8 +21,8 @@
                 &&
             #end if
         #elif $input.format == "zip_file"
-	    mkdir tmp &&
-            unzip $input.source -d tmp &&
+	    mkdir './tmp' &&
+            unzip $input.source -d './tmp' &&
 	#end if
 	
         dimspy process-scans
@@ -37,13 +36,10 @@
         #elif $input.format == "library"
             --input '$__app__.config.user_library_import_dir/$__user_email__/$input.source'
         #elif $input.format == "zip_file"
-            #for $fn in os.listdir('tmp')
-              --input os.path.join('tmp', $fn)
-	    #end for
+            --input './tmp'
         #else
             --input '$input.source'
         #end if
-
        
         --output '$hdf5_file_out'
         #if $filelist
@@ -84,7 +80,8 @@
         dimspy hdf5-pls-to-txt
         --input '$hdf5_file_out'
         --output .
-        --delimiter $delimiter
+        --delimiter $delimiter &&
+      rm -rf './tmp'
     ]]>
     </command>
     <inputs>
