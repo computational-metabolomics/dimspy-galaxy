@@ -38,10 +38,12 @@
             <param name="hdf5_file_in" value="pls_rf.h5" ftype="h5"/>
             <param name="ppm" value="2.0"/>
             <param name="delimiter" value="tab"/>
-            <param name="hdf5_to_txt|standard" value="True"/>
-            <param name="hdf5_to_txt|comprehensive" value="False"/>
-            <param name="hdf5_to_txt|samples_representations" value="rows"/>
-            <param name="hdf5_to_txt|matrix_attr" value="intensity"/>
+            <conditional name="hdf5_to_txt" >
+                <param name="standard" value="True"/>
+                <param name="comprehensive" value="False"/>
+                <param name="samples_representations" value="rows"/>
+                <param name="matrix_attr" value="intensity"/>
+            </conditional>
             <output name="hdf5_file_out" file="pm_as.h5" ftype="h5" compare="sim_size"/>
             <output name="matrix_file_out" file="peak_matrix_as.txt" ftype="tsv"/>
         </test>
@@ -49,10 +51,12 @@
             <param name="hdf5_file_in" value="pls_rf.h5" ftype="h5"/>
             <param name="ppm" value="2.0"/>
             <param name="delimiter" value="tab"/>
-            <param name="hdf5_to_txt|standard" value="True"/>
-            <param name="hdf5_to_txt|comprehensive" value="False"/>
-            <param name="hdf5_to_txt|representation_samples" value="columns"/>
-            <param name="hdf5_to_txt|matrix_attr" value="intensity"/>
+            <conditional name="hdf5_to_txt">
+                <param name="standard" value="True"/>
+                <param name="comprehensive" value="False"/>
+                <param name="representation_samples" value="columns"/>
+                <param name="matrix_attr" value="intensity"/>
+            </conditional>
             <output name="hdf5_file_out" file="pm_as.h5" ftype="h5" compare="sim_size"/>
             <output name="matrix_file_out" file="peak_matrix_as_t.txt" ftype="tsv"/>
         </test>
@@ -60,10 +64,12 @@
             <param name="hdf5_file_in" value="pls_rf.h5" ftype="h5"/>
             <param name="ppm" value="2.0"/>
             <param name="delimiter" value="tab"/>
-            <param name="hdf5_to_txt|standard" value="True"/>
-            <param name="hdf5_to_txt|comprehensive" value="True"/>
-            <param name="hdf5_to_txt|samples_representations" value="rows"/>
-            <param name="hdf5_to_txt|matrix_attr" value="mz"/>
+            <conditional name="hdf5_to_txt">
+                <param name="standard" value="True"/>
+                <param name="comprehensive" value="True"/>
+                <param name="samples_representations" value="rows"/>
+                <param name="matrix_attr" value="mz"/>
+            </conditional>
             <output name="hdf5_file_out" file="pm_as.h5" ftype="h5" compare="sim_size"/>
             <output name="matrix_file_out" file="peak_matrix_as_mz.txt" ftype="tsv"/>
             <output name="matrix_comprehensive_file_out" file="peak_matrix_as_mz_compr.txt" ftype="tsv"/>

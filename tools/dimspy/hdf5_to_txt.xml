@@ -78,8 +78,10 @@
     </outputs>
     <tests>
         <test>
-            <param name="input|object_type" value="peak_lists"/>
-            <param name="input|hdf5_file_in" value="pls.h5" ftype="h5"/>
+            <conditional name="input">
+                <param name="object_type" value="peak_lists"/>
+                <param name="hdf5_file_in" value="pls.h5" ftype="h5"/>
+            </conditional>
             <output_collection name="peaklists_txt" type="list">
                 <element name="batch04_QC17_rep01_262" file="batch04_QC17_rep01_262.txt" ftype="tsv"/>
                 <element name="batch04_QC17_rep02_263" file="batch04_QC17_rep02_263.txt" ftype="tsv"/>
@@ -87,27 +89,33 @@
             </output_collection>
         </test>
         <test>
-            <param name="input|object_type" value="peak_matrix"/>
-            <param name="input|hdf5_file_in" value="pm_as_bf_sf.h5" ftype="h5"/>
-            <param name="input|matrix_format" value="comprehensive"/>
-            <param name="input|representation_samples" value="columns"/>
-            <param name="input|matrix_attr" value="intensity"/>
+            <conditional name="input">
+                <param name="object_type" value="peak_matrix"/>
+                <param name="hdf5_file_in" value="pm_as_bf_sf.h5" ftype="h5"/>
+                <param name="matrix_format" value="comprehensive"/>
+                <param name="representation_samples" value="columns"/>
+                <param name="matrix_attr" value="intensity"/>
+            </conditional>
             <output name="matrix_comprehensive_file_out" file="peak_matrix_hdf5_to_txt_intensity.txt" ftype="tsv"/>
         </test>
         <test>
-            <param name="input|object_type" value="peak_matrix"/>
-            <param name="input|hdf5_file_in" value="pm_as_bf_sf.h5" ftype="h5"/>
-            <param name="input|matrix_format" value="standard"/>
-            <param name="input|representation_samples" value="rows"/>
-            <param name="input|matrix_attr" value="mz"/>
+            <conditional name="input">
+                <param name="object_type" value="peak_matrix"/>
+                <param name="hdf5_file_in" value="pm_as_bf_sf.h5" ftype="h5"/>
+                <param name="matrix_format" value="standard"/>
+                <param name="representation_samples" value="rows"/>
+                <param name="matrix_attr" value="mz"/>
+            </conditional>
             <output name="matrix_file_out" file="peak_matrix_hdf5_to_txt_mz.txt" ftype="tsv"/>
         </test>
         <test>
-            <param name="input|object_type" value="peak_matrix"/>
-            <param name="input|hdf5_file_in" value="pm_as_bf_sf.h5" ftype="h5"/>
-            <param name="input|matrix_format" value="standard_comprehensive"/>
-            <param name="input|representation_samples" value="rows"/>
-            <param name="input|matrix_attr" value="snr"/>
+            <conditional name="input">
+                <param name="object_type" value="peak_matrix"/>
+                <param name="hdf5_file_in" value="pm_as_bf_sf.h5" ftype="h5"/>
+                <param name="matrix_format" value="standard_comprehensive"/>
+                <param name="representation_samples" value="rows"/>
+                <param name="matrix_attr" value="snr"/>
+            </conditional>
             <output name="matrix_file_out" file="peak_matrix_hdf5_to_txt_snr.txt" ftype="tsv"/>
             <output name="matrix_comprehensive_file_out" file="peak_matrix_hdf5_to_txt_comprehensive_snr.txt" ftype="tsv"/>
         </test>

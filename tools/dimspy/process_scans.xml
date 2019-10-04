@@ -31,18 +31,18 @@
         --snr-threshold $snr_threshold
         --ppm $mults.ppm
         --min_scans $mults.min_scans
-        #if $mults.min_fraction > 0.0
+        #if float($mults.min_fraction) > 0.0
             --min-fraction $mults.min_fraction
         #else
             --min-fraction 0.0
         #end if
-        #if $mults.rsd_threshold > 0.0
+        #if float($mults.rsd_threshold) > 0.0
             --rsd-threshold $mults.rsd_threshold
         #end if
         #if $adv.skip_stitching
             --skip-stitching
         #end if
-        #if $adv.ringing_threshold > 0.0
+        #if float($adv.ringing_threshold) > 0.0
             --ringing-threshold $adv.ringing_threshold
         #end if
         #for $mzr in $adv.remove_mz_range
@@ -74,11 +74,6 @@
             </param>
             <when value="zip_file">
                 <param name="source" type="data" format="zip" label="Zip file containing *.mzml or *.raw files" argument="--source">
-                    <validator type="empty_field" />
-                </param>
-            </when>
-            <when value="library">
-                <param name="source" type="text" size="40" label="Library directory containing *.mzml or *.raw files" argument="--source">
                     <validator type="empty_field" />
                 </param>
             </when>
@@ -150,15 +145,19 @@
     </outputs>
     <tests>
         <test>
-            <param name="input|format" value="zip_file" />
-            <param name="input|source" value="MTBLS79_mzml_triplicates.zip" ftype="zip" />
+            <conditional name="input">
+                <param name="format" value="zip_file" />
+                <param name="source" value="MTBLS79_mzml_triplicates.zip" ftype="zip" />
+            </conditional>
             <param name="filelist" value="filelist_mzml_triplicates.txt" ftype="tsv" />
             <param name="function" value="median" />
             <param name="snr_threshold" value="10.0" />
-            <param name="mults|ppm" value="2.0" />
-            <param name="mults|min_scans" value="1" />
-            <param name="mults|min_fraction" value="0.5" />
-            <param name="mults|rsd_threshold" value="0" />
+            <conditional name="mults">
+                <param name="ppm" value="2.0" />
+                <param name="min_scans" value="1" />
+                <param name="min_fraction" value="0.5" />
+                <param name="rsd_threshold" value="0" />
+            </conditional>
             <param name="delimiter" value="tab" />
             <output name="hdf5_file_out" value="pls.h5" ftype="h5" compare="sim_size" />
             <output name="report" value="report_pls_01.xt" ftype="txt"/>
@@ -169,14 +168,18 @@
             </output_collection>
         </test>
         <test>
-            <param name="input|format" value="zip_file" />
-            <param name="input|source" value="batch_04_QC18_mzml_triplicate.zip" ftype="zip" />
+            <conditional name="input">
+                <param name="format" value="zip_file" />
+                <param name="source" value="batch_04_QC18_mzml_triplicate.zip" ftype="zip" />
+            </conditional>
             <param name="function" value="median" />
             <param name="snr_threshold" value="10.0" />
-            <param name="mults|ppm" value="2.0" />
-            <param name="mults|min_scans" value="1" />
-            <param name="mults|min_fraction" value="0.8" />
-            <param name="mults|rsd_threshold" value="20.0" />
+            <conditional name="mults">
+                <param name="ppm" value="2.0" />
+                <param name="min_scans" value="1" />
+                <param name="min_fraction" value="0.8" />
+                <param name="rsd_threshold" value="20.0" />
+            </conditional>
             <param name="delimiter" value="tab" />
             <output name="hdf5_file_out" value="pls_QC18.h5" ftype="h5" compare="sim_size"/>
             <output name="report" value="report_pls_02.xt" ftype="txt"/>
@@ -187,21 +190,25 @@
             </output_collection>
         </test>
         <test>
-            <param name="input|format" value="data_collection" />
-            <param name="input|source">
-                <collection type="list">
-                    <element name="batch04_QC17_rep02_263" value="batch04_QC17_rep02_263.mzML" />
-                    <element name="batch04_QC17_rep01_262" value="batch04_QC17_rep01_262.mzML" />
-                    <element name="batch04_QC17_rep03_264" value="batch04_QC17_rep03_264.mzML" />
-                </collection>
-            </param>
+            <conditional name="input">
+                <param name="format" value="data_collection" />
+                <param name="source">
+                    <collection type="list">
+                        <element name="batch04_QC17_rep02_263" value="batch04_QC17_rep02_263.mzML" />
+                        <element name="batch04_QC17_rep01_262" value="batch04_QC17_rep01_262.mzML" />
+                        <element name="batch04_QC17_rep03_264" value="batch04_QC17_rep03_264.mzML" />
+                    </collection>
+                </param>
+            </conditional>
             <param name="filelist" value="filelist_mzml_QC17_triplicate.txt" ftype="tsv" />
             <param name="function" value="median" />
             <param name="snr_threshold" value="100.0" />
-            <param name="mults|ppm" value="2.0" />
-            <param name="mults|min_scans" value="1" />
-            <param name="mults|min_fraction" value="0.5" />
-            <param name="mults|rsd_threshold" value="0" />
+            <conditional name="mults">
+                <param name="ppm" value="2.0" />
+                <param name="min_scans" value="1" />
+                <param name="min_fraction" value="0.5" />
+                <param name="rsd_threshold" value="0" />
+            </conditional>
             <param name="delimiter" value="tab" />
             <output name="hdf5_file_out" value="pls_scan5.h5" ftype="h5" compare="sim_size" />
             <output name="report" value="report_pls_scan5.txt" ftype="txt"/>

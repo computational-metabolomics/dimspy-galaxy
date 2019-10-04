@@ -51,7 +51,9 @@
         </test>
         <test>
             <param name="hdf5_files_in" value="pls.h5,pls_QC18.h5" ftype="h5" />
-            <param name="multilist|filelist" value="filelist_merge.txt" ftype="tsv"/>
+            <conditional name="multilist">
+                <param name="filelist" value="filelist_merge.txt" ftype="tsv"/>
+            </conditional>
             <output name="hdf5_file_out" value="merged_02.h5" ftype="h5" compare="sim_size" />
         </test>
     </tests>

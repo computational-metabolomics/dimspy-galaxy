@@ -40,10 +40,12 @@
             <param name="hdf5_file_in" value="pm_as_bf_sf.h5" ftype="h5"/>
             <param name="max_fraction" value="0.8"/>
             <param name="delimiter" value="tab"/>
-            <param name="hdf5_to_txt|standard" value="True"/>
-            <param name="hdf5_to_txt|comprehensive" value="False"/>
-            <param name="hdf5_to_txt|representation_samples" value="rows"/>
-            <param name="hdf5_to_txt|matrix_attr" value="intensity"/>
+            <conditional name="hdf5_to_txt">
+                <param name="standard" value="True"/>
+                <param name="comprehensive" value="False"/>
+                <param name="representation_samples" value="rows"/>
+                <param name="matrix_attr" value="intensity"/>
+            </conditional>
             <output name="hdf5_file_out" file="pm_as_bf_sf_mv.h5" ftype="h5" compare="sim_size"/>
             <output name="matrix_file_out" file="peak_matrix_as_bf_sf_mv.txt" ftype="tsv"/>
             <output name="samplelist" file="sample_list_after_mv_filter.txt" ftype="tsv"/>
