@@ -20,8 +20,6 @@
             --input .
         #elif $input.format == 'single_file'
             --input '$input.source.name'
-        #elif $input.format == 'library'
-            --input '$__app__.config.user_library_import_dir/$__user_email__/$input.source'
         #else
             --input '$input.source'
         #end if
@@ -71,7 +69,6 @@
         <conditional name="input">
             <param name="format" type="select" label="Choose the source for the dataset" >
                 <option value="zip_file" selected="true">Zip file from your History containing *.mzML files</option>
-                <option value="library">Library directory name</option>
                 <option value="data_collection">Data collection (*.mzML or *.raw files)</option>
                 <option value="single_file">Single *.mzML or *.raw file</option>
             </param>
@@ -255,10 +252,6 @@ Parameters
 	**Zip file from history** - use this option if you have uploaded a .zip directory containing ONLY .mzML or .raw data files
 	
 		In the **Zip file containing .mzML or .raw files** drop-down menu, select the .zip file containing the files to process.
-
-	**Library directory name** - use this option if data files are stored at a remote server location linked to your Galaxy instance (e.g. on the Research Data Storage [RDS] at the University of Birmingham). 
-	
-		In the **Library directory** box, insert a string specifying the path to your data files. Be sure to exclude the drive letter and user name from this path and to separate sub-directories using FORWARD SLASHES e.g. Y:\\users\\USERNAME\\my_study_folder\\my_data_folder' becomes 'my_study_folder/my_data_folder'.
 
 	**Data collection** - use this option if data files are contained within a Galaxy dataset collection. Dataset collections may be generated within the Galaxy environment.
 	
