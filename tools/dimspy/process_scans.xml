@@ -31,18 +31,18 @@
         --snr-threshold $snr_threshold
         --ppm $mults.ppm
         --min_scans $mults.min_scans
-        #if float($mults.min_fraction) > 0.0
+        #if $mults.min_fraction > 0.0
             --min-fraction $mults.min_fraction
         #else
             --min-fraction 0.0
         #end if
-        #if float($mults.rsd_threshold) > 0.0
+        #if $mults.rsd_threshold > 0.0
             --rsd-threshold $mults.rsd_threshold
         #end if
         #if $adv.skip_stitching
             --skip-stitching
         #end if
-        #if float($adv.ringing_threshold) > 0.0
+        #if $adv.ringing_threshold > 0.0
             --ringing-threshold $adv.ringing_threshold
         #end if
         #for $mzr in $adv.remove_mz_range
@@ -252,6 +252,7 @@ Parameters
 	**Zip file from history** - use this option if you have uploaded a .zip directory containing ONLY .mzML or .raw data files
 	
 		In the **Zip file containing .mzML or .raw files** drop-down menu, select the .zip file containing the files to process.
+
 
 	**Data collection** - use this option if data files are contained within a Galaxy dataset collection. Dataset collections may be generated within the Galaxy environment.
 	
