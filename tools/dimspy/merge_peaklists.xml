@@ -10,7 +10,7 @@
         #for $fn in $hdf5_files_in
             --input '$fn'
         #end for
-        #if $multilist.flag == "true"
+        #if $multilist.flag == 'true'
 	        --output .
 	        --filelist $multilist.filelist'
 	    #else
@@ -18,7 +18,7 @@
             #if $filelist
                 --filelist '$multilist.filelist'
             #end if
-	    #end if
+	#end if
     ]]>
     </command>
     <inputs>

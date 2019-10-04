@@ -6,9 +6,9 @@
     <expand macro="requirements" />
     <command detect_errors="exit_code">
     <![CDATA[
-        #if $input.format == "all"
+        #if $input.format == 'all'
             dimspy get-peaklists
-        #elif $input.format == "average"
+        #elif $input.format == 'average'
             dimspy get-average-peaklist
             --name-peaklist '${input.name_peaklist}'
         #end if
@@ -21,7 +21,7 @@
             --output .
             --delimiter $delimiter
         #end if
-        #if $input.format == "average" and $input.to_txt
+        #if $input.format == 'average' and $input.to_txt
             &&
             mv '${input.name_peaklist}.txt' '$tsv_file_out'
         #end if

@@ -76,6 +76,14 @@
                 <element name="batch04_QC17_rep01_262_2_263_3_264" file="batch04_QC17_rep01_262_2_263_3_264.txt" ftype="tsv"/>
             </output_collection>
         </test>
+        <test>
+            <param name="hdf5_file_in" value="pls_scan5.h5" ftype="h5"/>
+            <param name="replicates" value="3"/>
+            <param name="min_peaks" value="2"/>
+            <param name="ppm" value="2.0"/>
+            <param name="rsd_threshold" value=""/>
+            <output name="report" value="report_pls_rf_03.txt" ftype="txt"/>
+        </test>
     </tests>
     <help>
 		

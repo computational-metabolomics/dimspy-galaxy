@@ -13,7 +13,7 @@
         --min-fraction $min_fraction
         --function $function
         --min-fold-change $min_fold_change
-        #if $remove_blank_samples == "--remove-blank-samples"
+        #if $remove_blank_samples == '--remove-blank-samples'
             $remove_blank_samples
             &&
             dimspy create-sample-list
