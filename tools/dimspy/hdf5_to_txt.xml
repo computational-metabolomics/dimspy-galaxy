@@ -92,7 +92,7 @@
             <param name="input|matrix_format" value="comprehensive"/>
             <param name="input|representation_samples" value="columns"/>
             <param name="input|matrix_attr" value="intensity"/>
-            <output name="matrix_comprehensive_file_out" file="peak_matrix_hdf5_to_txt_intensity.txt" ftype="tsv" compare="sim_size"/>
+            <output name="matrix_comprehensive_file_out" file="peak_matrix_hdf5_to_txt_intensity.txt" ftype="tsv"/>
         </test>
         <test>
             <param name="input|object_type" value="peak_matrix"/>
@@ -100,7 +100,7 @@
             <param name="input|matrix_format" value="standard"/>
             <param name="input|representation_samples" value="rows"/>
             <param name="input|matrix_attr" value="mz"/>
-            <output name="matrix_file_out" file="peak_matrix_hdf5_to_txt_mz.txt" ftype="tsv" compare="sim_size"/>
+            <output name="matrix_file_out" file="peak_matrix_hdf5_to_txt_mz.txt" ftype="tsv"/>
         </test>
         <test>
             <param name="input|object_type" value="peak_matrix"/>
@@ -108,8 +108,8 @@
             <param name="input|matrix_format" value="standard_comprehensive"/>
             <param name="input|representation_samples" value="rows"/>
             <param name="input|matrix_attr" value="snr"/>
-            <output name="matrix_file_out" file="peak_matrix_hdf5_to_txt_snr.txt" ftype="tsv" compare="sim_size"/>
-            <output name="matrix_comprehensive_file_out" file="peak_matrix_hdf5_to_txt_comprehensive_snr.txt" ftype="tsv" compare="sim_size"/>
+            <output name="matrix_file_out" file="peak_matrix_hdf5_to_txt_snr.txt" ftype="tsv"/>
+            <output name="matrix_comprehensive_file_out" file="peak_matrix_hdf5_to_txt_comprehensive_snr.txt" ftype="tsv"/>
         </test>
     </tests>
     <help>

@@ -8,16 +8,12 @@
     <![CDATA[
         #if $input.format == 'data_collection'
             #for $fn in $input.source
-                #if str($fn).endswith('.dat')
-                    ln -s '$fn' '$fn.name'
-            	    &&
-                #end if
+                ln -s '$fn' '$fn.name'
+                &&
             #end for
         #elif $input.format == 'single_file'
-            #if str($input.source).endswith('.dat')
-                ln -s '$input.source' '$input.source.name'
-                &&
-            #end if
+            ln -s '$input.source' '$input.source.name'
+            &&
         #end if
         dimspy process-scans
         #if $input.format == 'data_collection'
