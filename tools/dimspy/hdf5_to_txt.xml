@@ -36,27 +36,27 @@
     ]]>
     </command>
     <inputs>
-        <param name="delimiter" type="hidden" value="tab" argument="--delimiter"/>
+        <param name="delimiter" argument="--delimiter" type="hidden" value="tab" />
         <conditional name="input">
-            <param name="object_type" type="select" label="Content HDF5 file" help="" argument="">
+            <param name="object_type" type="select" label="Content HDF5 file" help="">
                 <option value="peak_matrix" selected="true">Peak Intensity Matrix</option>
                 <option value="peak_lists">Peak list(s)</option>
             </param>
             <when value="peak_lists">
-                <param name="hdf5_file_in" type="data" format="h5" label="Peaklist(s) (HDF5 file)" help="" argument="--input"/>
+                <param name="hdf5_file_in" argument="--input" type="data" format="h5" label="Peaklist(s) (HDF5 file)" help="" />
             </when>
             <when value="peak_matrix">
-                <param name="hdf5_file_in" type="data" format="h5" label="Peak intensity matrix (HDF5 file)" help="" argument="--input"/>
-                <param name="matrix_format" type="select" label="Select format(s) tsv formatted peak instensity matrix" >
+                <param name="hdf5_file_in" argument="--input" type="data" format="h5" label="Peak intensity matrix (HDF5 file)" help="" />
+                <param name="matrix_format" type="select" label="Select format(s) tsv formatted peak instensity matrix" help="">
                     <option value="standard" selected="true">Standard Peak Matrix (i.e. m/z and intensity).</option>
                     <option value="comprehensive">Comprehensive Peak Matrix (e.g. m/z and intensity, rsd, missing values).</option>
                     <option value="standard_comprehensive">Standard and comprehensive</option>
                 </param>
-                <param name="representation_samples" type="select" label="Should the rows or columns represent the samples?">
+                <param name="representation_samples" type="select" label="Should the rows or columns represent the samples?" help="">
                     <option value="rows" selected="true">Rows</option>
                     <option value="columns">Columns</option>
                 </param>
-                <param name="matrix_attr" type="select" label="The Peak Matrix should contain ... values">
+                <param name="matrix_attr" type="select" label="The Peak Matrix should contain ... values" help="">
                     <option value="intensity" selected="true">Intensity</option>
                     <option value="mz">m/z</option>
                     <option value="snr">Signal-to-noise ratio (SNR)</option>

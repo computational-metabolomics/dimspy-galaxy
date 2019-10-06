@@ -26,9 +26,9 @@
     ]]>
     </command>
     <inputs>
-        <param name="hdf5_file_in" type="data" format="h5" label="Peak Intensity Matrix (HDF5 file)" help="" argument="--input"/>
-        <param name="max_fraction" min="0" max="1.0" type="float" value="0.8" label="Maximum percentage of missing values." help="" argument="--max-fraction"/>
-        <param name="delimiter" type="hidden" value="tab" argument="--delimiter"/>
+        <param name="hdf5_file_in" argument="--input" type="data" format="h5" label="Peak Intensity Matrix (HDF5 file)" help="" />
+        <param name="max_fraction" argument="--max-fraction" type="float" min="0" max="1.0" value="0.8" label="Maximum percentage of missing values." help="" />
+        <param name="delimiter" argument="--delimiter" type="hidden" value="tab" label="" help=""/>
         <expand macro="hdf5_pm_to_txt" />
     </inputs>
     <outputs>

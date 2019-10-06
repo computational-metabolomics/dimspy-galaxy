@@ -28,11 +28,11 @@
         <section name="hdf5_to_txt" title="Show options for addtional output (*.tsv files)" expanded="False">
             <param name="standard" type="boolean" checked="false" truevalue="true" falsevalue="false" label="Standard output?" help="Set to &quot;yes&quot; to produce a &quot;standard&quot; Peak Matrix (i.e. m/z and intensity)."/>
             <param name="comprehensive" type="boolean" checked="false" truevalue="true" falsevalue="false" label="Comprehensive output?" help="Set to &quot;yes&quot; to produce a Peak Matrix with additional information (e.g. m/z and intensity, rsd, missing values)."/>
-            <param name="representation_samples" type="select" label="Should the rows or columns represent the samples?">
+            <param name="representation_samples" type="select" label="Should the rows or columns represent the samples?" help="">
                 <option value="rows" selected="true">Rows</option>
                 <option value="columns">Columns</option>
             </param>
-            <param name="matrix_attr" type="select" label="The Peak Matrix should contain ... values">
+            <param name="matrix_attr" type="select" label="The Peak Matrix should contain ... values" help="">
                 <option value="intensity" selected="true">Intensity</option>
                 <option value="mz">m/z</option>
                 <option value="snr">Signal-to-noise ratio (SNR)</option>

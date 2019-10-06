@@ -22,16 +22,16 @@
     ]]>
     </command>
     <inputs>
-        <param name="hdf5_files_in" type="data" multiple="true" format="h5" min="2" label="Peaklist to merge" help="Select a minimum of two hdf5 files" argument="--input" />
+        <param name="hdf5_files_in" argument="--input" type="data" format="h5" multiple="true" min="2" label="Peaklist to merge" help="Select a minimum of two hdf5 files" />
         <conditional name="multilist">
             <param name="flag" type="boolean" checked="false" truevalue="true" falsevalue="false" label="Create multiple merged peaklists?" help="Based on a 'multilist' column in the filelist text file, divide the peaklists into different lists
                                                        e.g. [pl1, pl2, pl3, pl4] can be converted to 2 new lists:
                                                             [pl1, pl3] [pl2, pl4]"/>
             <when value="true">
-                <param name="filelist" type="data" format="tsv,tabular" label="Filelist" argument="filelist" />
+                <param name="filelist" argument="--filelist" type="data" format="tsv,tabular" label="Filelist" />
             </when>
             <when value="false">
-                <param name="filelist" type="data" optional="true" format="tsv,tabular" label="Filelist" argument="filelist" />
+                <param name="filelist" argument="--filelist" type="data" format="tsv,tabular" optional="true" label="Filelist" />
             </when>
         </conditional>
     </inputs>

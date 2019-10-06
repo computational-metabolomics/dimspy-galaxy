@@ -29,15 +29,16 @@
     ]]>
     </command>
     <inputs>
-        <param name="hdf5_file_in" type="data" format="h5" label="Peak Intensity Matrix (HDF5 file)" help="" argument="--input" />
+        <param name="hdf5_file_in" argument="--input" type="data" format="h5" label="Peak Intensity Matrix (HDF5 file)" help="" />
         <conditional name="input">
-            <param name="format" type="select" label="Get..." >
+            <param name="format" type="select" label="Get..." help="">
                 <option value="average" selected="true">Average Peaklist</option>
                 <option value="all">Multiple Peaklists (samples)</option>
              </param>
              <when value="average">
-                 <param name="name_peaklist" type="text" value="" label="Name average Peaklist" argument="--name-peaklist">
+                 <param name="name_peaklist" argument="--name-peaklist" type="text" value="" label="Name average Peaklist" >
                      <validator type="empty_field" />
+                     <validator type="regex" message="Value may include alphanumeric characters, underscores, dashes and spaces.">[A-Za-z0-9_\- ]+</validator>
                  </param>
                  <param name="to_txt" type="boolean" checked="true" truevalue="true" falsevalue="false" label="Write Peaklists to tsv files (data collection)?" help=""/>
              </when>
@@ -45,7 +46,7 @@
                  <param name="to_txt" type="boolean" checked="true" truevalue="true" falsevalue="false" label="Write Peaklists to tsv files?" help=""/>
              </when>
         </conditional>
-        <param name="delimiter" type="hidden" value="tab" argument="--delimiter"/>
+        <param name="delimiter" argument="--delimiter" type="hidden" value="tab" help=""/>
     </inputs>
     <outputs>
         <data name="hdf5_file_out" format="h5" label="${tool.name} on ${on_string}: Peaklists (HDF5 file)"/>

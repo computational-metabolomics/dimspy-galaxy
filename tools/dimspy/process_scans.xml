@@ -6,14 +6,16 @@
     <expand macro="requirements" />
     <command detect_errors="exit_code">
     <![CDATA[
-        dimspy process-scans
+        
         #if $input[0].is_of_type("zip")
+            dimspy process-scans
             --input $input[0]
         #else
             #for $fn in $input
                 ln -s '$fn' '$fn.name'
                 &&
             #end for
+            dimspy process-scans
             --input .
         #end if
         --output '$hdf5_file_out'
@@ -59,15 +61,15 @@
     ]]>
     </command>
     <inputs>
-        <param name="input" type="data" multiple="true" format="zip,mzml,thermo.raw,raw" label="*.mzml or *.raw files" argument="--source" />
-        <param name="filelist" type="data" optional="true" format="tsv,tabular" label="Filelist / Samplelist" argument="--filelist" />
-        <param name="function_noise" type="select" label="Function to calculate the noise from each scan" help="" argument="--function-noise">
+        <param name="input" argument="--source" type="data" format="zip,mzml,thermo.raw" multiple="true" label="*.mzml or *.raw files" />
+        <param name="filelist" argument="--filelist" type="data" format="tsv,tabular" optional="true" label="Filelist / Samplelist" />
+        <param name="function_noise" argument="--function-noise" type="select" label="Function to calculate the noise from each scan" help="">
             <option value="median" selected="true">median intensity</option>
             <option value="mean">mean intensity</option>
             <option value="mad">mad (mean absolute deviation) intensity</option>
             <option value="noise_packets">As shown in Xcalibur Qual Browser (Available for *.RAW files only)</option>
         </param>
-        <param name="snr_threshold" type="float" value="3.0" label="Signal-to-noise ratio threshold" help="" argument="--snr-threshold" />
+        <param name="snr_threshold" argument="--snr-threshold" type="float" value="3.0" label="Signal-to-noise ratio threshold" help="" />
         <conditional name="scan_events">
             <param name="filter" type="boolean" label="Filter specific windows or scan events?" help="(--include-scan-events / --exclude-scan-events)"/>
 	    <when value="true">
@@ -90,22 +92,22 @@
             </when>
         </conditional>
         <section name="mults" title="Show options for multiple scans" expanded="True">
-            <param name="min_scans" type="integer" value="1" min="1" label="Minimum number of scans required for each m/z window or event" help="" argument="--min_scans" />
-            <param name="ppm" type="float" value="2.0" label="Ppm error tolerance" help="Maximum tolerated m/z deviation in consecutive scans in parts per million." argument="--ppm" />
-            <param name="min_fraction" min="0.0" max="1.0" type="float" value="0.0" label="Minimum fraction (i.e. percentage) of scans a peak has to be present in." help="Select '0' to skip this step." argument="--min-fraction" />
-            <param name="rsd_threshold" type="float" value="0.0" min="0.0" label="Relative standard deviation threshold" help="Select '0' to skip this step. Maximum tolerated relative standard deviation (RSD) of the peak intensities across scans." argument="--rsd-threshold" />
+            <param name="min_scans" argument="--min_scans" type="integer" min="1" value="1" label="Minimum number of scans required for each m/z window or event" help="" />
+            <param name="ppm" argument="--ppm" type="float" value="2.0" label="Ppm error tolerance" help="Maximum tolerated m/z deviation in consecutive scans in parts per million." />
+            <param name="min_fraction" argument="--min-fraction" type="float" min="0.0" max="1.0" value="0.0" label="Minimum fraction (i.e. percentage) of scans a peak has to be present in." help="Select '0' to skip this step." />
+            <param name="rsd_threshold" argument="--rsd-threshold" type="float" min="0.0" value="0.0" label="Relative standard deviation threshold" help="Select '0' to skip this step. Maximum tolerated relative standard deviation (RSD) of the peak intensities across scans." />
         </section>
         <section name="adv" title="Show advanced options" expanded="True">
-            <param name="skip_stitching" type="boolean" value="false" label="Skip SIM-Stitching?" help="When set to 'yes' it will skip the processing step where (SIM) windows are 'stitched' or 'joined' together. Set this option to 'yes' if you like to proces individual scan/SIM windows (events/ranges) without 'stitching' them."/>
+            <param name="skip_stitching" argument="--skip-stitching" type="boolean" value="false" label="Skip SIM-Stitching?" help="When set to 'yes' it will skip the processing step where (SIM) windows are 'stitched' or 'joined' together. Set this option to 'yes' if you like to proces individual scan/SIM windows (events/ranges) without 'stitching' them."/>
             <repeat name="remove_mz_range" title="Remove m/z range(s)?">
                 <param name="start" type="float" value="0.0" label="Start m/z of removal range"/>
                 <param name="end" type="float" value="0.0" label="End m/z of removal range">
                     <validator type="expression" message="M/z value must be larger than 0.0">float(value) > 0.0</validator>
                 </param>
             </repeat>
-            <param name="ringing_threshold" type="float" value="0.0" min="0.0" max="1.0" label="Relative intensity threshold used to remove ringing artifacts" help="Select '0' to skip this filter." argument="--ringing-threshold" />    
+            <param name="ringing_threshold" argument="--ringing-threshold" type="float" value="0.0" min="0.0" max="1.0" label="Relative intensity threshold used to remove ringing artifacts" help="Select '0' to skip this filter." />    
         </section>
-        <param name="delimiter" type="hidden" value="tab" argument="--delimiter" />
+        <param name="delimiter" argument="--delimiter" type="hidden" value="tab" />
     </inputs>
     <outputs>
         <data name="hdf5_file_out" format="h5" label="${tool.name} on ${on_string}: Peaklists (HDF5 file)" />
@@ -113,7 +115,6 @@
         <collection name="peaklists_txt" type="list" label="${tool.name} on ${on_string}: Peaklists">
             <discover_datasets pattern="(?P&lt;designation&gt;.+)\.txt" format="tsv" directory="." visible="false" />
 	</collection>
-        
     </outputs>
     <tests>
         <test>
@@ -129,6 +130,7 @@
             </conditional>
             <param name="delimiter" value="tab" />
             <output name="hdf5_file_out" value="pls_scan5.h5" ftype="h5" compare="sim_size" />
+
             <output name="report" value="report_pls_scan5.txt" ftype="txt"/>
             <output_collection name="peaklists_txt" type="list">
                 <element name="batch04_QC17_rep01_262" file="batch04_QC17_rep01_262_scan5.txt" ftype="tsv"/>

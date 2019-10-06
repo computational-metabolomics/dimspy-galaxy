@@ -24,10 +24,10 @@
     ]]>
     </command>
     <inputs>
-        <param name="hdf5_file_in" type="data" format="h5" label="Peaklists (HDF5 file)" help="" argument="--input"/>
-        <param name="filelist" type="data" optional="true" format="tsv,tabular" label="Filelist / Samplelist" help="Only provide a filelist if you like to exclude Peaklists, update the metadata (e.g. classLabel), or if you have not provided a filelist for  Process Scans or Replicate Filter." argument="--filelist"/>
-        <param name="ppm" type="float" value="2.0" label="Ppm error tolerance" help="Maximum tolerated m/z deviation across samples in parts per million (ppm)." argument="--ppm"/>
-        <param name="delimiter" type="hidden" value="tab" argument="--delimiter"/>
+        <param name="hdf5_file_in" argument="--input" type="data" format="h5" label="Peaklists (HDF5 file)" help="" />
+        <param name="filelist" argument="--filelist" type="data" format="tsv,tabular" optional="true" label="Filelist / Samplelist" help="Only provide a filelist if you like to exclude Peaklists, update the metadata (e.g. classLabel), or if you have not provided a filelist for  Process Scans or Replicate Filter." />
+        <param name="ppm" argument="--ppm" type="float" value="2.0" label="Ppm error tolerance" help="Maximum tolerated m/z deviation across samples in parts per million (ppm)." />
+        <param name="delimiter" argument="--delimiter" type="hidden" value="tab" />
         <expand macro="hdf5_pm_to_txt" />
     </inputs>
     <outputs>
