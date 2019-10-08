@@ -46,7 +46,11 @@
                 <param name="representation_samples" value="rows"/>
                 <param name="matrix_attr" value="intensity"/>
             </conditional>
-            <output name="hdf5_file_out" file="pm_as_bf_sf_mv.h5" ftype="h5" compare="sim_size"/>
+            <output name="hdf5_file_out" file="pm_as_bf_sf_mv.h5" ftype="h5" compare="sim_size">
+                <assert_contents>
+                    <has_h5_keys keys="fraction,intensity,intra_count,mz,occurrence,present,purity,rsd,snr" />
+                </assert_contents>
+            </output>
             <output name="matrix_file_out" file="peak_matrix_as_bf_sf_mv.txt" ftype="tsv"/>
             <output name="samplelist" file="sample_list_after_mv_filter.txt" ftype="tsv"/>
         </test>

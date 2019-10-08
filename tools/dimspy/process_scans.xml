@@ -129,8 +129,11 @@
                 <param name="rsd_threshold" value="0" />
             </conditional>
             <param name="delimiter" value="tab" />
-            <output name="hdf5_file_out" value="pls_scan5.h5" ftype="h5" compare="sim_size" />
-
+            <output name="hdf5_file_out" value="pls_scan5.h5" ftype="h5" compare="sim_size">
+                <assert_contents>
+                    <has_h5_keys keys="batch04_QC17_rep01_262.mzML,batch04_QC17_rep02_263.mzML,batch04_QC17_rep03_264.mzML" />
+                </assert_contents>
+            </output>
             <output name="report" value="report_pls_scan5.txt" ftype="txt"/>
             <output_collection name="peaklists_txt" type="list">
                 <element name="batch04_QC17_rep01_262" file="batch04_QC17_rep01_262_scan5.txt" ftype="tsv"/>
@@ -150,7 +153,13 @@
                 <param name="rsd_threshold" value="0" />
             </conditional>
             <param name="delimiter" value="tab" />
-            <output name="hdf5_file_out" value="pls.h5" ftype="h5" compare="sim_size" />
+            <output name="hdf5_file_out" value="pls.h5" ftype="h5" compare="sim_size">
+                <assert_contents>
+                    <has_h5_keys keys="batch04_B02_rep01_301.mzML,batch04_B02_rep02_302.mzML,batch04_B02_rep03_303.mzML,
+                                       batch04_QC17_rep01_262.mzML,batch04_QC17_rep02_263.mzML,batch04_QC17_rep03_264.mzML,
+                                       batch04_S01_rep01_247.mzML,batch04_S01_rep02_248.mzML,batch04_S01_rep03_249.mzML" />
+                </assert_contents>
+            </output>
             <output name="report" value="report_pls_01.xt" ftype="txt"/>
             <output_collection name="peaklists_txt" type="list">
                 <element name="batch04_QC17_rep01_262" file="batch04_QC17_rep01_262.txt" ftype="tsv"/>
@@ -158,7 +167,6 @@
                 <element name="batch04_QC17_rep03_264" file="batch04_QC17_rep03_264.txt" ftype="tsv"/>
             </output_collection>
         </test>
-
         <test>
             <param name="input" value="batch_04_QC18_mzml_triplicate.zip" ftype="zip"/>
             <param name="function" value="median" />
@@ -170,7 +178,11 @@
                 <param name="rsd_threshold" value="20.0" />
             </conditional>
             <param name="delimiter" value="tab" />
-            <output name="hdf5_file_out" value="pls_QC18.h5" ftype="h5" compare="sim_size"/>
+            <output name="hdf5_file_out" value="pls_QC18.h5" ftype="h5" compare="sim_size">
+                <assert_contents>
+                    <has_h5_keys keys="batch04_QC18_rep01_280.mzML,batch04_QC18_rep02_281.mzML,batch04_QC18_rep03_282.mzML" />
+                </assert_contents>
+            </output>
             <output name="report" value="report_pls_02.xt" ftype="txt"/>
             <output_collection name="peaklists_txt" type="list">
                 <element name="batch04_QC18_rep01_280" file="batch04_QC18_rep01_280.txt" ftype="tsv"/>

@@ -55,7 +55,11 @@
             <param name="min_peaks" value="2"/>
             <param name="ppm" value="2.0"/>
             <param name="rsd_threshold" value=""/>
-            <output name="hdf5_file_out" value="pls_rf.h5" ftype="h5" compare="sim_size" />
+            <output name="hdf5_file_out" value="pls_rf.h5" ftype="h5" compare="sim_size">
+                <assert_contents>
+                    <has_h5_keys keys="batch04_B02_rep01_301_2_302_3_303,batch04_QC17_rep01_262_2_263_3_264,batch04_S01_rep01_247_2_248_3_249" />
+                </assert_contents>
+            </output>
             <output name="report" value="report_pls_rf_01.txt" ftype="txt"/>
             <output name="samplelist" value="samplelist_1.txt" ftype="tsv"/>
             <output_collection name="peaklists_txt" type="list">
@@ -69,7 +73,11 @@
             <param name="min_peaks" value="2"/>
             <param name="ppm" value="2.0"/>
             <param name="rsd_threshold" value=""/>
-            <output name="hdf5_file_out" value="pls_rf.h5" ftype="h5" compare="sim_size" />
+            <output name="hdf5_file_out" value="pls_rf.h5" ftype="h5" compare="sim_size">
+                <assert_contents>
+                    <has_h5_keys keys="batch04_B02_rep01_301_2_302_3_303,batch04_QC17_rep01_262_2_263_3_264,batch04_S01_rep01_247_2_248_3_249" />
+                </assert_contents>
+            </output>
             <output name="report" value="report_pls_rf_02.txt" ftype="txt"/>
             <output name="samplelist" value="samplelist_2.txt" ftype="tsv"/>
             <output_collection name="peaklists_txt" type="list">
