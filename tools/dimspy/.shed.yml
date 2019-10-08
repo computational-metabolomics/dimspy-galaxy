@@ -1,6 +1,6 @@
 categories:
   - Metabolomics
-description: "[Metabolomics][Galaxy-M][DIMS] DIMSpy: Tools for processing, filtering and analysing direct-infusion mass spectrometry-based metabolomics and lipidommics data"
+description: "[Metabolomics][DIMS] DIMSpy: Tools for processing, filtering and analysing direct-infusion mass spectrometry-based metabolomics and lipidommics data"
 long_description: |
   DIMSpy: Tools for processing, filtering and analysing direct-infusion mass spectrometry-based metabolomics and lipidomics data
   
@@ -14,7 +14,7 @@ homepage_url: https://github.com/computational-metabolomics/dimspy-galaxy
 type: unrestricted
 auto_tool_repositories:
   name_template: "{{ tool_id }}"
-  description_template: "[Metabolomics][Galaxy-M][DIMS] DIMSpy: {{ tool_name }} {{ description }}"
+  description_template: "[Metabolomics][DIMS] DIMSpy: {{ tool_name }} {{ description }}"
 suite:
   name: "suite_dimspy"
   description: "DIMSpy: Tools for processing, filtering and analysing direct-infusion mass spectrometry-based metabolomics and lipidomics data"
