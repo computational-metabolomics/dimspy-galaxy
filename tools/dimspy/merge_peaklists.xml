@@ -10,50 +10,60 @@
         #for $fn in $hdf5_files_in
             --input '$fn'
         #end for
-        #if $multilist.flag == "true"
-	        --output .
-	        --filelist $multilist.filelist'
-	    #else
-	        --output '$hdf5_file_out'
-            #if $filelist
-                --filelist '$multilist.filelist'
-            #end if
+
+        #if $multilist
+            --output .
+        #else
+            --output '$hdf5_file_out'
 	    #end if
+
+  	    #if $filelist
+           --filelist '$filelist'
+	    #end if
+
     ]]>
     </command>
     <inputs>
         <param name="hdf5_files_in" type="data" multiple="true" format="h5" min="2" label="Peaklist to merge" help="Select a minimum of two hdf5 files" argument="--input" />
-        <conditional name="multilist">
-            <param name="flag" type="boolean" checked="false" truevalue="true" falsevalue="false" label="Create multiple merged peaklists?" help="Based on a 'multilist' column in the filelist text file, divide the peaklists into different lists
-                                                       e.g. [pl1, pl2, pl3, pl4] can be converted to 2 new lists:
+        <param name="multilist" type="boolean" checked="false" label="Create multiple merged peaklists?"
+               help="Based on a 'multilist' column in the filelist text file, divide the peaklists into different lists
+                                                       e.g. [pl1 pl2], [pl3, pl4] can be converted to 2 new lists:
                                                             [pl1, pl3] [pl2, pl4]"/>
-            <when value="true">
-                <param name="filelist" type="data" format="tsv,tabular" label="Filelist" argument="filelist" />
-            </when>
-            <when value="false">
-                <param name="filelist" type="data" optional="true" format="tsv,tabular" label="Filelist" argument="filelist" />
-            </when>
-        </conditional>
+        <param name="filelist" type="data" format="tsv,tabular" optional="true" label="Filelist" argument="--filelist"  />
     </inputs>
     <outputs>
         <collection name="multiple_merged" type="list" label="${tool.name} on ${on_string}: Peaklists (HDF5)">
-            <filter>multilist["flag"] is True</filter>
+            <filter>multilist</filter>
             <discover_datasets pattern="(?P&lt;designation&gt;.+)\.hdf5" format="h5" directory="." visible="false" />
         </collection>
         <data name="hdf5_file_out" format="h5" label="${tool.name} on ${on_string}: Peaklists (HDF5 file)">
-            <filter>multilist["flag"] is False</filter>
+            <filter>multilist is False</filter>
         </data>
     </outputs>
     <tests>
         <test>
+            <!-- Merge (no filelist)          -->
             <param name="hdf5_files_in" value="pls.h5,pls_QC18.h5" ftype="h5" />
             <output name="hdf5_file_out" value="merged_01.h5" ftype="h5" compare="sim_size" />
         </test>
         <test>
+            <!-- Merge (with filelist)        -->
             <param name="hdf5_files_in" value="pls.h5,pls_QC18.h5" ftype="h5" />
-            <param name="multilist|filelist" value="filelist_merge.txt" ftype="tsv"/>
+            <param name="filelist" value="filelist_merge.txt" ftype="tsv"/>
             <output name="hdf5_file_out" value="merged_02.h5" ftype="h5" compare="sim_size" />
         </test>
+        <test>
+            <!-- Merge (multilist)            -->
+            <param name="hdf5_files_in" value="pls.h5,pls_QC18.h5" ftype="h5" />
+            <param name="filelist" value="filelist_multilist_merge.txt" ftype="tsv"/>
+            <param name="multilist" value="true"/>
+            <output_collection name="multiple_merged" type="list">
+                <element name="merged_peaklist_001" file="merged_peaklist_001.h5" ftype="h5" compare="sim_size" />
+                <element name="merged_peaklist_002" file="merged_peaklist_002.h5" ftype="h5" compare="sim_size" />
+                <element name="merged_peaklist_003" file="merged_peaklist_003.h5" ftype="h5" compare="sim_size" />
+            </output_collection>
+        </test>
+
     </tests>
     <help>
 ---------------

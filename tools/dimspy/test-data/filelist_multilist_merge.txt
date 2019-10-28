@@ -1,0 +1,14 @@
+filename	classLabel	multilist
+batch04_B02_rep01_301.mzML	blank	1
+batch04_B02_rep02_302.mzML	blank	2
+batch04_B02_rep03_303.mzML	blank	3
+batch04_S01_rep01_247.mzML	sample	1
+batch04_S01_rep02_248.mzML	sample	2
+batch04_S01_rep03_249.mzML	sample	3
+batch04_QC17_rep01_262.mzML	QC	1
+batch04_QC17_rep02_263.mzML	QC	2
+batch04_QC17_rep03_264.mzML	QC	3
+batch04_QC18_rep01_280.mzML	QC	1
+batch04_QC18_rep02_281.mzML	QC	2
+batch04_QC18_rep03_282.mzML	QC	3
+
