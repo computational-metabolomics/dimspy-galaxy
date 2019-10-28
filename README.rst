@@ -30,7 +30,9 @@ Changes
 
 License
 -------
-Released under the GNU General Public License v3.0 (see `LICENSE file <https://github.com/computational-metabolomics/dimspy-galaxy/blob/master/LICENSE>`_)
+DIMSpy and Galaxy tools are released under the GNU General Public License v3.0 (see `LICENSE file <https://github.com/computational-metabolomics/dimspy-galaxy/blob/master/LICENSE>`_)
+
+RawFileReader reading tool. Copyright © 2016 by Thermo Fisher Scientific, Inc. All rights reserved. Using this sofware and/or implies the acceptance of RawFileReader license terms (see `LICENSE file <https://github.com/computational-metabolomics/dimspy-galaxy/blob/master/tools/dimspy/RawFileReaderLicense.md>`_).
 
 
 .. |Build Status (Travis)| image:: https://img.shields.io/travis/computational-metabolomics/dimspy-galaxy.svg?style=flat&maxAge=3600&label=Travis-CI

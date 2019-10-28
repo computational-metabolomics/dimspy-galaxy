@@ -1,4 +1,7 @@
 <macros>
+    <token name="@TOOL_VERSION@">1.4.0</token>
+    <token name="@GALAXY_TOOL_VERSION@">0</token>
+
     <xml name="requirements">
         <requirements>
             <requirement type="package" version="1.4.0">dimspy</requirement>
@@ -157,5 +160,15 @@ Developers and contributors
 
 | 
     </token>
+
+    <token name="@license@"> 
+License
+-------
+DIMSpy is released under the GNU General Public License v3.0 (see `LICENSE file`_)
+
+.. _`LICENSE file`: https://github.com/computational-metabolomics/dimspy-galaxy/blob/master/LICENSE
+
+    </token>
+
 
 </macros>

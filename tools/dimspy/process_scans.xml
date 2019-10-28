@@ -1,4 +1,4 @@
-<tool id="dimspy_process_scans" name="Process Scans (and SIM-Stitch)" version="1.0.0">
+<tool id="dimspy_process_scans" name="Process Scans (and SIM-Stitch)" version="@TOOL_VERSION@+galaxy@GALAXY_TOOL_VERSION@">
     <description> - Read, filter and average MS scans</description>
     <macros>
         <import>macros.xml</import>
@@ -61,7 +61,7 @@
     ]]>
     </command>
     <inputs>
-        <param name="input" argument="--source" type="data" format="zip,mzml,thermo.raw" multiple="true" label="*.mzml or *.raw files" />
+        <param name="input" argument="--source" type="data" format="zip,mzml,thermo.raw" multiple="true" label="*.mzml or *.raw files" help="NOTE: *.raw files are read using the RawFileReader reading tool (Copyright © 2016 by Thermo Fisher Scientific, Inc. All rights reserved). Using this galaxy tool implies the acceptance of RawFileReader license terms. See generic help section below for more detailed information." />
         <param name="filelist" argument="--filelist" type="data" format="tsv,tabular" optional="true" label="Filelist / Samplelist" />
         <param name="function_noise" argument="--function-noise" type="select" label="Function to calculate the noise from each scan" help="">
             <option value="median" selected="true">median intensity</option>
@@ -415,6 +415,13 @@ The Process scans (and SIM stitch) tool will output three file types:
 
 @github_developers_contributors@
 
+@license@
+
+RawFileReader reading tool. Copyright © 2016 by Thermo Fisher Scientific, Inc. All rights reserved. **Using this galaxy tool implies the acceptance of RawFileReader** `license terms`_.
+
+.. _`license terms`: https://github.com/computational-metabolomics/dimspy-galaxy/blob/master/tools/dimspy/RawFileReaderLicense.md
+
+|
     </help>
 
     <expand macro="citations" />
