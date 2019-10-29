@@ -106,8 +106,6 @@ Sample Filter
 Description
 -----------
 
-|
-
 Standard DIMS processing workflow: Process Scans -> Replicate Filter -> Align Samples -> [Missing values sample filter] -> Blank Filter -> **Sample Filter** -> Matrix processing -> Statistics
 
 |
@@ -119,27 +117,23 @@ There are many and varied reasons why a peak may not have been detected in all s
 Parameters
 -----------
 
+**Peak Intensity Matrix (HDF5 file)** (REQUIRED) - a HDF5 file containing the peak intensity matrix to undergo sample filtering.
+
+
+**Apply sample filter within each sample class** (REQUIRED; default **No**) 
+
+    - **No** - check across ALL classes simultaneously whether greater-than the user-defined “Minimum fraction” of samples contained an intensity value for a specific mass spectral peak.
+
+    - **Yes** - check within EACH class separately whether greater-than the user-defined “Minimum fraction” of samples contained an intensity value for a specific mass spectral peak. 
+
+      **IMPORTANT**: if in ANY class a peak is detected in greater-than the user-defined minimum fraction of samples, then the peak is retained in the output peak matrix. For classes in which this condition is not met, the peak intensity recorded for that peak (if any) will still be presented in the output peak matrix. If no peak intensity was recorded in a sample, then a ‘0’ is inserted in to the peak matrix.
+
+
+**Minimum fraction** (REQUIRED, default 0.5) - a numeric value between 0 and 1 indicating the proportion of study samples in which a peak must have a recorded intensity value in order for it to be retained in the output peak intensity matrix; e.g. 0.5 means that at least 50% of samples (whether assessed across all classes, or within each class individually) must have a recorded intensity value for a specific peak in order for it to be retained in the output peak matrix.
+
 |
 
-	**Peak Intensity Matrix (HDF5 file)** (REQUIRED) - a HDF5 file containing the peak intensity matrix to undergo sample filtering.
-
-	|
-
-	**Apply sample filter within each sample class** (REQUIRED; default **No**) 
-
-		**No** - check across ALL classes simultaneously whether greater-than the user-defined “Minimum fraction” of samples contained an intensity value for a specific mass spectral peak.
-
-		**Yes** - check within EACH class separately whether greater-than the user-defined “Minimum fraction” of samples contained an intensity value for a specific mass spectral peak. 
-
-			**IMPORTANT**: if in ANY class a peak is detected in greater-than the user-defined minimum fraction of samples, then the peak is retained in the output peak matrix. For classes in which this condition is not met, the peak intensity recorded for that peak (if any) will still be presented in the output peak matrix. If no peak intensity was recorded in a sample, then a ‘0’ is inserted in to the peak matrix.
-
-	|
-
-	**Minimum fraction** (REQUIRED, default 0.5) - a numeric value between 0 and 1 indicating the proportion of study samples in which a peak must have a recorded intensity value in order for it to be retained in the output peak intensity matrix; e.g. 0.5 means that at least 50% of samples (whether assessed across all classes, or within each class individually) must have a recorded intensity value for a specific peak in order for it to be retained in the output peak matrix.
-
-	|
-
-	@help_options_addtional_output@
+@help_options_addtional_output@
 
 -------------------------------
 
@@ -147,29 +141,14 @@ Parameters
 Output file(s)
 --------------
 
-|
-
 **IMPORTANT** - in all outputs except for the (optional) comprehensive output, if fewer-than the user-defined “Minimum fraction” of samples (whether assessed within a class, or across all classes) had a recorded intensity value (either within or across classes) for a given peak, then that peak will be removed from the output peak matrix. Note that when assessing within classes, only one class needs to have recorded intensity values in greater-than the "Minimum fraction" of samples in order for the peak to be retained in the output peak matrix.
 
-	**Default output** - a HDF5 file containing the sample-filtered peak intensity matrix is exported to the active Galaxy history.
-
-	**Optional outputs** - the metric recorded in any optionally output peak matrix/matrices is defined using the parameter "The peak matrix should contain intensity | m/z | SNR values".
-
-		**Standard output** - a sample-filtered peak matrix in tab-delimited format (“.” as decimal and NA for missing values). By default, study samples are listed row-wise, while mass-to-charge ratios of the aligned mass spectral peaks are presented in columns (to adjust, users must adjust the "Should rows or columns represent samples" toggle to “columns”). 
-
-		**Comprehensive output** - a sample-filtered peak matrix, as described for the "standard output" (above). All peaks included in the input peak matrix are retained in this output. Furthermore, all metadata from the "Process Scans" Filelist/samplelist and the following additional mass spectral peak metrics are included:
-
-
-		@comprehensive_explanation@
-
-			**blank_flag** (may be absent if "Blank filter” tool was not applied prior to “Sample filter” tool) - a boolean value where 0 = reject peak, 1 = accept peak. A peak is accepted during blank filtering if a user-defined minimum proportion of study samples had peak intensity values greater-than the product of the average of “reference” sample peak intensities and the “min_fold_change” parameter.
-
-			**fraction_flag** - a boolean value where 0 = reject peak, 1 = accept peak. If greater-than a user-defined minimum fraction of samples (whether checked across ALL experimental classes, or within ANY of the individual experimental classes) had recorded intensity values for a given peak, then this peak is accepted, i.e. it is considered in downstream processing procedures, while rejected peaks are not.
+@help_outputs_matrix@
 
 -------------------------------------
 
 @github_developers_contributors@
-   
+@license@
     </help>
     <expand macro="citations" />
 </tool>

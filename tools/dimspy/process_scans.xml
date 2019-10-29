@@ -6,12 +6,11 @@
     <expand macro="requirements" />
     <command detect_errors="exit_code">
     <![CDATA[
-        
-        #if $input[0].is_of_type("zip")
+        #if $data.input[0].is_of_type("zip")
             dimspy process-scans
-            --input $input[0]
+            --input $data.input[0]
         #else
-            #for $fn in $input
+            #for $fn in $data.input
                 ln -s '$fn' '$fn.name'
                 &&
             #end for
@@ -61,7 +60,21 @@
     ]]>
     </command>
     <inputs>
-        <param name="input" argument="--source" type="data" format="zip,mzml,thermo.raw" multiple="true" label="*.mzml or *.raw files" help="NOTE: *.raw files are read using the RawFileReader reading tool (Copyright © 2016 by Thermo Fisher Scientific, Inc. All rights reserved). Using this galaxy tool implies the acceptance of RawFileReader license terms. See generic help section below for more detailed information." />
+        <conditional name="data">
+            <param name="type" type="select" label="Select the MS data file type?">
+                <option value="mzml" selected="true">*.mzML files</option>
+                <option value="raw">*.raw files</option>
+            </param>
+            <when value="raw">
+                <param name="license_agreement" type="boolean" label="Do you agree to the RawFileReader license terms?" help="*.raw files are read using the RawFileReader reading tool (Copyright © 2016 by Thermo Fisher Scientific, Inc. All rights reserved). To run this tool and process .raw files you must agree to the RawFileReader license terms. Read it at https://github.com/computational-metabolomics/dimspy-galaxy/blob/master/tools/dimspy/RawFileReaderLicense.md. See generic help section of this tool for more details.">
+                    <validator type="expression" message="You must agree to the RawFileReader license terms to run this tool and process *.raw files.">True == value</validator>
+                </param>
+                <param name="input" argument="--source" type="data" format="thermo.raw" multiple="true" label="*.raw files" />
+            </when>
+            <when value="mzml">
+                <param name="input" argument="--source" type="data" format="zip,mzml" multiple="true" label="*.mzML files" />
+            </when>
+        </conditional>
         <param name="filelist" argument="--filelist" type="data" format="tsv,tabular" optional="true" label="Filelist / Samplelist" />
         <param name="function_noise" argument="--function-noise" type="select" label="Function to calculate the noise from each scan" help="">
             <option value="median" selected="true">median intensity</option>
@@ -72,7 +85,7 @@
         <param name="snr_threshold" argument="--snr-threshold" type="float" value="3.0" label="Signal-to-noise ratio threshold" help="" />
         <conditional name="scan_events">
             <param name="filter" type="boolean" label="Filter specific windows or scan events?" help="(--include-scan-events / --exclude-scan-events)"/>
-	    <when value="true">
+            <when value="true">
                 <param name="incl_excl" type="select" label="Include / Exclude scan event(s)" >
                     <option value="exclude" selected="true">Exclude</option>
                     <option value="include">Include</option>
@@ -114,11 +127,14 @@
         <data name="report" format="txt" label="${tool.name} on ${on_string}: Report" />
         <collection name="peaklists_txt" type="list" label="${tool.name} on ${on_string}: Peaklists">
             <discover_datasets pattern="(?P&lt;designation&gt;.+)\.txt" format="tsv" directory="." visible="false" />
-	</collection>
+        </collection>
     </outputs>
     <tests>
         <test>
-            <param name="input" value="batch04_QC17_rep02_263.mzML,batch04_QC17_rep01_262.mzML,batch04_QC17_rep03_264.mzML" ftype="mzml" />
+            <conditional name="data">
+                <param name="type" value="mzml"/>
+                <param name="input" value="batch04_QC17_rep02_263.mzML,batch04_QC17_rep01_262.mzML,batch04_QC17_rep03_264.mzML" ftype="mzml" />
+            </conditional>
             <param name="filelist" value="filelist_mzml_QC17_triplicate.txt" ftype="tsv" />
             <param name="function" value="median" />
             <param name="snr_threshold" value="100.0" />
@@ -138,7 +154,10 @@
             </output_collection>
         </test>
         <test>
-            <param name="input" value="MTBLS79_mzml_triplicates.zip" ftype="zip"/>
+            <conditional name="data">
+                <param name="type" value="mzml"/>
+                <param name="input" value="MTBLS79_mzml_triplicates.zip" ftype="zip"/>
+            </conditional>
             <param name="filelist" value="filelist_mzml_triplicates.txt" ftype="tsv" />
             <param name="function" value="median" />
             <param name="snr_threshold" value="10.0" />
@@ -158,7 +177,10 @@
             </output_collection>
         </test>
         <test>
-            <param name="input" value="batch_04_QC18_mzml_triplicate.zip" ftype="zip"/>
+            <conditional name="data">
+                <param name="type" value="mzml"/>
+                <param name="input" value="batch_04_QC18_mzml_triplicate.zip" ftype="zip"/>
+            </conditional>
             <param name="function" value="median" />
             <param name="snr_threshold" value="10.0" />
             <conditional name="mults">
@@ -190,19 +212,13 @@ Process Scans (and SIM stitch)
 Description
 -----------
 
-|
-
 Standard DIMS processing workflow: **Process Scans** -> Replicate Filter -> Align Samples -> [Missing values sample filter] -> Blank Filter -> Sample Filter -> Matrix processing -> Statistics
-
-|
 
 This tool is used to generate a single mass spectral peaklist for each of the data files defined in the ‘Filelist/Samplelist’. The tool extracts mass spectral peaks from a data file (in either .mzML or .RAW format) and then filters these in accordance with user-defined parameter settings. All peaks remaining after filtering are hierarchically clustered in one-dimension, during which pairs of peaks with similar m/z values are grouped together if the difference between their m/z values, when divided by the average of their m/z values and multiplied by 1 x 10\ :sup:`6` \, equates to less-than the user-defined ppm error tolerance.
 
-|
+**IMPORTANT:** when using .mzML files generated using the Proteowizard tool, SIM-type scans will only be treated as spectra if the ‘simAsSpectra’ filter was set to true during the conversion process, e.g.:
 
-	**IMPORTANT:** when using .mzML files generated using the Proteowizard tool, SIM-type scans will only be treated as spectra if the ‘simAsSpectra’ filter was set to true during the conversion process, e.g.:
-
-		*msconvert.exe example.raw* **--simAsSpectra** *--64 --zlib --filter "peakPicking true 1-”*
+*msconvert.exe example.raw* **--simAsSpectra** *--64 --zlib --filter "peakPicking true 1-”*
 
 -----------------
 
@@ -210,124 +226,101 @@ This tool is used to generate a single mass spectral peaklist for each of the da
 Parameters
 ----------
 
-|
+***.mzml or *.raw files** (REQUIRED) - use one of the following inputs:
 
-***.mzml or *.raw files** (REQUIRED) - select one of the following:
+    * **Single or multiple .mzML or .raw file**
 
-        * **Zip file** from history - use this option if you have uploaded a .zip directory containing ONLY .mzML or .raw data files
-	
-        * **Data collection** - use this option if .mzml or .raw files are contained within a Galaxy dataset collection. Dataset collections may be generated within the Galaxy environment.
-	
-        * **Single .mzML or .raw file**
+    * **Data collection** - use this option if .mzml or .raw files are contained within a Galaxy dataset collection. Dataset collections may be generated within the Galaxy environment.
 
-|
+    * **Zip file** from history - use this option if you have uploaded a \*.zip directory containing \*.mzML files (.raw files are not supported).
 
 
 **Filelist / Samplelist** (HIGHLY RECOMMENDED) - a table containing **filename** and **classLabel** information for each experimental sample. These column headers MUST be included in the first row of the table.
 
+For a standard DIMS experiment, users are advised to also include the following additional columns in order to ensure their data remains compatible with future versions of the dimspy processing pipeline:
+
+    * **injectionOrder** - integer values ranging from 1 to i, where i is the total number of independent infusions performed as part of a DIMS experiment. e.g. if a study included 20 samples, each of which was injected as four independent replicates, there would be at least 20 * 4 injections, so i = 80 and the range for injection order would be from 1 to 80 in steps of 1.
+
+    * **replicate** - integer value from 1 to r, indicating the order in which technical replicates of each study sample were injected in to the mass spectrometer, e.g. if study samples were analysed in quadruplicate, r = 4 and integer values are accordingly 1, 2, 3, 4.
+
+    * **batch** - integer value from 1 to b, where b corresponds to the total number of batches analysed under define analysis conditions, for any given experiment. e.g. : if 4 independent plates of polar extracts were analysed in the positive ionisation mode, then valid values for batch are 1, 2, 3 and 4. 
+
+    * **NOTE**: for DIMS experiments, “batch” is synonymous with plate, i.e. each independent plate analysed under a given analytical configuration may be considered an individual “batch”.
+
+        This file:
+    
+    * must be uploaded to (or be accessible to) the active Galaxy history in order to allow for its selection in the Filelist / Samplelist drop-down menu. The file list / sample list may be created in .txt format, however, when imported in to the active Galaxy history, users must ensure to select ‘.tabular’ format.
+
+    * may include additional columns, e.g. additional metadata relating to study samples. Ensure that columns names do not conflict with existing column names.
+
 |
 
-	For a standard DIMS experiment, users are advised to also include the following additional columns in order to ensure their data remains compatible with future versions of the dimspy processing pipeline:
-
-		* **injectionOrder** - integer values ranging from 1 to i, where i is the total number of independent infusions performed as part of a DIMS experiment. e.g. if a study included 20 samples, each of which was injected as four independent replicates, there would be at least 20 * 4 injections, so i = 80 and the range for injection order would be from 1 to 80 in steps of 1.
-
-		* **replicate** - integer value from 1 to r, indicating the order in which technical replicates of each study sample were injected in to the mass spectrometer, e.g. if study samples were analysed in quadruplicate, r = 4 and integer values are accordingly 1, 2, 3, 4.
-
-		* **batch** - integer value from 1 to b, where b corresponds to the total number of batches analysed under define analysis conditions, for any given experiment. e.g. : if 4 independent plates of polar extracts were analysed in the positive ionisation mode, then valid values for batch are 1, 2, 3 and 4. 
-		
-		* **NOTE**: for DIMS experiments, “batch” is synonymous with plate, i.e. each independent plate analysed under a given analytical configuration may be considered an individual “batch”.
-
-	This file:
-	
-	* must be uploaded to (or be accessible to) the active Galaxy history in order to allow for its selection in the Filelist / Samplelist drop-down menu. The file list / sample list may be created in .txt format, however, when imported in to the active Galaxy history, users must ensure to select ‘.tabular’ format.
-
-
-	* may include additional columns, e.g. additional metadata relating to study samples. Ensure that columns names do not conflict with existing column names.
-	
-	|
-	
 @example_filelist@
 
 |
 
-|
-
-
-
 **Function to calculate the noise from each scan** (REQUIRED; default = **median**) - toggle requiring selection of one option from the drop-down menu to indicate the preferred algorithm to apply for spectral noise calculation. The following options are available:
 
-	* **Median** - the median of all peak intensities within a given file is used as the noise value. This simplistic approach to estimating noise may be suitable for spectra with many low abundant features, but it is generally not recommended for use when spectra contain relatively few low-abundant peaks e.g. MS2 spectra.
+    * **Median** - the median of all peak intensities within a given file is used as the noise value. This simplistic approach to estimating noise may be suitable for spectra with many low abundant features, but it is generally not recommended for use when spectra contain relatively few low-abundant peaks e.g. MS2 spectra.
 
-	* **Mean** - the unweighted mean average of all peak intensities within a given file is used as the noise value. This simplistic approach to estimating noise may be suitable for spectra with many low abundant features, but it is generally not recommended for use when spectra contain relatively few low-abundant peaks e.g. MS2 spectra.
+    * **Mean** - the unweighted mean average of all peak intensities within a given file is used as the noise value. This simplistic approach to estimating noise may be suitable for spectra with many low abundant features, but it is generally not recommended for use when spectra contain relatively few low-abundant peaks e.g. MS2 spectra.
 
-	* **Mean absolute deviation (MAD)** - the noise value is set as the mean of the absolute differences between peak intensities and the mean peak intensity (calculated across all peak intensities within a given file).
+    * **Mean absolute deviation (MAD)** - the noise value is set as the mean of the absolute differences between peak intensities and the mean peak intensity (calculated across all peak intensities within a given file).
 
-	* **Xcalibur** - the noise value is calculated using the proprietary algorithms contained in Thermo Fisher Scientific’s reader libdrary. This option should only be applied when you are processing .RAW files.
-
-|
+    * **Xcalibur** - the noise value is calculated using the proprietary algorithms contained in Thermo Fisher Scientific’s reader libdrary. This option should only be applied when you are processing .RAW files.
 
 |
-
 
 **Signal-to-noise ratio (SNR) threshold** (REQUIRED; default = 3.0) - a numerical value from 0 upwards. 
 
-	Peaks with a signal-to-noise ratio (SNR) less-than or equal-to this value will be removed from the output peaklist. In the comprehensive peaklist output (.tsv-formatted), peaks with a SNR below the user-defined threshold will have a ‘0’ in the ‘snr-flag’ column, which indicates that they should be ignored in downstream processing procedures. Peaks with a SNR exceeding the user-defined cutoff will have a ‘1’ in the ‘snr-flag’ column.
+Peaks with a signal-to-noise ratio (SNR) less-than or equal-to this value will be removed from the output peaklist. In the comprehensive peaklist output (.tsv-formatted), peaks with a SNR below the user-defined threshold will have a ‘0’ in the ‘snr-flag’ column, which indicates that they should be ignored in downstream processing procedures. Peaks with a SNR exceeding the user-defined cutoff will have a ‘1’ in the ‘snr-flag’ column.
 
 |
-
-|
-
 
 **Filter specific scan windows or scan events?** (OPTIONAL; default = **No**) - a boolean toggle where:
 
-	**No** - do not perform scan event filtering; 
+    * **No** - do not perform scan event filtering; 
 
-	**Yes** - filter specific scan events
+    * **Yes** - filter specific scan events
 
-	* when selected, users must specify whether to 'Exclude' or 'Include' specific scan events. This can be useful if, for example, a user wishes to run the Process Scans tool on only a subset of scan types collected in each file. e.g. some SIM stitch acquisitions may be initiated with an initial 30 second stabilisation period, during which full-scan data are acquired. This full-scan data can be excluded from further consideration by using the ‘exclude’ toggle.
+    * when selected, users must specify whether to 'Exclude' or 'Include' specific scan events. This can be useful if, for example, a user wishes to run the Process Scans tool on only a subset of scan types collected in each file. e.g. some SIM stitch acquisitions may be initiated with an initial 30 second stabilisation period, during which full-scan data are acquired. This full-scan data can be excluded from further consideration by using the ‘exclude’ toggle.
 
-	* Included or excluded scan events must be fully defined by the user, else ALL scan events will be included. To do so:
-
-		* Click the '+ Description' button and insert the start and stop m/z values for the scan event to be included/excluded..
-		* Select the 'scan type' to be filtered. Options are: 'Full scan' or 'SIM scan'
-		* Click '+ Description' to 'Exclude/Include' an additional scan event.
-
-|
+    * Included or excluded scan events must be fully defined by the user, else ALL scan events will be included. To do so:
+        * Click the '+ Description' button and insert the start and stop m/z values for the scan event to be included/excluded..
+        * Select the 'scan type' to be filtered. Options are: 'Full scan' or 'SIM scan'
+        * Click '+ Description' to 'Exclude/Include' an additional scan event.
 
 |
-
 
 **Show options for multiple scans** (OPTIONAL)
 
-	**Minimum number of scans required for each m/z window or event within a raw/mzML data file** (default = 1) - A positive integer equal-to or greater-than 1 that specifies the number of times a given scan event must occur in a given file in order for this scan event to be included in downstream processing steps and in the output .tsv-formatted peaklist.
-	
-	**ppm error tolerance** (default = 2.0) - A positive numerical value equal-to or greater-than zero. This option impacts the clustering of peaks extracted from an input file. If the mass-to-charge ratios of two peaks, when divided by the average of their mass-to-charge ratios and then multiplied by 1 × 106, is equal-to or less-than this user-defined value, then these peaks are clustered together as a single peak. Clustering is applied across all replicates of a given scan event type i.e. with a given input file, all peaks detected in the three replicates of a 50-400 m/z scan event would undergo assessment for the need for clustering.
+    * **Minimum number of scans required for each m/z window or event within a raw/mzML data file** (default = 1) - A positive integer equal-to or greater-than 1 that specifies the number of times a given scan event must occur in a given file in order for this scan event to be included in downstream processing steps and in the output .tsv-formatted peaklist.
 
-	**Minimum fraction (i.e. percentage; default = 0, i.e. skip) of scans a peak has to be present in** - A numerical value from 0 to 1 that specifies the minimum proportion of scans a given mass spectral peak must be detected in, in order for it to be kept in the output peaklist. Here, scans refers to replicates of the same scan event type, i.e. if set to 0.33, then a peak would need to be detected in at least 1 of the 3 replicates of a given scan event type. The ppm error specified by the user will significantly impact which peaks fulfil this criteria.
+    * **ppm error tolerance** (default = 2.0) - A positive numerical value equal-to or greater-than zero. This option impacts the clustering of peaks extracted from an input file. If the mass-to-charge ratios of two peaks, when divided by the average of their mass-to-charge ratios and then multiplied by 1 × 106, is equal-to or less-than this user-defined value, then these peaks are clustered together as a single peak. Clustering is applied across all replicates of a given scan event type i.e. with a given input file, all peaks detected in the three replicates of a 50-400 m/z scan event would undergo assessment for the need for clustering.
 
-	**Relative standard deviation threshold** (default = 0, i.e. skip) - A numerical value equal-to or greater-than 0. If greater than 0, then peaks whose intensity values have a percent relative standard deviation (otherwise termed the percent coefficient of variation) greater-than this value are excluded from the output peaklist.
+    * **Minimum fraction (i.e. percentage; default = 0, i.e. skip) of scans a peak has to be present in** - A numerical value from 0 to 1 that specifies the minimum proportion of scans a given mass spectral peak must be detected in, in order for it to be kept in the output peaklist. Here, scans refers to replicates of the same scan event type, i.e. if set to 0.33, then a peak would need to be detected in at least 1 of the 3 replicates of a given scan event type. The ppm error specified by the user will significantly impact which peaks fulfil this criteria.
 
-|
+    * **Relative standard deviation threshold** (default = 0, i.e. skip) - A numerical value equal-to or greater-than 0. If greater than 0, then peaks whose intensity values have a percent relative standard deviation (otherwise termed the percent coefficient of variation) greater-than this value are excluded from the output peaklist.
 
 |
 
 **Show advanced options** (OPTIONAL)
 
-	**Skip SIM-stitching** (REQUIRED; default = **No**) - a boolean toggle where:
-	
-		**No** - perform SIM stitching
-		
-		**Yes** - skip the processing step where (SIM) windows are 'stitched' or 'joined' together. Use this option if you would like to process individual scan/SIM windows (events/ranges) without 'stitching' them.
+    * **Skip SIM-stitching** (REQUIRED; default = **No**) - a boolean toggle where:
+    
+        * **No** - perform SIM stitching
+        
+        * **Yes** - skip the processing step where (SIM) windows are 'stitched' or 'joined' together. Use this option if you would like to process individual scan/SIM windows (events/ranges) without 'stitching' them.
 
-	**Remove m/z range(s)** (OPTIONAL) - this option allows for specific regions of the output peak matrices to be deleted by the user - this option may be useful for removing sections of a spectrum known to correspond to system noise peaks.
+    * **Remove m/z range(s)** (OPTIONAL) - this option allows for specific regions of the output peak matrices to be deleted by the user - this option may be useful for removing sections of a spectrum known to correspond to system noise peaks.
 
-		**Start m/z of removal range** - a positive numerical value corresponding to the lowest m/z value in the spectral region to be removed.
-		
-		**End m/z of removal range** - a positive numerical value corresponding to the highest m/z value in the spectral region to be removed (must be greater than the ‘start m/z of removal range’).
+        * **Start m/z of removal range** - a positive numerical value corresponding to the lowest m/z value in the spectral region to be removed.
+        
+        * **End m/z of removal range** - a positive numerical value corresponding to the highest m/z value in the spectral region to be removed (must be greater than the ‘start m/z of removal range’).
 
-	**Relative intensity threshold used to remove ringing artefacts** (OPTIONAL) - Fourier transform-based mass spectra often contain peaks (ringing artefacts) around spectral features arising from detection of charged, gas-phase bio-molecules.
+    * **Relative intensity threshold used to remove ringing artefacts** (OPTIONAL) - Fourier transform-based mass spectra often contain peaks (ringing artefacts) around spectral features arising from detection of charged, gas-phase bio-molecules.
 
-	* A positive numerical value indicating the required relative intensity a peak must exceed (with reference to the largest peak in a cluster of peaks) in order to be retained.
+    * A positive numerical value indicating the required relative intensity a peak must exceed (with reference to the largest peak in a cluster of peaks) in order to be retained.
 
 ----------------------------------
 
@@ -339,85 +332,32 @@ Output file(s)
 
 The Process scans (and SIM stitch) tool will output three file types:
 
-	1) **A HDF5 file** containing the processed peaklists
+1) **A HDF5 file** containing the processed peaklists
 
-	|
+2) **A processed peaklist**, presented in tabular format, for each study sample specified in the filelist/samplelist. Each row corresponds to a single peak. Where multiple peaks were grouped together during the hierarchical clustering process, each peaklist metric constitutes an average of the groups’ values. Metrics included in the peaklist are: 
 
-	2) **A processed peaklist**, presented in tabular format, for each study sample specified in the filelist/samplelist. Each row corresponds to a single peak. Where multiple peaks were grouped together during the hierarchical clustering process, each peaklist metric constitutes an average of the groups’ values. Metrics included in the peaklist are: 
+@help_columns_peaklist@
 
-		**mz** - the mass-to-charge ratio of the extracted mass spectral peak
+@example_peaklist@
 
-		**intensity** - the intensity of the extracted mass spectral peak
+|
 
-		**snr** - the signal-to-noise ratio of the extracted peak, which is defined as the ratio of the peak’s intensity value to that of the background noise intensity value
+3) **A tabular “report” file** that details, for each scan event processed in each file:
 
-		**present** - a numeric value greater than 0 that indicates the total number of scans at least one peak was detected in a given file
+    * Scan range of scan event
 
-		**fraction** - a proportion ranging from 0 to 1 that indicates the total number of times a peak was detected in a given scan event type, divided by the total number of occurrences of that scan event type recorded in a given file.
+    * Scan number of scan event
 
-		**purity** - a numeric value ranging from 0 to 1 that indicates the proportion of scans, for a given scan event type, that contained a single mass spectral peak following hierarchical clustering. A purity score less-than 1 indicates that in some proportion of scans, multiple peaks within a single scan were grouped together during the hierarchical clustering process. 
+    * Number of peaks detected in scan event
 
-		**occurrence** -  a numeric value greater than 0 that indicates the total number of peaks that were observed across scans within the user-defined ppm error tolerance. 
-
-		**snr_flag** - a boolean value indicating whether to keep (“1”) or discard (“0”) a peak according to its signal-to-noise ratio value.
-
-		**fraction_flag** - a boolean value indicating whether a peak should be kept or discarded according to the ratio of the number of scans in which it was detected, to the the number of scans in which it was not detected.
-
-		**flags** - a boolean value indicating whether a peak should be retained or discarded based upon both its ‘snr_flag’ and ‘fraction_flag’ boolean values (if either is set to ‘0’ i.e. discard peak,  then the ‘flags’ boolean should also be 0).
-
-		|
-	
-		+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-		| mz        | intensity | snr  | present | fraction | rsd   | occurrence | purity | snr_flag | fraction_flag | flags |
-		+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-		| 90.44000  | 4744.0    | 3.06 | 1       | 0.063    | nan   | 1          | 1      | 1        | 0             | 0     |
-		+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-		| 97.07380  | 5423.6    | 3.52 | 1       | 0.063    | nan   | 1          | 1      | 1        | 0             | 0     |
-		+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-		| 99.04180  | 4105.8    | 3.60 | 1       | 0.063    | nan   | 1          | 1      | 1        | 0             | 0     |
-		+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-		| 99.49800  | 4775.7    | 3.05 | 1       | 0.063    | nan   | 1          | 1      | 1        | 0             | 0     |
-		+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-		| 99.95020  | 5657.8    | 3.63 | 1       | 0.063    | nan   | 1          | 1      | 1        | 0             | 0     |
-		+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-		| 100.40660 | 5489.5    | 3.57 | 3       | 0.188    | 14.51 | 3          | 1      | 1        | 0             | 0     |
-		+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-		| 100.8672  | 4841.18   | 3.27 | 7       | 0.4375   | 16.36 | 7          | 1      | 1        | 0             | 0     |
-		+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-		| 101.0027  | 9047.79   | 5.99 | 16      | 1        | 21.53 | 19         | 0.8125 | 1        | 1             | 1     |
-		+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-		| 101.0033  | 271893.9  | 182  | 16      | 1        | 4.17  | 16         | 1      | 1        | 1             | 1     |
-		+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-		| 101.0038  | 8738.03   | 5.9  | 14      | 0.875    | 9.71  | 14         | 1      | 1        | 1             | 1     |
-		+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-		| 101.004   | 5166.67   | 3.5  | 5       | 0.3125   | 18.02 | 6          | 0.8    | 1        | 0             | 0     |
-		+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-		| 101.0599  | 5894.69   | 3.88 | 2       | 0.125    | 15.06 | 2          | 1      | 1        | 0             | 0     |
-		+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-		| 101.2728  | 6846.28   | 4.44 | 1       | 0.0625   | nan   | 1          | 1      | 1        | 0             | 0     |
-		+-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
-
-		|
-		
-
-	3) **A tabular “report” file** that details, for each scan event processed in each file:
-		
-		* Scan range of scan event
-		
-		* Scan number of scan event
-
-		* Number of peaks detected in scan event
-
-		* Median RSD of peaks detected in each scan event type (only applied if number of scans for a given scan event is <![CDATA[ > ]]> 1
+    * Median RSD of peaks detected in each scan event type (only applied if number of scans for a given scan event is <![CDATA[ > ]]> 1
 
 -----------------------------------
 
-
 @github_developers_contributors@
-
 @license@
 
-RawFileReader reading tool. Copyright © 2016 by Thermo Fisher Scientific, Inc. All rights reserved. **Using this galaxy tool implies the acceptance of RawFileReader** `license terms`_.
+RawFileReader reading tool. Copyright © 2016 by Thermo Fisher Scientific, Inc. All rights reserved. **Using this galaxy tool implies the acceptance of the RawFileReader** `license terms`_.
 
 .. _`license terms`: https://github.com/computational-metabolomics/dimspy-galaxy/blob/master/tools/dimspy/RawFileReaderLicense.md
 
