@@ -101,7 +101,7 @@ Parameters
 
 	* The first .hdf5 file would contain peaklists from [sample_rep1.raw, sample_rep2.raw, blank1_rep1.raw and blank1_rep2.raw], i.e. all filenames associated with multilist value '1'
 
-	* The second .hdf5 file would contain peaklists from [blank_rep1.raw, blank_rep2.raw, blank_rep3.raw and blank_rep4.raw], i.e. all filenames associated with multilist value '2'
+	* The second .hdf5 file would contain peaklists from [sample_rep1.raw, sample_rep2.raw, blank_rep3.raw and blank_rep4.raw], i.e. all filenames associated with multilist value '2'
 	
 	|
 	
@@ -124,13 +124,13 @@ Parameters
 	+-----------------+------------+-----------+-------+----------------+-----------+-------+
 	| sample_rep2.raw | sample     | 2         | 1     | 2              | 1         | [...] |
 	+-----------------+------------+-----------+-------+----------------+-----------+-------+
-	| sample_rep3.raw | sample     | 3         | 1     | 3              | 1         | [...] |
+	| sample_rep3.raw | sample     | 3         | 1     | 3              | 2         | [...] |
 	+-----------------+------------+-----------+-------+----------------+-----------+-------+
-	| sample_rep4.raw | sample     | 4         | 1     | 4              | 1         | [...] |
+	| sample_rep4.raw | sample     | 4         | 1     | 4              | 2         | [...] |
 	+-----------------+------------+-----------+-------+----------------+-----------+-------+
-	| blank_rep1.raw  | blank      | 1         | 1     | 5              | 2         | [...] |
+	| blank_rep1.raw  | blank      | 1         | 1     | 5              | 1         | [...] |
 	+-----------------+------------+-----------+-------+----------------+-----------+-------+
-	| blank_rep2.raw  | blank      | 2         | 1     | 6              | 2         | [...] |
+	| blank_rep2.raw  | blank      | 2         | 1     | 6              | 1         | [...] |
 	+-----------------+------------+-----------+-------+----------------+-----------+-------+
 	| blank_rep3.raw  | blank      | 3         | 1     | 7              | 2         | [...] |
 	+-----------------+------------+-----------+-------+----------------+-----------+-------+
