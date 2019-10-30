@@ -132,7 +132,7 @@ Convert DIMSpy-based HDF5 to tsv
 Description
 -----------
 
-This tool is used to convert a .hdf5 file, containing either peaklist(s) or a peak intensity matrix, to user-friendly .tsv file(s).
+This tool converts a .hdf5 file, containing either peaklist(s) or a peak intensity matrix, to user-friendly .tsv file(s).
 
 ----------------------------------
 
