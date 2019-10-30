@@ -1,16 +1,16 @@
-DIMSpy for Galaxy
+Galaxy tool wrappers for DIMSpy
 ========================
 |Build Status (Travis)| |Git| |Bioconda| |License|
 
-Galaxy tools for Python package DIMSpy: data processing of direct-infusion mass spectrometry-based metabolomics and lipidomics data
+Galaxy tool wrappers for Python package DIMSpy: data processing of direct-infusion mass spectrometry (DIMS)-based metabolomics and lipidomics data
 
 Galaxy
 ------
 `Galaxy <https://galaxyproject.org>`_ is an open, web-based platform for data intensive biomedical research. Whether on the free public server or your own instance, you can perform, reproduce, and share complete analyses. 
 
 
-Developers & Contributors
--------------------------
+Authors, contributors & Contacts
+----------------------------------
  - Ralf J. M. Weber (r.j.weber@bham.ac.uk) - `University of Birmingham (UK) <http://www.birmingham.ac.uk/index.aspx>`_
  - Thomas N. Lawson (tnl495@bham.ac.uk) - `University of Birmingham (UK) <http://www.birmingham.ac.uk/index.aspx>`_
  - Martin R. Jones (m.r.jones.1@bham.ac.uk) - `University of Birmingham (UK) <http://www.birmingham.ac.uk/index.aspx>`_
@@ -26,6 +26,8 @@ will help you to make the PR if you are new to `git`.
 
 Changes
 -------
+v1.4.0+galaxy0
+  - Submitted to the main toolshed (20193010)
 
 
 License

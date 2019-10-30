@@ -6,4 +6,4 @@ before_install:
 
 script:
  - planemo lint ${TRAVIS_BUILD_DIR}/tools/dimspy
- - planemo test --conda_auto_init --galaxy_branch release_19.01 --conda_auto_install --conda_ensure_channels computational-metabolomics,iuc,bioconda,conda-forge,defaults ${TRAVIS_BUILD_DIR}/tools/dimspy
+ - planemo test --galaxy_branch release_19.01 --conda_ensure_channels computational-metabolomics,iuc,bioconda,conda-forge,defaults ${TRAVIS_BUILD_DIR}/tools/dimspy
