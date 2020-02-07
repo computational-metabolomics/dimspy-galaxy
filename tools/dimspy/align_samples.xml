@@ -91,7 +91,8 @@ Standard DIMS processing workflow: Process Scans -> Replicate Filter -> **Align 
 
 |
 
-This tool takes the peaklists for all study samples and merges them in to single aligned peak matrix. The peak matrix comprises a table, with samples along one axis and the mass-to-charge ratios of detected mass spectral peaks along the opposite axis. At the intersection of sample and mass-to-charge ratio, the intensity is given for a specific peak in a specific sample (if no intensity recorded, then ‘0’ is inserted). 
+This tool takes the peaklists for all study samples and merges them in to single aligned peak matrix. The peak matrix comprises a table, with samples along one axis and the mass-to-charge ratios of detected mass spectral peaks along the opposite axis. At the intersection of sample and mass-to-charge ratio, the intensity is given for a specific peak in a specific sample (if no intensity recorded, then ‘0’ is inserted).
+
 -------------------------------
 
 Parameters
@@ -101,7 +102,7 @@ Parameters
 
 |
 
-**Filelist / Samplelist** (REQUIRED) - a file of type ‘tabular’ with the following required columns (additional metadata columns may also be included, e.g. “collectionTime”, “patientID”, etc.):
+**Filelist / Samplelist** (REQUIRED) - a file of type ‘tabular’ with the following required columns (additional metadata columns may also be included, e.g. “collectionTime”, etc.):
 
     - **filename** - the name of the .raw or .mzML files from which peaklists were extracted using the “Process Scans” tool
     
