@@ -4,8 +4,18 @@ Galaxy tool wrappers for DIMSpy
 
 Galaxy tool wrappers for Python package DIMSpy: data processing of direct-infusion mass spectrometry (DIMS)-based metabolomics and lipidomics data
 
+Source code: https://github.com/computational-metabolomics/dimspy
+
+PyPI (The Python Package Index): https://pypi.org/project/dimspy
+
+
+Version
+--------
+v1.4.0+Galaxy0 (`DIMSpy v1.4.0 <https://pypi.org/project/dimspy/1.4.0/>`_)
+
+
 Galaxy
-------
+-------
 `Galaxy <https://galaxyproject.org>`_ is an open, web-based platform for data intensive biomedical research. Whether on the free public server or your own instance, you can perform, reproduce, and share complete analyses. 
 
 
@@ -27,14 +37,20 @@ will help you to make the PR if you are new to `git`.
 Changes
 -------
 v1.4.0+galaxy0
-  - Submitted to the main toolshed (20193010)
+  - First stable release
+  - Final release (Python 2-based version `DIMSpy <https://pypi.org/project/dimspy/1.4.0/>`_)
 
 
-License
+Licenses
 -------
 DIMSpy and Galaxy tools are released under the GNU General Public License v3.0 (see `LICENSE file <https://github.com/computational-metabolomics/dimspy-galaxy/blob/master/LICENSE>`_)
 
-RawFileReader reading tool. Copyright © 2016 by Thermo Fisher Scientific, Inc. All rights reserved. Using this sofware and/or implies the acceptance of RawFileReader license terms (see `LICENSE file <https://github.com/computational-metabolomics/dimspy-galaxy/blob/master/tools/dimspy/RawFileReaderLicense.md>`_).
+**Third-party licenses and copyright**
+
+RawFileReader reading tool. Copyright © 2016 by Thermo Fisher Scientific, Inc. All rights reserved. See `RawFileReaderLicense <https://github.com/computational-metabolomics/dimspy/blob/master/RawFileReaderLicense.rst>`_ for licensing information.
+Using DIMSpy software for processing Thermo Fisher Scientific *.raw files implies the acceptance of the RawFileReader license terms.
+Anyone receiving RawFileReader as part of a larger software distribution (in the current context, as part of DIMSpy) is considered an "end user" under
+section 3.3 of the RawFileReader License, and is not granted rights to redistribute RawFileReader.
 
 
 .. |Build Status (Travis)| image:: https://img.shields.io/travis/computational-metabolomics/dimspy-galaxy.svg?style=flat&maxAge=3600&label=Travis-CI
