@@ -54,7 +54,7 @@ section 3.3 of the RawFileReader License, and is not granted rights to redistrib
 
 
 .. |Build Status (Travis)| image:: https://img.shields.io/travis/computational-metabolomics/dimspy-galaxy.svg?style=flat&maxAge=3600&label=Travis-CI
-   :target: https://travis-ci.org/computational-metabolomics/dimspy-galaxy
+   :target: https://travis-ci.com/computational-metabolomics/dimspy-galaxy
 
 .. |Git| image:: https://img.shields.io/badge/repository-GitHub-blue.svg?style=flat&maxAge=3600
    :target: https://github.com/computational-metabolomics/dimspy
