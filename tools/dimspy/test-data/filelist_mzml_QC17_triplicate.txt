@@ -1,5 +1,0 @@
-filename	replicate	injectionOrder	classLabel
-batch04_QC17_rep01_262.mzML	1	1	QC
-batch04_QC17_rep02_263.mzML	2	2	QC
-batch04_QC17_rep03_264.mzML	3	3	QC
-

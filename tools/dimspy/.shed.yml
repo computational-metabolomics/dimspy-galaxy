@@ -1,17 +1,27 @@
 categories:
   - Metabolomics
-description: "[Metabolomics][DIMS] DIMSpy: Tools for processing, filtering and analysing direct-infusion mass spectrometry-based metabolomics and lipidommics data"
-long_description: "[Metabolomics][DIMS] DIMSpy: Tools for processing, filtering and analysing direct-infusion mass spectrometry-based metabolomics and lipidomics data"
+description: "[Metabolomics][Galaxy-M][DIMS] DIMSpy: Tools for processing, filtering and analysing direct-infusion mass spectrometry-based metabolomics and lipidommics data"
+long_description: |
+  DIMSpy: Tools for processing, filtering and analysing direct-infusion mass spectrometry-based metabolomics and lipidomics data
+  
+  Repository-Maintainer: Ralf Weber (r.j.weber@bham.ac.uk)
+  
+  https://github.com/computational-metabolomics/dimspy
 name: dimspy
-owner: computational-metabolomics
+owner: rjmw
 remote_repository_url: https://github.com/computational-metabolomics/dimspy-galaxy
 homepage_url: https://github.com/computational-metabolomics/dimspy-galaxy
 type: unrestricted
 auto_tool_repositories:
   name_template: "{{ tool_id }}"
-  description_template: "[Metabolomics][DIMS] DIMSpy: {{ tool_name }} {{ description }}"
+  description_template: "[Metabolomics][Galaxy-M][DIMS] DIMSpy: {{ tool_name }} {{ description }}"
 suite:
   name: "suite_dimspy"
-  description: "[Metabolomics][DIMS] DIMSpy: Tools for processing, filtering and analysing direct-infusion mass spectrometry-based metabolomics and lipidomics data"
-  long_description: "[Metabolomics][DIMS] DIMSpy: Tools for processing, filtering and analysing direct-infusion mass spectrometry-based metabolomics and lipidomics data"
+  description: "DIMSpy: Tools for processing, filtering and analysing direct-infusion mass spectrometry-based metabolomics and lipidomics data"
+  long_description: |
+    DIMSpy: Tools for processing, filtering and analysing direct-infusion mass spectrometry-based metabolomics and lipidomics data
+    
+    Repository-Maintainer: Ralf Weber (r.j.weber@bham.ac.uk)
+    
+    https://github.com/computational-metabolomics/dimspy
   type: repository_suite_definition

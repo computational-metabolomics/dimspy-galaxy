@@ -1,26 +1,16 @@
-Galaxy tool wrappers for DIMSpy
+DIMSpy for Galaxy
 ========================
 |Build Status (Travis)| |Git| |Bioconda| |License|
 
-Galaxy tool wrappers for Python package DIMSpy: data processing of direct-infusion mass spectrometry (DIMS)-based metabolomics and lipidomics data
-
-Source code: https://github.com/computational-metabolomics/dimspy
-
-PyPI (The Python Package Index): https://pypi.org/project/dimspy
-
-
-Version
---------
-v1.4.0+Galaxy0 (`DIMSpy v1.4.0 <https://pypi.org/project/dimspy/1.4.0/>`_)
-
+Galaxy tools for Python package DIMSpy: data processing of direct-infusion mass spectrometry-based metabolomics and lipidomics data
 
 Galaxy
--------
+------
 `Galaxy <https://galaxyproject.org>`_ is an open, web-based platform for data intensive biomedical research. Whether on the free public server or your own instance, you can perform, reproduce, and share complete analyses. 
 
 
-Authors, contributors & Contacts
-----------------------------------
+Developers & Contributors
+-------------------------
  - Ralf J. M. Weber (r.j.weber@bham.ac.uk) - `University of Birmingham (UK) <http://www.birmingham.ac.uk/index.aspx>`_
  - Thomas N. Lawson (tnl495@bham.ac.uk) - `University of Birmingham (UK) <http://www.birmingham.ac.uk/index.aspx>`_
  - Martin R. Jones (m.r.jones.1@bham.ac.uk) - `University of Birmingham (UK) <http://www.birmingham.ac.uk/index.aspx>`_
@@ -36,25 +26,15 @@ will help you to make the PR if you are new to `git`.
 
 Changes
 -------
-v1.4.0+galaxy0
-  - First stable release
-  - Final release (Python 2-based version `DIMSpy <https://pypi.org/project/dimspy/1.4.0/>`_)
 
 
-Licenses
+License
 -------
-DIMSpy and Galaxy tools are released under the GNU General Public License v3.0 (see `LICENSE file <https://github.com/computational-metabolomics/dimspy-galaxy/blob/master/LICENSE>`_)
-
-**Third-party licenses and copyright**
-
-RawFileReader reading tool. Copyright © 2016 by Thermo Fisher Scientific, Inc. All rights reserved. See `RawFileReaderLicense <https://github.com/computational-metabolomics/dimspy/blob/master/RawFileReaderLicense.rst>`_ for licensing information.
-Using DIMSpy software for processing Thermo Fisher Scientific *.raw files implies the acceptance of the RawFileReader license terms.
-Anyone receiving RawFileReader as part of a larger software distribution (in the current context, as part of DIMSpy) is considered an "end user" under
-section 3.3 of the RawFileReader License, and is not granted rights to redistribute RawFileReader.
+Released under the GNU General Public License v3.0 (see `LICENSE file <https://github.com/computational-metabolomics/dimspy-galaxy/blob/master/LICENSE>`_)
 
 
 .. |Build Status (Travis)| image:: https://img.shields.io/travis/computational-metabolomics/dimspy-galaxy.svg?style=flat&maxAge=3600&label=Travis-CI
-   :target: https://travis-ci.com/computational-metabolomics/dimspy-galaxy
+   :target: https://travis-ci.org/computational-metabolomics/dimspy-galaxy
 
 .. |Git| image:: https://img.shields.io/badge/repository-GitHub-blue.svg?style=flat&maxAge=3600
    :target: https://github.com/computational-metabolomics/dimspy
@@ -62,5 +42,5 @@ section 3.3 of the RawFileReader License, and is not granted rights to redistrib
 .. |Bioconda| image:: https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat&maxAge=3600
    :target: http://bioconda.github.io/recipes/dimspy/README.html
 
-.. |License| image:: https://img.shields.io/badge/License-GPL%20v3-blue.svg
+.. |License| image:: https://img.shields.io/pypi/l/dimspy.svg?style=flat&maxAge=3600
    :target: https://www.gnu.org/licenses/gpl-3.0.html
