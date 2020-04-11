@@ -25,7 +25,6 @@
             &&
             mv '${input.name_peaklist}.txt' '$tsv_file_out'
         #end if
-
     ]]>
     </command>
     <inputs>
