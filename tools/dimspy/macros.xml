@@ -4,8 +4,7 @@
 
     <xml name="requirements">
         <requirements>
-           <requirement type="package" version="@TOOL_VERSION@" >dimspy</requirement>
-            <yield />
+            <requirement type="package" version="@TOOL_VERSION@">dimspy</requirement>
         </requirements>
     </xml>
 
@@ -33,11 +32,11 @@
         <section name="hdf5_to_txt" title="Show options for addtional output (*.tsv files)" expanded="False">
             <param name="standard" type="boolean" checked="false" truevalue="true" falsevalue="false" label="Standard output?" help="Set to &quot;yes&quot; to produce a &quot;standard&quot; Peak Matrix (i.e. m/z and intensity)."/>
             <param name="comprehensive" type="boolean" checked="false" truevalue="true" falsevalue="false" label="Comprehensive output?" help="Set to &quot;yes&quot; to produce a Peak Matrix with additional information (e.g. m/z and intensity, rsd, missing values)."/>
-            <param name="representation_samples" type="select" label="Should the rows or columns represent the samples?">
+            <param name="representation_samples" type="select" label="Should the rows or columns represent the samples?" help="">
                 <option value="rows" selected="true">Rows</option>
                 <option value="columns">Columns</option>
             </param>
-            <param name="matrix_attr" type="select" label="The Peak Matrix should contain ... values">
+            <param name="matrix_attr" type="select" label="The Peak Matrix should contain ... values" help="">
                 <option value="intensity" selected="true">Intensity</option>
                 <option value="mz">m/z</option>
                 <option value="snr">Signal-to-noise ratio (SNR)</option>
@@ -67,100 +66,246 @@
     
     <token name="@example_filelist@"><![CDATA[
 
-		+-------------------------+----------------+---------------+-----------+--------------------+-----------+
-		| **filename**            | **classLabel** | **replicate** | **batch** | **injectionOrder** | **[...]** |
-		+-------------------------+----------------+---------------+-----------+--------------------+-----------+
-		| sample_rep1.raw         | sample         | 1             | 1         | 1                  |   [...]   |
-		+-------------------------+----------------+---------------+-----------+--------------------+-----------+
-		| sample_rep2.raw         | sample         | 2             | 1         | 2                  |   [...]   |
-		+-------------------------+----------------+---------------+-----------+--------------------+-----------+
-		| sample_rep3.raw         | sample         | 3             | 1         | 3                  |   [...]   |
-		+-------------------------+----------------+---------------+-----------+--------------------+-----------+
-		| sample_rep4.raw         | sample         | 4             | 1         | 4                  |   [...]   |
-		+-------------------------+----------------+---------------+-----------+--------------------+-----------+
-		| blank_rep1.raw          | blank          | 1             | 1         | 5                  |   [...]   |
-		+-------------------------+----------------+---------------+-----------+--------------------+-----------+
-		| blank_rep2.raw          | blank          | 2             | 1         | 6                  |   [...]   |
-		+-------------------------+----------------+---------------+-----------+--------------------+-----------+
-		| blank_rep3.raw          | blank          | 3             | 1         | 7                  |   [...]   |
-		+-------------------------+----------------+---------------+-----------+--------------------+-----------+
-		| blank_rep4.raw          | blank          | 4             | 1         | 8                  |   [...]   |
-		+-------------------------+----------------+---------------+-----------+--------------------+-----------+
-		| ...                     | ...            | ...           | ...       | ...                |   [...]   |
-		+-------------------------+----------------+---------------+-----------+--------------------+-----------+
+        +-------------------------+----------------+---------------+-----------+--------------------+-----------+
+        | **filename**            | **classLabel** | **replicate** | **batch** | **injectionOrder** | **[...]** |
+        +-------------------------+----------------+---------------+-----------+--------------------+-----------+
+        | sample_rep1.raw         | sample         | 1             | 1         | 1                  |   [...]   |
+        +-------------------------+----------------+---------------+-----------+--------------------+-----------+
+        | sample_rep2.raw         | sample         | 2             | 1         | 2                  |   [...]   |
+        +-------------------------+----------------+---------------+-----------+--------------------+-----------+
+        | sample_rep3.raw         | sample         | 3             | 1         | 3                  |   [...]   |
+        +-------------------------+----------------+---------------+-----------+--------------------+-----------+
+        | sample_rep4.raw         | sample         | 4             | 1         | 4                  |   [...]   |
+        +-------------------------+----------------+---------------+-----------+--------------------+-----------+
+        | blank_rep1.raw          | blank          | 1             | 1         | 5                  |   [...]   |
+        +-------------------------+----------------+---------------+-----------+--------------------+-----------+
+        | blank_rep2.raw          | blank          | 2             | 1         | 6                  |   [...]   |
+        +-------------------------+----------------+---------------+-----------+--------------------+-----------+
+        | blank_rep3.raw          | blank          | 3             | 1         | 7                  |   [...]   |
+        +-------------------------+----------------+---------------+-----------+--------------------+-----------+
+        | blank_rep4.raw          | blank          | 4             | 1         | 8                  |   [...]   |
+        +-------------------------+----------------+---------------+-----------+--------------------+-----------+
+        | ...                     | ...            | ...           | ...       | ...                |   [...]   |
+        +-------------------------+----------------+---------------+-----------+--------------------+-----------+
 
      ]]></token>
 
 
+    <token name="@help_columns_peaklist@">
 
-	 
+        - **mz** - the mass-to-charge ratio of the extracted mass spectral peak
 
-    <token name="@help_options_addtional_output@">
+        - **intensity** - the intensity of the extracted mass spectral peak
 
+        - **snr** - the signal-to-noise ratio of the extracted peak, which is defined as the ratio of the peak’s intensity value to that of the background noise intensity value
 
-	**Show options for additional output(s)** (OPTIONAL):
+        - **present** - a numeric value greater than 0 that indicates the total number of scans at least one peak was detected in a given file
 
-			**Standard output** (default = **No**) - boolean toggle where selection of:
+        - **fraction** - a proportion ranging from 0 to 1 that indicates the total number of times a peak was detected in a given scan event type, divided by the total number of occurrences of that scan event type recorded in a given file.
 
-				**No** - prevent the export of a .txt formatted peak matrix to the active Galaxy history.
+        - **purity** - a numeric value ranging from 0 to 1 that indicates the proportion of scans, for a given scan event type, that contained a single mass spectral peak following hierarchical clustering. A purity score less-than 1 indicates that in some proportion of scans, multiple peaks within a single scan were grouped together during the hierarchical clustering process. 
 
-				**Yes** - export a .txt formatted peak matrix to the active Galaxy history that includes only those peaks from the input peak intensity matrix that passed the filtering procedure.
+        - **occurrence** -  a numeric value greater than 0 that indicates the total number of peaks that were observed across scans within the user-defined ppm error tolerance. 
 
-			**Comprehensive output** (default = "No") - boolean toggle where selection of:
+        - **snr_flag** - a boolean value indicating whether to keep (“1”) or discard (“0”) a peak according to its signal-to-noise ratio value.
 
-				**No** - prevents export of a .txt formatted comprehensive peak matrix.
+        - **fraction_flag** - a boolean value indicating whether a peak should be kept or discarded according to the ratio of the number of scans in which it was detected, to the the number of scans in which it was not detected.
 
-				**Yes** - exports a .txt formatted comprehensive peak matrix to the active Galaxy history that contains the m/z, missing values and other metrics associated with all peaks included in the input peak intensity matrix, including the metric defined by the "The peak matrix should contain intensity | m/z | SNR values" parameter.
+        - **flags** - a boolean value indicating whether a peak should be retained or discarded based upon both its ‘snr_flag’ and ‘fraction_flag’ boolean values (if either is set to ‘0’ i.e. discard peak,  then the ‘flags’ boolean should also be 0).
+    
+    </token>
 
-			**Should rows or columns represent the samples?** (default = **rows**) - binary toggle where selection of:
-
-				**rows** - sample information is presented in the rows and m/z values (for aligned mass spectral peaks) in the columns of any output peak matrix.
-
-				**columns** - sample information is presented in the columns and m/z values (for aligned mass spectral peaks) in the rows of any output peak matrix.
-
-			**The peak matrix should contain intensity | m/z | SNR values** - use this option to define which peak metric is inserted in to the cells of any optionally-output peak matrix:
-
-				**Intensity** - writes the absolute peak intensity to the cells of the peak matrix
-
-				**m/z** - writes the mass-to-charge ratio to the cells of the peak matrix
-
-				**signal-to-noise ratio (SNR)** - writes the signal-to-noise ratio to the cells of the peak matrix
+    <token name="@example_peaklist@">
 
 
+**Example of an processed and filtered peaklist**:
+
+
++-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
+| mz        | intensity | snr  | present | fraction | rsd   | occurrence | purity | snr_flag | fraction_flag | flags |
++-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
+| 90.44000  | 4744.0    | 3.06 | 1       | 0.063    | nan   | 1          | 1      | 1        | 0             | 0     |
++-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
+| 97.07380  | 5423.6    | 3.52 | 1       | 0.063    | nan   | 1          | 1      | 1        | 0             | 0     |
++-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
+| 99.04180  | 4105.8    | 3.60 | 1       | 0.063    | nan   | 1          | 1      | 1        | 0             | 0     |
++-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
+| 99.49800  | 4775.7    | 3.05 | 1       | 0.063    | nan   | 1          | 1      | 1        | 0             | 0     |
++-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
+| 99.95020  | 5657.8    | 3.63 | 1       | 0.063    | nan   | 1          | 1      | 1        | 0             | 0     |
++-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
+| 100.40660 | 5489.5    | 3.57 | 3       | 0.188    | 14.51 | 3          | 1      | 1        | 0             | 0     |
++-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
+| 100.8672  | 4841.18   | 3.27 | 7       | 0.4375   | 16.36 | 7          | 1      | 1        | 0             | 0     |
++-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
+| 101.0027  | 9047.79   | 5.99 | 16      | 1        | 21.53 | 19         | 0.8125 | 1        | 1             | 1     |
++-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
+| 101.0033  | 271893.9  | 182  | 16      | 1        | 4.17  | 16         | 1      | 1        | 1             | 1     |
++-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
+| 101.0038  | 8738.03   | 5.9  | 14      | 0.875    | 9.71  | 14         | 1      | 1        | 1             | 1     |
++-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
+| 101.004   | 5166.67   | 3.5  | 5       | 0.3125   | 18.02 | 6          | 0.8    | 1        | 0             | 0     |
++-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
+| 101.0599  | 5894.69   | 3.88 | 2       | 0.125    | 15.06 | 2          | 1      | 1        | 0             | 0     |
++-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
+| 101.2728  | 6846.28   | 4.44 | 1       | 0.0625   | nan   | 1          | 1      | 1        | 0             | 0     |
++-----------+-----------+------+---------+----------+-------+------------+--------+----------+---------------+-------+
 
     </token>
 
-	<token name="@comprehensive_explanation@">
+    <token name="@help_options_addtional_output@">
 
-			**present** - a positive integer value (0 <![CDATA[ < ]]> value <![CDATA[ < ]]> total number of study samples in the filelist / samplelist) that indicates the total number of study samples in which a peak was detected with the specified mass-to-charge ratio, plus or minus the user-defined ppm error tolerance.
+**Show options for additional output(s)** (OPTIONAL):
 
-			**occurrence** - a positive integer value indicating the number of peaks that were grouped together during the alignment procedure and thus, that were used to calculate the average mass-to-charge ratio indicated for the aligned peak. A value greater than given in the “Present” metric indicates that one or more peaklists contained more-than one mass spectral peak with the specified mass-to-charge, plus or minus the user-defined ppm error tolerance.
+- **Standard output** (default = **No**) - boolean toggle where selection of:
 
-			**purity** - a proportion ranging from 0 to 1 that indicates the number of scans in which only a single peak was detected during the peaklist alignment process. If the value in the “occurrence” metric is greater than the “present” metric, purity will be <![CDATA[ < ]]> 1. A purity <![CDATA[ < ]]> 1 means that in at least one peaklist there was more-than one mass spectral peak with the specified mass-to-charge, plus or minus the user-defined ppm error tolerance.
+    - **No** - prevent the export of a .txt formatted peak matrix to the active Galaxy history.
 
-			**rsd_all** - a numeric value indicating the percent relative standard deviation (otherwise termed the percent coefficient of variation) of peak intensities for peaks aligned together using the Align Samples tool. If fewer than 2 peaks were aligned across samples, then the rsd_all column will be filled in with ‘nan’
+    - **Yes** - export a .txt formatted peak matrix to the active Galaxy history that includes only those peaks from the input peak intensity matrix that passed the filtering procedure.
 
-			**flags** - a boolean value indicating whether a peak should be included (“1”) or excluded (“0”) from downstream processing procedures. Exclusion of a peak occurs if the thresholds for “relative standard deviation” and/or “minimum number of technical replicates a peak has to be present in” were not met.
+- **Comprehensive output** (default = "No") - boolean toggle where selection of:
 
-			
+    - **No** - prevents export of a .txt formatted comprehensive peak matrix.
 
-	</token>
+    - **Yes** - exports a .txt formatted comprehensive peak matrix to the active Galaxy history that contains the m/z, missing values and other metrics associated with all peaks included in the input peak intensity matrix, including the metric defined by the "The peak matrix should contain intensity | m/z | SNR values" parameter.
+
+- **Should rows or columns represent the samples?** (default = **rows**) - binary toggle where selection of:
+
+    - **rows** - sample information is presented in the rows and m/z values (for aligned mass spectral peaks) in the columns of any output peak matrix.
+
+    - **columns** - sample information is presented in the columns and m/z values (for aligned mass spectral peaks) in the rows of any output peak matrix.
+
+- **The peak matrix should contain intensity | m/z | SNR values** - use this option to define which peak metric is inserted in to the cells of any optionally-output peak matrix:
+
+    - **Intensity** - writes the absolute peak intensity to the cells of the peak matrix
+
+    - **m/z** - writes the mass-to-charge ratio to the cells of the peak matrix
+
+    - **signal-to-noise ratio (SNR)** - writes the signal-to-noise ratio to the cells of the peak matrix
+
+    </token>
+
+    <token name="@help_outputs_matrix@">
+
+**Default output** - a HDF5 file containing the aligned peak intensity matrix. 
+
+|
+
+**Optional outputs** - the metric recorded in any optionally output peak matrix/matrices is defined using the parameter "The peak matrix should contain intensity | m/z | SNR values". By default, study samples are listed row-wise, while mass-to-charge ratios of the aligned mass spectral peaks are presented in columns (to adjust, users must adjust the "Should rows or columns represent samples" toggle to “columns”).
+
+
+- **Standard output** - an aligned peak matrix in tab-delimited format (“.” as decimal and NA for missing values). 
+
+  **Example of a standard peak intensity matrix**:
+
+  +------------+----------+----------+----------+----------+---------+
+  | mz         | 96.04216 | 99.08062 | 100.0759 | 100.8672 |   ...   |
+  +------------+----------+----------+----------+----------+---------+
+  | QC_1       | 0        | 0        | 0        | 0        |   ...   |
+  +------------+----------+----------+----------+----------+---------+
+  | Blank_1    | 3342.626 | 0        | 0        | 0        |   ...   |
+  +------------+----------+----------+----------+----------+---------+
+  | Control_10 | 0        | 0        | 45432.2  | 0        |   ...   |
+  +------------+----------+----------+----------+----------+---------+
+  | Sample_2   | 0        | 3423.3   | 0        | 0        |   ...   |
+  +------------+----------+----------+----------+----------+---------+
+  | Control_5  | 0        | 0        | 49759    | 0        |   ...   |
+  +------------+----------+----------+----------+----------+---------+
+  | Control_10 | 0        |          | 39890.5  | 0        |   ...   |
+  +------------+----------+----------+----------+----------+---------+
+  | Sample_20  | 0        | 14563.7  | 0        | 0        |   ...   |
+  +------------+----------+----------+----------+----------+---------+
+  | Sample_2   | 0        | 34676.4  | 0        | 0        |   ...   |
+  +------------+----------+----------+----------+----------+---------+
+  | Sample_14  | 0        | 13134.9  | 0        | 521.4    |   ...   |
+  +------------+----------+----------+----------+----------+---------+
+  | ...        | ...      | ...      | ...      | ...      |   ...   |
+  +------------+----------+----------+----------+----------+---------+
+
+  |
+
+- **Comprehensive output** - an aligned peak matrix, as described for the "standard output" (above), including all metadata from the "Process Scans" Filelist/samplelist and the following additional mass spectral peak metrics:
+
+  - **present** - a positive integer value (0 <![CDATA[ < ]]> value <![CDATA[ < ]]> total number of study samples in the filelist / samplelist) that indicates the total number of study samples in which a peak was detected with the specified mass-to-charge ratio, plus or minus the user-defined ppm error tolerance.
+
+  - **occurrence** - a positive integer value indicating the number of peaks that were grouped together during the alignment procedure and thus, that were used to calculate the average mass-to-charge ratio indicated for the aligned peak. A value greater than given in the “Present” metric indicates that one or more peaklists contained more-than one mass spectral peak with the specified mass-to-charge, plus or minus the user-defined ppm error tolerance.
+
+  - **purity** - a proportion ranging from 0 to 1 that indicates the number of scans in which only a single peak was detected during the peaklist alignment process. If the value in the “occurrence” metric is greater than the “present” metric, purity will be <![CDATA[ < ]]> 1. A purity <![CDATA[ < ]]> 1 means that in at least one peaklist there was more-than one mass spectral peak with the specified mass-to-charge, plus or minus the user-defined ppm error tolerance.
+
+  - **rsd_all** - a numeric value indicating the percent relative standard deviation (otherwise termed the percent coefficient of variation) of peak intensities for peaks aligned together using the Align Samples tool. If fewer than 2 peaks were aligned across samples, then the rsd_all column will be filled in with ‘nan’
+
+  - **blank_flag** (may be absent if "Blank filter” tool was not applied) - a boolean value where 0 = reject peak, 1 = accept peak. A peak is accepted during blank filtering if a user-defined minimum proportion of study samples had peak intensity values greater-than the product of the average of “reference” sample peak intensities and the “min_fold_change” parameter.
+
+  - **fraction_flag** (may be absent if "Sample filter” tool was not applied)- a boolean value where 0 = reject peak, 1 = accept peak. If greater-than a user-defined minimum fraction of samples (whether checked across ALL experimental classes, or within ANY of the individual experimental classes) had recorded intensity values for a given peak, then this peak is accepted, i.e. it is considered in downstream processing procedures, while rejected peaks are not.
+
+  - **flags** - a boolean value indicating whether a peak should be included (“1”) or excluded (“0”) from downstream processing procedures. Exclusion of a peak occurs if the thresholds for “relative standard deviation” and/or “minimum number of technical replicates a peak has to be present in” were not met.
+
+  |
+
+  **Example of a comprehensive peak intensity matrix**:
+
+  +-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+---------+
+  | mz          | missing values | tags_batch | tags_replicates | tags_replicate | tags_injectionOrder | tags_classLabel | tags_untyped | 96.04216 | 99.08062 | 100.0759 | 100.8672 |    ...  |
+  +-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+---------+
+  | present*    |                |            |                 |                |                     |                 |              | 1        | 4        | 3        | 1        |    ...  |
+  +-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+---------+
+  | occurrence* |                |            |                 |                |                     |                 |              | 1        | 4        | 4        | 1        |    ...  |
+  +-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+---------+
+  | purity*     |                |            |                 |                |                     |                 |              | 1        | 1        | 1        | 1        |    ...  |
+  +-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+---------+
+  | rsd_all*    |                |            |                 |                |                     |                 |              | nan      | nan      | 10.98    | nan      |    ...  |
+  +-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+---------+
+  | flags*      |                |            |                 |                |                     |                 |              | 1        | 1        | 1        | 1        |    ...  |
+  +-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+---------+
+  | QC_1        | 2901           | 1          | 2_3_4           | 2              | 2                   | QC              |              | 0        | 0        | 0        | 0        |    ...  |
+  +-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+---------+
+  | Blank_1     | 2948           | 1          | 1_2_4           | 1              | 5                   | Blank           |              | 3342.626 | 0        | 0        | 0        |    ...  |
+  +-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+---------+
+  | Control_10  | 2921           | 1          | 2_3_4           | 2              | 10                  | Control         |              | 0        | 0        | 45432.2  | 0        |    ...  |
+  +-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+---------+
+  | Sample_2    | 2819           | 1          | 1_2_4           | 1              | 13                  | Exposed         |              | 0        | 3423.3   | 0        | 0        |    ...  |
+  +-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+---------+
+  | Control_5   | 2877           | 1          | 2_3_4           | 2              | 18                  | Control         |              | 0        | 0        | 49759    | 0        |    ...  |
+  +-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+---------+
+  | Control_10  | 2856           | 1          | 1_2_3           | 1              | 21                  | Control         |              | 0        |          | 39890.5  | 0        |    ...  |
+  +-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+---------+
+  | Sample_20   | 2855           | 1          | 1_2_4           | 1              | 25                  | Exposed         |              | 0        | 14563.7  | 0        | 0        |    ...  |
+  +-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+---------+
+  | Sample_2    | 2814           | 1          | 1_2_4           | 1              | 29                  | Exposed         |              | 0        | 34676.4  | 0        | 0        |    ...  |
+  +-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+---------+
+  | Sample_14   | 2870           | 1          | 1_2_3           | 1              | 33                  | Exposed         |              | 0        | 13134.9  | 0        | 521.4    |    ...  |
+  +-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+---------+
+  | ...         | ...            | ...        | ...             | ...            | ...                 | ...             | ...          | ...      | ...      | ...      | ...      |    ...  |
+  +-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+---------+
+
+    </token>
 
 
     <token name="@github_developers_contributors@"> 
 Github respository (source code)
 --------------------------------
 
-https://github.com/computational-metabolomics/dimspy-galaxy/
+Galaxy Tool Wrappers: https://github.com/computational-metabolomics/dimspy-galaxy/
+DIMSpy package: https://github.com/computational-metabolomics/dimspy/
+
 
 Developers and contributors
 ---------------------------
 
-- **Ralf Weber (r.j.weber@bham.ac.uk) - University of Birmingham (UK)**
-- **Martin R. Jones (m.r.jones.1@bham.ac.uk) - University of Birmingham (UK)**
-- **Thomas Lawson (tnl495@bham.ac.uk) - University of Birmingham (UK)**
+- Ralf Weber (r.j.weber@bham.ac.uk) - University of Birmingham (UK)
+- Martin R. Jones (m.r.jones.1@bham.ac.uk) - University of Birmingham (UK)
+- Thomas Lawson (tnl495@bham.ac.uk) - University of Birmingham (UK)
 
-| 
     </token>
+
+    <token name="@license@"> 
+License
+-------
+DIMSpy is released under the GNU General Public License v3.0 (see `LICENSE file`_)
+
+.. _`LICENSE file`: https://github.com/computational-metabolomics/dimspy-galaxy/blob/master/LICENSE
+
+    </token>
+
 
 </macros>
