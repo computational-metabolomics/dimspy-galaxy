@@ -1,4 +1,4 @@
-<tool id="dimspy_blank_filter" name="Blank Filter" version="1.0.0">
+<tool id="dimspy_blank_filter" name="Blank Filter" version="@TOOL_VERSION@+galaxy@GALAXY_TOOL_VERSION@">
     <description> - Remove 'blank' peaks from the biological mass spectra</description>
     <macros>
         <import>macros.xml</import>
@@ -9,11 +9,11 @@
         dimspy blank-filter
         --input '$hdf5_file_in'
         --output '$hdf5_file_out'
-        --blank-label $blank_label
+        --blank-label '$blank_label'
         --min-fraction $min_fraction
         --function $function
         --min-fold-change $min_fold_change
-        #if $remove_blank_samples == "--remove-blank-samples"
+        #if $remove_blank_samples == '--remove-blank-samples'
             $remove_blank_samples
             &&
             dimspy create-sample-list
@@ -32,19 +32,20 @@
     ]]>
     </command>
     <inputs>
-        <param name="hdf5_file_in" type="data" format="h5" label="Peak Intensity Matrix (HDF5 file)" help="" argument="--input"/>
-        <param name="blank_label" type="text" value="blank" label="Label for the blank samples" argument="--blank-label">
+        <param name="hdf5_file_in" argument="--input" type="data" format="h5" label="Peak Intensity Matrix (HDF5 file)" help="" />
+        <param name="blank_label" argument="--blank-label" type="text" value="blank" label="Label for the blank samples" >
             <validator type="empty_field"/>
+            <validator type="regex" message="Value may include alphanumeric characters, underscores, dashes and spaces.">[A-Za-z0-9_\- ]+</validator>
         </param>
-        <param name="min_fraction" type="float" min="0.0" max="1.0" value="1.0" label="Minimum fraction (percentage)" help="The percentage of samples (with a intensity value) that must beat the blank samples (peak by peak basis)" argument="--min-fraction"/>
-        <param name="function" type="select" label="Function" help="Select the function that should be used to calculate the peak intensity threshold (blanks only)" argument="--function">
+        <param name="min_fraction" argument="--min-fraction" type="float" min="0.0" max="1.0" value="1.0" label="Minimum fraction (percentage)" help="The percentage of samples (with a intensity value) that must beat the blank samples (peak by peak basis)" />
+        <param name="function" argument="--function" type="select" label="Function" help="Select the function that should be used to calculate the peak intensity threshold (blanks only)" >
             <option value="mean" selected="true">mean</option>
             <option value="median">median</option>
             <option value="max">max</option>
         </param>
-        <param name="min_fold_change" type="float" value="10.0" help="" argument="--min-fold-change"/>
-        <param name="remove_blank_samples" type="boolean" checked="true" truevalue="--remove-blank-samples" falsevalue="" label="Remove blank samples (rows)"  help="" argument="--remove-blank-samples"/>
-        <param name="delimiter" type="hidden" value="tab" argument="--delimiter"/>
+        <param name="min_fold_change" argument="--min-fold-change" type="float" value="10.0" help="Minimum fold change" />
+        <param name="remove_blank_samples" argument="--remove-blank-samples" type="boolean" checked="true" truevalue="--remove-blank-samples" falsevalue="" label="Remove blank samples (rows)" help="" />
+        <param name="delimiter" argument="--delimiter" type="hidden" value="tab" />
         <expand macro="hdf5_pm_to_txt" />
     </inputs>
     <outputs>
@@ -62,13 +63,15 @@
             <param name="min_fold_change" value="10.0"/>
             <param name="remove_blank_samples" value="--remove-blank-samples"/>
             <param name="delimiter" value="tab"/>
-            <param name="hdf5_to_txt|standard" value="True"/>
-            <param name="hdf5_to_txt|comprehensive" value="False"/>
-            <param name="hdf5_to_txt|representation_samples" value="rows"/>
-            <param name="hdf5_to_txt|matrix_attr" value="intensity"/>
+            <conditional name="hdf5_to_txt">
+                <param name="standard" value="True"/>
+                <param name="comprehensive" value="False"/>
+                <param name="representation_samples" value="rows"/>
+                <param name="matrix_attr" value="intensity"/>
+            </conditional>
             <output name="hdf5_file_out" file="pm_as_bf_rmbs.h5" ftype="h5" compare="sim_size"/>
-            <output name="matrix_file_out" file="peak_matrix_as_bf_rmbs.txt" ftype="tsv" compare="sim_size"/>
-            <output name="samplelist" file="sample_list_after_bf.txt" ftype="tsv" compare="sim_size"/>
+            <output name="matrix_file_out" file="peak_matrix_as_bf_rmbs.txt" ftype="tsv"/>
+            <output name="samplelist" file="sample_list_after_bf.txt" ftype="tsv"/>
         </test>
         <test>
             <param name="hdf5_file_in" value="pm_as.h5" ftype="h5"/>
@@ -78,13 +81,15 @@
             <param name="min_fold_change" value="10.0"/>
             <param name="remove_blank_samples" value=""/>
             <param name="delimiter" value="tab"/>
-            <param name="hdf5_to_txt|standard" value="True"/>
-            <param name="hdf5_to_txt|comprehensive" value="True"/>
-            <param name="hdf5_to_txt|representation_samples" value="rows"/>
-            <param name="hdf5_to_txt|matrix_attr" value="intensity"/>
+            <conditional name="hdf5_to_txt">
+                <param name="standard" value="True"/>
+                <param name="comprehensive" value="True"/>
+                <param name="representation_samples" value="rows"/>
+                <param name="matrix_attr" value="intensity"/>
+            </conditional>
             <output name="hdf5_file_out" file="pm_as_bf.h5" ftype="h5" compare="sim_size"/>
-            <output name="matrix_file_out" file="peak_matrix_as_bf.txt" ftype="tsv" compare="sim_size"/>
-            <output name="matrix_comprehensive_file_out" file="peak_matrix_as_bf_compr.txt" ftype="tsv" compare="sim_size"/>
+            <output name="matrix_file_out" file="peak_matrix_as_bf.txt" ftype="tsv"/>
+            <output name="matrix_comprehensive_file_out" file="peak_matrix_as_bf_compr.txt" ftype="tsv"/>
         </test>
     </tests>
     <help>
@@ -99,17 +104,13 @@ Blank Filter
 Description
 -----------
 
-|
-
 Standard DIMS processing workflow: Process Scans -> Replicate Filter -> Align Samples -> [Missing values sample filter] -> **Blank Filter** -> Sample Filter -> Matrix processing -> Statistics
 
 |
 
 This tool is typically used to subtract peaks from the input peak intensity matrix that are believed to originate from non-biological sources e.g. leachables/extractables from pipette tips, plates, tubes and other consumables, as well as electrical noise peaks and peaks originating from solvents, infusion instrumentation etc. 
 
-In a routine DIMS analytical workflow, a set of extraction blank samples are prepared and analysed alongside other study samples. These “reference” samples are equivalent to the other study samples, with the exception that they do not contain the biological material to be analysed in the study. Peaks detected in these samples are therefore likely to be of non-biological origin. These peaks are removed from the peak intensity matrix if fewer-than the user-defined 'minimum fraction' of non-reference study samples have an intensity ratio (relative to the blank class) greater-than the user-specified 'min_fold_change'; e.g. a minimum fraction of 0.5 and min_fold_change of 10 requires that, for any given peak, at least 50% of the non-reference study samples have an intensity value at least 10 times greater than average intensity value calculated from “reference” samples.
-
-|
+In a routine DIMS analytical workflow, a set of extraction blank samples are prepared and analysed alongside other study samples. These “reference” samples are equivalent to the other study samples, with the exception that they do not contain the biological material to be analysed in the study. Peaks detected in these samples are therefore likely to be of non-biological origin. These peaks are removed from the peak intensity matrix if fewer-than the user-defined 'minimum fraction' of non-reference study samples have an intensity ratio (relative to the blank class) greater-than the user-specified 'Miniumum fold change'; e.g. a minimum fraction of 0.5 and 'miniumum fold change' of 10 requires that, for any given peak, at least 50% of the non-reference study samples have an intensity value at least 10 times greater than average intensity value calculated from “reference” samples.
 
 **Note** - while extraction blank samples are typically used to filter peaks from the peak intensity matrix, this tool can in principle be used to filter peaks originating from any class defined in the Process Scans or Replicate Filter metadata file. The class used for filtering the peak intensity matrix is defined using the **Label for the blank samples** parameter.
 
@@ -120,40 +121,33 @@ Parameters
 
 |
 
-	**Peak Intensity Matrix (HDF5 file)** (REQUIRED) - a peak intensity matrix (in .hdf5 format), typically returned from the 'Align Samples' tool.
+**Peak Intensity Matrix (HDF5 file)** (REQUIRED) - a peak intensity matrix (in .hdf5 format), typically returned from the 'Align Samples' tool.
 
-	|
+**Label for the blank samples** (REQUIRED) - a string indicating the name of the class to be used for filtering (e.g. blank), i.e. the “reference” class. This string must have been included in the “classLabel” column of the metadata file associated with the Process Scans or Replicate Filter tool(s).
 
-	**Label for the blank samples** (REQUIRED) - a string indicating the name of the class to be used for filtering (e.g. blank), i.e. the “reference” class. This string must have been included in the “classLabel” column of the metadata file associated with the Process Scans or Replicate Filter tool(s).
+**Minimum fraction (percentage)** (REQUIRED; default = 1) - a numeric value ranging from 0 to 1. Setting this value to 0 will skip this filtering step. A value greater than 0 requires that for each peak in the peak intensity matrix, at least this proportion of non-reference samples have to have an intensity value that exceeds the product of: (A) the average intensity of “reference” class intensities and (B)  the user-defined “Minimum fold change”. If this condition is not met, the peak is removed from the peak intensity matrix.
 
-	|
+**Function** (REQUIRED; default = **mean**) - toggle, where selection of:
 
-	**Minimum fraction (percentage)** (REQUIRED; default = 1) - a numeric value ranging from 0 to 1. Setting this value to 0 will skip this filtering step. A value greater than 0 requires that for each peak in the peak intensity matrix, at least this proportion of non-reference samples have to have an intensity value that exceeds the product of: (A) the average intensity of “reference” class intensities and (B)  the user-defined “min_fold_change”. If this condition is not met, the peak is removed from the peak intensity matrix.
+    - **mean** - corresponds to using the non-weighted average of “reference” sample peak intensities (NA values are ignored) in calculating the “reference” to “non-reference” peak intensity ratio.
 
-	|
+    - **median** - corresponds to using the median of “reference” sample peak intensities (NA values are ignored) in calculating the “reference” to “non-reference” peak intensity ratio.
 
-	 **Function** (REQUIRED; default = **mean**) - toggle, where selection of:
+    - **max** corresponds to the use of the maximum intensity among “reference” sample peak intensities (NA values are ignored) in calculating the “reference” to “non-reference” peak intensity ratio.
 
-		**mean** - corresponds to using the non-weighted average of “reference” sample peak intensities (NA values are ignored) in calculating the “reference” to “non-reference” peak intensity ratio.
+|
 
-		**median** - corresponds to using the median of “reference” sample peak intensities (NA values are ignored) in calculating the “reference” to “non-reference” peak intensity ratio.
+**Minimum fold change** (REQUIRED; default = 10) - numeric value from 0 upwards. When minimum fraction filtering is enabled, this value defines the minimum required ratio between the intensity of a peak in a “non-reference” sample and the average intensity of the “reference” sample(s). Peaks with ratios exceeding this threshold are considered to have been reliably detected in a “non-reference” sample.
 
-		**max** corresponds to the use of the maximum intensity among “reference” sample peak intensities (NA values are ignored) in calculating the “reference” to “non-reference” peak intensity ratio.
+|
 
-	|
-	
-	**min_fold_change** (REQUIRED; default = 10) - numeric value from 0 upwards. When minimum fraction filtering is enabled, this value defines the minimum required ratio between the intensity of a peak in a “non-reference” sample and the average intensity of the “reference” sample(s). Peaks with ratios exceeding this threshold are considered to have been reliably detected in a “non-reference” sample.
+**Remove blank samples (rows)** (REQUIRED; default = **Yes**) - toggle:
 
-	|
+    **Yes** - samples belonging to the user-defined “reference” class are removed from the output peak matrix
 
-	**Remove blank samples (rows)** (REQUIRED; default = **Yes**) - toggle:
+    **No** - samples belonging to the user-defined “reference” class are retained in the output peak matrix.
 
-		**Yes** - samples belonging to the user-defined “reference” class are removed from the output peak matrix
-
-		**No** - samples belonging to the user-defined “reference” class are retained in the output peak matrix.
-
-	|	
-
+|    
 
 @help_options_addtional_output@
 
@@ -162,28 +156,15 @@ Parameters
 Output file(s)
 --------------
 
-**IMPORTANT** - in all outputs except for the (optional) comprehensive output, if fewer-than the user-defined “Minimum fraction” of “non-reference” samples had an intensity value that, when divided by the average “reference” class peak intensity value, were less than the user-defined “min_fold_change” parameter, then that peak will be removed from the output peak matrix.
-
-	**Default output** - a HDF5 file containing the sample-filtered peak intensity matrix is exported to the active Galaxy history.
-
-	**Optional outputs** - the metric recorded in the optional output peak matrix/matrices is defined using the parameter "The peak matrix should contain intensity | m/z | SNR values".
-
-		**Standard output** - exports a blank-filtered peak matrix to the active Galaxy history as a tab-delimited text file (“.” as decimal and NA for missing values). By default, study samples are listed row-wise, while mass-to-charge ratios of the aligned mass spectral peaks are presented in columns (to adjust, users must adjust the "Should rows or columns represent samples" toggle to “columns”). 
-
-		**Comprehensive output** - exports a blank-filtered peak matrix, as described for the "standard output" (above). All peaks included in the input peak matrix are retained in this output. The following additional columns are included:
+**IMPORTANT** - in all outputs except for the (optional) comprehensive output, if fewer-than the user-defined “Minimum fraction” of “non-reference” samples had an intensity value that, when divided by the average “reference” class peak intensity value, were less than the user-defined “Minimum fold change” parameter, then that peak will be removed from the output peak matrix.
 
 
-		@comprehensive_explanation@
-
-			**blank_flag** - a boolean value where 0 = reject peak, 1 = accept peak. A peak is accepted during sample filtering if a user-defined minimum proportion of study samples had recorded intensity values for that peak.
-
-
-
+@help_outputs_matrix@
 
 -----------------------------
 
 @github_developers_contributors@  
-    
+@license@
     </help>
     <expand macro="citations" />
 </tool>

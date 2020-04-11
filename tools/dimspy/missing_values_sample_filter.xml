@@ -1,4 +1,4 @@
-<tool id="dimspy_missing_values_sample_filter" name="Missing Values Sample Filter" version="1.0.0">
+<tool id="dimspy_missing_values_sample_filter" name="Missing Values Sample Filter" version="@TOOL_VERSION@+galaxy@GALAXY_TOOL_VERSION@">
     <description> - Remove samples with a high percentage of missing values</description>
     <macros>
         <import>macros.xml</import>
@@ -26,9 +26,9 @@
     ]]>
     </command>
     <inputs>
-        <param name="hdf5_file_in" type="data" format="h5" label="Peak Intensity Matrix (HDF5 file)" help="" argument="--input"/>
-        <param name="max_fraction" min="0" max="1.0" type="float" value="0.8" label="Maximum percentage of missing values." help="" argument="--max-fraction"/>
-        <param name="delimiter" type="hidden" value="tab" argument="--delimiter"/>
+        <param name="hdf5_file_in" argument="--input" type="data" format="h5" label="Peak Intensity Matrix (HDF5 file)" help="" />
+        <param name="max_fraction" argument="--max-fraction" type="float" min="0" max="1.0" value="0.8" label="Maximum percentage of missing values." help="" />
+        <param name="delimiter" argument="--delimiter" type="hidden" value="tab" label="" help=""/>
         <expand macro="hdf5_pm_to_txt" />
     </inputs>
     <outputs>
@@ -40,13 +40,15 @@
             <param name="hdf5_file_in" value="pm_as_bf_sf.h5" ftype="h5"/>
             <param name="max_fraction" value="0.8"/>
             <param name="delimiter" value="tab"/>
-            <param name="hdf5_to_txt|standard" value="True"/>
-            <param name="hdf5_to_txt|comprehensive" value="False"/>
-            <param name="hdf5_to_txt|representation_samples" value="rows"/>
-            <param name="hdf5_to_txt|matrix_attr" value="intensity"/>
+            <conditional name="hdf5_to_txt">
+                <param name="standard" value="True"/>
+                <param name="comprehensive" value="False"/>
+                <param name="representation_samples" value="rows"/>
+                <param name="matrix_attr" value="intensity"/>
+            </conditional>
             <output name="hdf5_file_out" file="pm_as_bf_sf_mv.h5" ftype="h5" compare="sim_size"/>
-            <output name="matrix_file_out" file="peak_matrix_as_bf_sf_mv.txt" ftype="tsv" compare="sim_size"/>
-            <output name="samplelist" file="sample_list_after_mv_filter.txt" ftype="tsv" compare="sim_size"/>
+            <output name="matrix_file_out" file="peak_matrix_as_bf_sf_mv.txt" ftype="tsv"/>
+            <output name="samplelist" file="sample_list_after_mv_filter.txt" ftype="tsv"/>
         </test>
     </tests>
     <help>
@@ -61,65 +63,30 @@ Missing Values Sample Filter
 Description
 -----------
 
-|
-
 Standard DIMS processing workflow: Process Scans -> Replicate Filter -> Align Samples -> **[Missing values sample filter]** -> Blank Filter -> Sample Filter -> Matrix processing -> Statistics
 
 |
 
-	This tool is used to remove study samples with greater-than a user-defined “Maximum percentage of missing values” from the peak intensity matrix. A missing value is defined as the absence of a recorded peak intensity value for a specific mass spectral peak, in a specific study sample.
+This tool is used to remove study samples with greater-than a user-defined “Maximum percentage of missing values” from the peak intensity matrix. A missing value is defined as the absence of a recorded peak intensity value for a specific mass spectral peak, in a specific study sample.
 
-	Samples with large numbers of missing values are often observed where a failed mass spectral acquisition has occurred, the reasons for which are many and diverse.
-
-|
+Samples with large numbers of missing values are often observed where a failed mass spectral acquisition has occurred, the reasons for which are many and diverse.
 
 ---------------------------------------------
 
 Parameters
 ----------
 
+**Peak Intensity Matrix (HDF5 file)** (REQUIRED) - for routine usage, the input peak intensity matrix should be that generated from the 'Align samples' tool.
+
+**Maximum percentage of missing values** (REQUIRED; default = 0.8) - a numeric value ranging from 0 to 1 (decimal representation of percentage), where:
+
+    - A value of 0 (i.e. 0%) corresponds to a very harsh filtering procedure, in which only those samples with zero missing values are retained in the output peak matrix.
+    
+    - A value of 1 (i.e. 100%) corresponds to a very liberal filtering procedure, in which samples with as many as 100% missing values will be retained in the output peak matrix.
+
 |
 
-	**Peak Intensity Matrix (HDF5 file)** (REQUIRED) - for routine usage, the input peak intensity matrix should be that generated from the 'Align samples' tool.
-
-	|
-		
-	**Maximum percentage of missing values** (REQUIRED; default = 0.8) - a numeric value ranging from 0 to 1 (decimal representation of percentage), where:
-
-		A value of 0 (i.e. 0%) corresponds to a very harsh filtering procedure, in which only those samples with zero missing values are retained in the output peak matrix.
-		
-		A value of 1 (i.e. 100%) corresponds to a very liberal filtering procedure, in which samples with as many as 100% missing values will be retained in the output peak matrix.
-
-	|
-
-
-	**Show options for additional output(s)** (OPTIONAL):
-
-			**Standard output** (default = **No**) - boolean toggle where selection of:
-
-				**No** - prevent the export of a .txt formatted peak matrix to the active Galaxy history.
-
-				**Yes** - export a .txt formatted peak matrix to the active Galaxy history that includes only those samples from the input peak intensity matrix that passed the filtering procedure.
-
-			**Comprehensive output** (default = "No") - boolean toggle where selection of:
-
-				**No** - prevents export of a .txt formatted comprehensive peak matrix.
-
-				**Yes** - exports a .txt formatted peak matrix to the active Galaxy history that includes all samples, peaks and peak metrics included in the input peak intensity matrix, in addition to a "missing values" metric. The metric recorded for each peak, in each sample, is defined by the "The peak matrix should contain intensity | m/z | SNR values" parameter.
-
-			**Should rows or columns represent the samples?** (default = **rows**) - binary toggle where selection of:
-
-				**rows** - sample information is presented in the rows and m/z values (for aligned mass spectral peaks) in the columns of any output peak matrix.
-
-				**columns** - sample information is presented in the columns and m/z values (for aligned mass spectral peaks) in the rows of any output peak matrix.
-
-			**The peak matrix should contain intensity | m/z | SNR values** - use this option to define which peak metric is inserted in to the cells of any optionally-output peak matrix:
-
-				**Intensity** - writes the absolute peak intensity to the cells of the peak matrix
-
-				**m/z** - writes the mass-to-charge ratio to the cells of the peak matrix
-
-				**signal-to-noise ratio (SNR)** - writes the signal-to-noise ratio to the cells of the peak matrix
+@help_options_addtional_output@
 
 |
 
@@ -128,105 +95,15 @@ Parameters
 Output file(s)
 --------------
 
-|
-
 **IMPORTANT** - in all outputs except for the (optional) comprehensive output, if a sample had greater-than the user defined maximum percentage of missing values, then this sample is removed from the output peak matrix.
 
-|
 
-	**Default output** - A HDF5 file containing the filtered peak intensity matrix. 
-	
-	|
-
-	**Optional outputs** - the metric recorded in any optionally output peak matrix/matrices is defined using the parameter "The peak matrix should contain intensity | m/z | SNR values". By default, study samples are listed row-wise, while mass-to-charge ratios of the aligned mass spectral peaks are presented in columns (to adjust, users must adjust the "Should rows or columns represent samples" toggle to “columns”).
-
-		**Standard output** - exports a filtered peak matrix to the active Galaxy history as a tab-delimited text file (“.” as decimal and NA for missing values). 
-		
-			|
-			
-			**Mock example of a standard output**
-		
-			+-------------+----------+----------+----------+----------+
-			| mz          | 96.04216 | 99.08062 | 100.0759 | 100.8672 |
-			+-------------+----------+----------+----------+----------+
-			| QC_1        | 0        | 0        | 0        | 0        |
-			+-------------+----------+----------+----------+----------+
-			| Blank_1     | 3342.626 | 0        | 0        | 0        |
-			+-------------+----------+----------+----------+----------+
-			| Control_10  | 0        | 0        | 45432.2  | 0        |
-			+-------------+----------+----------+----------+----------+
-			| Sample_2    | 0        | 3423.3   | 0        | 0        |
-			+-------------+----------+----------+----------+----------+
-			| Control_5   | 0        | 0        | 49759    | 0        |
-			+-------------+----------+----------+----------+----------+
-			| Control_10  | 0        |          | 39890.5  | 0        |
-			+-------------+----------+----------+----------+----------+
-			| Sample_20   | 0        | 14563.7  | 0        | 0        |
-			+-------------+----------+----------+----------+----------+
-			| Sample_2    | 34676.4  | 0        | 0        |          |
-			+-------------+----------+----------+----------+----------+
-			| Sample_14   | 0        | 13134.9  | 0        | 521.4    |
-			+-------------+----------+----------+----------+----------+
-			| ...         | ...      | ...      | ...      | ...      |
-			+-------------+----------+----------+----------+----------+
-
-			|
-
-		**Comprehensive output** - exports a peak matrix, as described for the "standard output" (above), including all metadata provided in the "Process Scans" Filelist / Samplelist. For each mass spectral peak, the following additional details are also included in the comprehensive peak matrix:
-		
-			@comprehensive_explanation@		
-			
-			|
-									
-			**Mock example of a comprehensive output**:
-
-			+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
-			| mz          | missing values | tags_batch | tags_replicates | tags_replicate | tags_injectionOrder | tags_classLabel | tags_untyped | 96.04216 | 99.08062 | 100.0759 | 100.8672 |
-			+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
-			| present*    |                |            |                 |                |                     |                 |              | 1        | 4        | 3        | 1        |
-			+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
-			| occurrence* |                |            |                 |                |                     |                 |              | 1        | 4        | 4        | 1        |
-			+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
-			| purity*     |                |            |                 |                |                     |                 |              | 1        | 1        | 1        | 1        |
-			+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
-			| rsd_all*    |                |            |                 |                |                     |                 |              | nan      | nan      | 10.98    | nan      |
-			+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
-			| flags*      |                |            |                 |                |                     |                 |              | 1        | 1        | 1        | 1        |
-			+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
-			| QC_1        | 2901           | 1          | 2_3_4           | 2              | 01                  | QC              |              | 0        | 0        | 0        | 0        |
-			+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
-			| Blank_1     | 2948           | 1          | 1_2_4           | 1              | 02                  | Blank           |              | 3342.626 | 0        | 0        | 0        |
-			+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
-			| Control_10  | 2921           | 1          | 2_3_4           | 2              | 03                  | Control         |              | 0        | 0        | 45432.2  | 0        |
-			+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
-			| Sample_2    | 2819           | 1          | 1_2_4           | 1              | 04                  | Exposed         |              | 0        | 3423.3   | 0        | 0        |
-			+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
-			| Control_5   | 2877           | 1          | 2_3_4           | 2              | 05                  | Control         |              | 0        | 0        | 49759    | 0        |
-			+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
-			| Control_10  | 2856           | 1          | 1_2_3           | 1              | 06                  | Control         |              | 0        |          | 39890.5  | 0        |
-			+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
-			| Sample_20   | 2855           | 1          | 1_2_4           | 1              | 07                  | Exposed         |              | 0        | 14563.7  | 0        | 0        |
-			+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
-			| Sample_2    | 2814           | 1          | 1_2_4           | 1              | 08                  | Exposed         |              | 0        | 34676.4  | 0        | 0        |
-			+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
-			| Sample_14   | 2870           | 1          | 1_2_3           | 1              | 09                  | Exposed         |              | 0        | 13134.9  | 0        | 521.4    |
-			+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
-			| ...         | ...            | ...        | ...             | ...            | ...                 | ...             | ...          | ...      | ...      | ...      | ...      |
-			+-------------+----------------+------------+-----------------+----------------+---------------------+-----------------+--------------+----------+----------+----------+----------+
-
-			|
-
-|
-
-
-
-
+@help_outputs_matrix@
 
 ---------------------------------------------
 
-
 @github_developers_contributors@
-        
+@license@
     </help>
     <expand macro="citations" />
 </tool>

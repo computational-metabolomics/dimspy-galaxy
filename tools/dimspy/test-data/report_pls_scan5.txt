@@ -1,0 +1,4 @@
+filename	event	scans	peaks	median_rsd
+batch04_QC17_rep01_262.mzML	FTMS + p ESI w SIM ms [70.00-170.00]	1	15	nan
+batch04_QC17_rep02_263.mzML	FTMS + p ESI w SIM ms [70.00-170.00]	1	15	nan
+batch04_QC17_rep03_264.mzML	FTMS + p ESI w SIM ms [70.00-170.00]	1	15	nan
