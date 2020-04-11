@@ -62,5 +62,5 @@ section 3.3 of the RawFileReader License, and is not granted rights to redistrib
 .. |Bioconda| image:: https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat&maxAge=3600
    :target: http://bioconda.github.io/recipes/dimspy/README.html
 
-.. |License| image:: https://img.shields.io/pypi/l/dimspy.svg?style=flat&maxAge=3600
+.. |License| image:: https://img.shields.io/badge/License-GPL%20v3-blue.svg
    :target: https://www.gnu.org/licenses/gpl-3.0.html
