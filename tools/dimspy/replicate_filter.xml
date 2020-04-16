@@ -63,26 +63,12 @@
             </output_collection>
         </test>
         <test>
-            <param name="hdf5_file_in" value="pls.h5" ftype="h5"/>
-            <param name="filelist" value="filelist_mzml_triplicates.txt" ftype="tsv"/>
-            <param name="replicates" value="3"/>
-            <param name="min_peaks" value="2"/>
-            <param name="ppm" value="2.0"/>
-            <param name="rsd_threshold" value=""/>
-            <output name="hdf5_file_out" value="pls_rf.h5" ftype="h5" compare="sim_size"/>
-            <output name="report" value="report_pls_rf_02.txt" ftype="txt"/>
-            <output name="samplelist" value="samplelist_2.txt" ftype="tsv"/>
-            <output_collection name="peaklists_txt" type="list">
-                <element name="batch04_QC17_rep01_262_2_263_3_264" file="batch04_QC17_rep01_262_2_263_3_264.txt" ftype="tsv"/>
-            </output_collection>
-        </test>
-        <test>
             <param name="hdf5_file_in" value="pls_scan5.h5" ftype="h5"/>
             <param name="replicates" value="3"/>
             <param name="min_peaks" value="2"/>
             <param name="ppm" value="2.0"/>
             <param name="rsd_threshold" value=""/>
-            <output name="report" value="report_pls_rf_03.txt" ftype="txt"/>
+            <output name="report" value="report_pls_rf_02.txt" ftype="txt"/>
         </test>
     </tests>
     <help>
