@@ -7,8 +7,12 @@
     <command detect_errors="exit_code">
     <![CDATA[
         #if $data.input[0].is_of_type("zip")
-            dimspy process-scans
+            dimspy unzip 
             --input $data.input[0]
+            --output ./data
+            &&
+            dimspy process-scans
+            --input ./data
         #else
             #for $fn in $data.input
                 ln -s '$fn' '$fn.name'
