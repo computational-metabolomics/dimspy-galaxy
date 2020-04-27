@@ -22,10 +22,11 @@ Galaxy
 Credits
 -------
 
-**Authors and contributors & Contacts**
- - Ralf J. M. Weber (r.j.weber@bham.ac.uk) - `University of Birmingham (UK) <http://www.birmingham.ac.uk/index.aspx>`__
- - Thomas N. Lawson (tnl495@bham.ac.uk) - `University of Birmingham (UK) <http://www.birmingham.ac.uk/index.aspx>`__
- - Martin R. Jones (m.r.jones.1@bham.ac.uk) - `University of Birmingham (UK) <http://www.birmingham.ac.uk/index.aspx>`__
+**Authors and contributors**
+ - Ralf J. M. Weber (r.j.weber@bham.ac.uk) - `University of Birmingham (UK) <https://www.birmingham.ac.uk/staff/profiles/biosciences/weber-ralf.aspx>`__
+ - Thomas N. Lawson (t.n.lawson@bham.ac.uk) - `University of Birmingham (UK) <http://www.birmingham.ac.uk/index.aspx>`__
+ - Martin R. Jones (martin.jones@eawag.ch) - `Eawag  (Switzerland) <https://www.eawag.ch/en/aboutus/portrait/organisation/staff/profile/martin-jones/show/>`_
+
 
 **DIMSpy acknowledges support from the following funders:**
  - BBSRC, grant number BB/M019985/1
