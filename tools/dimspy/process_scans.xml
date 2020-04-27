@@ -217,7 +217,7 @@ Process Scans (and SIM stitch)
 Description
 -----------
 
-Standard DIMS processing workflow: **Process Scans** -> Replicate Filter -> Align Samples -> [Missing values sample filter] -> Blank Filter -> Sample Filter -> Matrix processing -> Statistics
+Standard DIMS processing workflow: **Process Scans** -> [Replicate Filter] -> Align Samples -> [Missing values sample filter] -> Blank Filter -> Sample Filter -> [Missing values sample filter] -> Pre-processing -> Statistics
 
 This tool is used to generate a single mass spectral peaklist for each of the data files defined in the ‘Filelist/Samplelist’. The tool extracts mass spectral peaks from a data file (in either .mzML or .RAW format) and then filters these in accordance with user-defined parameter settings. All peaks remaining after filtering are hierarchically clustered in one-dimension, during which pairs of peaks with similar m/z values are grouped together if the difference between their m/z values, when divided by the average of their m/z values and multiplied by 1 x 10\ :sup:`6` \, equates to less-than the user-defined ppm error tolerance.
 

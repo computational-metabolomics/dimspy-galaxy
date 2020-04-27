@@ -63,7 +63,7 @@ Missing Values Sample Filter
 Description
 -----------
 
-Standard DIMS processing workflow: Process Scans -> Replicate Filter -> Align Samples -> **[Missing values sample filter]** -> Blank Filter -> Sample Filter -> Matrix processing -> Statistics
+Standard DIMS processing workflow: Process Scans -> [Replicate Filter] -> Align Samples -> Blank Filter -> Sample Filter -> **[Missing values sample filter]** -> Pre-processing -> Statistics
 
 |
 
