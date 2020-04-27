@@ -20,7 +20,6 @@
         #if $filelist
            --filelist '$filelist'
         #end if
-
     ]]>
     </command>
     <inputs>
@@ -29,7 +28,8 @@
                help="Based on a 'multilist' column in the filelist text file, divide the peaklists into different lists
                                                        e.g. [pl1 pl2], [pl3, pl4] can be converted to 2 new lists:
                                                             [pl1, pl3] [pl2, pl4]"/>
-        <param name="filelist" type="data" format="tsv,tabular" optional="true" label="Filelist" argument="--filelist"  />
+        <param type="data" format="tsv,tabular" optional="true" label="Filelist"
+               help="A table containing metadata for each experimental sample. See help section below for more details." argument="--filelist"  />
     </inputs>
     <outputs>
         <collection name="multiple_merged" type="list" label="${tool.name} on ${on_string}: Peaklists (HDF5)">
