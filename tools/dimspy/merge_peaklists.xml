@@ -10,52 +10,60 @@
         #for $fn in $hdf5_files_in
             --input '$fn'
         #end for
-        #if $multilist.flag == 'true'
+
+        #if $multilist
             --output .
-            --filelist $multilist.filelist'
         #else
             --output '$hdf5_file_out'
-            #if $filelist
-                --filelist '$multilist.filelist'
-            #end if
+        #end if
+
+        #if $filelist
+           --filelist '$filelist'
         #end if
     ]]>
     </command>
     <inputs>
-        <param name="hdf5_files_in" argument="--input" type="data" format="h5" multiple="true" min="2" label="Peaklist to merge" help="Select a minimum of two hdf5 files" />
-        <conditional name="multilist">
-            <param name="flag" type="boolean" checked="false" truevalue="true" falsevalue="false" label="Create multiple merged peaklists?" help="Based on a 'multilist' column in the filelist text file, divide the peaklists into different lists
-                                                       e.g. [pl1, pl2, pl3, pl4] can be converted to 2 new lists:
+        <param name="hdf5_files_in" type="data" multiple="true" format="h5" min="2" label="Peaklist to merge" help="Select a minimum of two hdf5 files" argument="--input" />
+        <param name="multilist" type="boolean" checked="false" label="Create multiple merged peaklists?"
+               help="Based on a 'multilist' column in the filelist text file, divide the peaklists into different lists
+                                                       e.g. [pl1 pl2], [pl3, pl4] can be converted to 2 new lists:
                                                             [pl1, pl3] [pl2, pl4]"/>
-            <when value="true">
-                <param name="filelist" argument="--filelist" type="data" format="tsv,tabular" label="Filelist" />
-            </when>
-            <when value="false">
-                <param name="filelist" argument="--filelist" type="data" format="tsv,tabular" optional="true" label="Filelist" />
-            </when>
-        </conditional>
+        <param type="data" format="tsv,tabular" optional="true" label="Filelist"
+               help="A table containing metadata for each experimental sample. See help section below for more details." argument="--filelist"  />
     </inputs>
     <outputs>
         <collection name="multiple_merged" type="list" label="${tool.name} on ${on_string}: Peaklists (HDF5)">
-            <filter>multilist["flag"] is True</filter>
+            <filter>multilist</filter>
             <discover_datasets pattern="(?P&lt;designation&gt;.+)\.hdf5" format="h5" directory="." visible="false" />
         </collection>
         <data name="hdf5_file_out" format="h5" label="${tool.name} on ${on_string}: Peaklists (HDF5 file)">
-            <filter>multilist["flag"] is False</filter>
+            <filter>multilist is False</filter>
         </data>
     </outputs>
     <tests>
         <test>
+            <!-- Merge (no filelist)          -->
             <param name="hdf5_files_in" value="pls.h5,pls_QC18.h5" ftype="h5" />
             <output name="hdf5_file_out" value="merged_01.h5" ftype="h5" compare="sim_size" />
         </test>
         <test>
+            <!-- Merge (with filelist)        -->
             <param name="hdf5_files_in" value="pls.h5,pls_QC18.h5" ftype="h5" />
-            <conditional name="multilist">
-                <param name="filelist" value="filelist_merge.txt" ftype="tsv"/>
-            </conditional>
+            <param name="filelist" value="filelist_merge.txt" ftype="tsv"/>
             <output name="hdf5_file_out" value="merged_02.h5" ftype="h5" compare="sim_size" />
         </test>
+        <test>
+            <!-- Merge (multilist)            -->
+            <param name="hdf5_files_in" value="pls.h5,pls_QC18.h5" ftype="h5" />
+            <param name="filelist" value="filelist_multilist_merge.txt" ftype="tsv"/>
+            <param name="multilist" value="true"/>
+            <output_collection name="multiple_merged" type="list">
+                <element name="merged_peaklist_001" file="merged_peaklist_001.h5" ftype="h5" compare="sim_size" />
+                <element name="merged_peaklist_002" file="merged_peaklist_002.h5" ftype="h5" compare="sim_size" />
+                <element name="merged_peaklist_003" file="merged_peaklist_003.h5" ftype="h5" compare="sim_size" />
+            </output_collection>
+        </test>
+
     </tests>
     <help>
 ---------------
@@ -77,51 +85,59 @@ This tool allows users to extract and export specific peaklists from one or more
 Parameters
 ----------
 
+|
+
 **Peaklist to merge** (REQUIRED; minimally requires two .hdf5 files) - selection menu from which the user must select two or more .hdf5 files from the active Galaxy history.
 
-**NOTE**: if a .hdf5 file containing a peak intensity matrix is selected, then the peaklists used in generating that matrix are extracted from the file e.g. [pl1, pl2, pl3] + [pm456] = [pl1, pl2, pl3] + [pl4, pl5, pl6] = [pl1, pl2, pl3, pl4, pl5, pl6] .
+    **NOTE**: if a .hdf5 file containing a peak intensity matrix is selected, then the peaklists used in generating that matrix are extracted from the file e.g. [pl1, pl2, pl3] + [pm456] = [pl1, pl2, pl3] + [pl4, pl5, pl6] = [pl1, pl2, pl3, pl4, pl5, pl6] .
 
 |
 
 **Create multiple merged peaklists** (REQUIRED; default = “No”) - binary toggle:
 
-    - **No** - all extracted peaklists are exported to a single .hdf5 file in the active Galaxy history. Metadata associated with each peaklist is also captured in this file.
+    **No** - all extracted peaklists are exported to a single .hdf5 file in the active Galaxy history. Metadata associated with each peaklist is also captured in this file.
 
-    - **Yes** - multiple .hdf5 files are exported to the active Galaxy history, each of which containing a user-defined subset of the extracted peaklist(s) in accordance with the “multilist” column of the input “Filelist”, e.g. using the mock filelist shown below, two .hdf5 files would be exported to history:
-      
-      The first .hdf5 file would contain peaklists from [sample_rep1.raw, sample_rep2.raw, blank1_rep1.raw and blank1_rep2.raw], i.e. all filenames associated with multilist value '1'
+    **Yes** - multiple .hdf5 files are exported to the active Galaxy history, each of which containing a user-defined subset of the extracted peaklist(s) in accordance with the “multilist” column of the input “Filelist”, e.g. using the mock filelist shown below, two .hdf5 files would be exported to history:
 
-      The second .hdf5 file would contain peaklists from [blank_rep1.raw, blank_rep2.raw, blank_rep3.raw and blank_rep4.raw], i.e. all filenames associated with multilist value '2'
+    * The first .hdf5 file would contain peaklists from [sample_rep1.raw, sample_rep2.raw, blank1_rep1.raw and blank1_rep2.raw], i.e. all filenames associated with multilist value '1'
 
-      **NOTE** - if for each analysed study sample a corresponding blank sample has been analysed, then the multilist column can be used to pair these together in an output .hdf5 file. This enables sample-specific blank filtering at a later stage.
+    * The second .hdf5 file would contain peaklists from [sample_rep1.raw, sample_rep2.raw, blank_rep3.raw and blank_rep4.raw], i.e. all filenames associated with multilist value '2'
+    
+    |
+    
+    
+    **NOTE** - if for each analysed study sample a corresponding blank sample has been analysed, then the multilist column can be used to pair these together in an output .hdf5 file. This enables sample-specific blank filtering at a later stage.
+
 
 |
 
 **Filelist / Samplelist** (OPTIONAL) - a selection menu from which one or more filelists can be selected.
 
-**Mock example of a filelist** - the optional multilist column determines which peaklists are exported together in .hdf5 format. 
-
-+-----------------+------------+-----------+-------+----------------+-----------+-------+
-| filename        | classLabel | replicate | batch | injectionOrder | multilist | [...] |
-+-----------------+------------+-----------+-------+----------------+-----------+-------+
-| sample_rep1.raw | sample     | 1         | 1     | 1              | 1         | [...] |
-+-----------------+------------+-----------+-------+----------------+-----------+-------+
-| sample_rep2.raw | sample     | 2         | 1     | 2              | 1         | [...] |
-+-----------------+------------+-----------+-------+----------------+-----------+-------+
-| sample_rep3.raw | sample     | 3         | 1     | 3              | 2         | [...] |
-+-----------------+------------+-----------+-------+----------------+-----------+-------+
-| sample_rep4.raw | sample     | 4         | 1     | 4              | 2         | [...] |
-+-----------------+------------+-----------+-------+----------------+-----------+-------+
-| blank_rep1.raw  | blank      | 1         | 1     | 5              | 1         | [...] |
-+-----------------+------------+-----------+-------+----------------+-----------+-------+
-| blank_rep2.raw  | blank      | 2         | 1     | 6              | 1         | [...] |
-+-----------------+------------+-----------+-------+----------------+-----------+-------+
-| blank_rep3.raw  | blank      | 3         | 1     | 7              | 2         | [...] |
-+-----------------+------------+-----------+-------+----------------+-----------+-------+
-| blank_rep4.raw  | blank      | 4         | 1     | 8              | 2         | [...] |
-+-----------------+------------+-----------+-------+----------------+-----------+-------+
-| ...             | ...        | ...       | ...   | ...            | ...       | [...] |
-+-----------------+------------+-----------+-------+----------------+-----------+-------+
+    **Mock example of a filelist** - the optional multilist column determines which peaklists are exported together in .hdf5 format. 
+    
+    |
+    
+    +-----------------+------------+-----------+-------+----------------+-----------+-------+
+    | filename        | classLabel | replicate | batch | injectionOrder | multilist | [...] |
+    +-----------------+------------+-----------+-------+----------------+-----------+-------+
+    | sample_rep1.raw | sample     | 1         | 1     | 1              | 1         | [...] |
+    +-----------------+------------+-----------+-------+----------------+-----------+-------+
+    | sample_rep2.raw | sample     | 2         | 1     | 2              | 1         | [...] |
+    +-----------------+------------+-----------+-------+----------------+-----------+-------+
+    | sample_rep3.raw | sample     | 3         | 1     | 3              | 2         | [...] |
+    +-----------------+------------+-----------+-------+----------------+-----------+-------+
+    | sample_rep4.raw | sample     | 4         | 1     | 4              | 2         | [...] |
+    +-----------------+------------+-----------+-------+----------------+-----------+-------+
+    | blank_rep1.raw  | blank      | 1         | 1     | 5              | 1         | [...] |
+    +-----------------+------------+-----------+-------+----------------+-----------+-------+
+    | blank_rep2.raw  | blank      | 2         | 1     | 6              | 1         | [...] |
+    +-----------------+------------+-----------+-------+----------------+-----------+-------+
+    | blank_rep3.raw  | blank      | 3         | 1     | 7              | 2         | [...] |
+    +-----------------+------------+-----------+-------+----------------+-----------+-------+
+    | blank_rep4.raw  | blank      | 4         | 1     | 8              | 2         | [...] |
+    +-----------------+------------+-----------+-------+----------------+-----------+-------+
+    | ...             | ...        | ...       | ...   | ...            | ...       | [...] |
+    +-----------------+------------+-----------+-------+----------------+-----------+-------+
 
 | 
 
@@ -130,12 +146,16 @@ Parameters
 Output file(s)
 --------------
 
+|
+
 One or more .hdf5 file(s), each containing one or more peaklists.
+
+|
 
 -----------------------------------
 
 @github_developers_contributors@
-@license@
+ 
     </help>
     <expand macro="citations" />
 </tool>

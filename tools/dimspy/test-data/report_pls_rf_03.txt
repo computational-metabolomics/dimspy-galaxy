@@ -1,2 +1,0 @@
-name	peaks	peaks_3oo3	median_rsd_3oo3
-batch04_QC17_rep01_262_2_263_3_264	15	15	8.60246934744
