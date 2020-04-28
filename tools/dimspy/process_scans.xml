@@ -60,8 +60,7 @@
         dimspy hdf5-pls-to-txt
         --input '$hdf5_file_out'
         --output .
-        --delimiter $delimiter &&
-      rm -rf './tmp'
+        --delimiter $delimiter
     ]]>
     </command>
     <inputs>
