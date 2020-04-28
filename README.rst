@@ -45,7 +45,7 @@ will help you to make the PR if you are new to `git`.
 Changes
 -------
 v2.0.0+galaxy0
-  - First release (Python 3-based version `DIMSpy <https://pypi.org/project/dimspy/1.4.0/>`_)
+  - First release (Python 3-based version `DIMSpy <https://pypi.org/project/dimspy/2.0.0/>`_)
 
 v1.4.0+galaxy0
   - Final release (Python 2-based version `DIMSpy <https://pypi.org/project/dimspy/1.4.0/>`_)
