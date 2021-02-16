@@ -1,6 +1,6 @@
 Galaxy tool wrappers for DIMSpy
 ===============================
-|Build Status (Travis)| |galaxy-eu| |Git| |Bioconda| |License|
+|Build Status (last commit)| |Build Status (weekly global test)| |galaxy-eu| |Git| |Bioconda| |License|
 
 Galaxy tool wrappers for Python package DIMSpy: data processing of direct-infusion mass spectrometry (DIMS)-based metabolomics and lipidomics data
 
@@ -63,8 +63,11 @@ Anyone receiving RawFileReader as part of a larger software distribution (in the
 section 3.3 of the RawFileReader License, and is not granted rights to redistribute RawFileReader.
 
 
-.. |Build Status (Travis)| image:: https://img.shields.io/travis/computational-metabolomics/dimspy-galaxy.svg?style=flat&maxAge=3600&label=Travis-CI
-   :target: https://travis-ci.com/computational-metabolomics/dimspy-galaxy
+.. |Build Status (last commit)| image:: https://github.com/computational-metabolomics/dimspy-galaxy/workflows/Galaxy%20Tool%20Linting%20and%20Tests%20for%20push%20and%20PR/badge.svg
+   :target: https://github.com/computational-metabolomics/dimspy-galaxy/actions?query=workflow%3A%22Galaxy+Tool+Linting+and+Tests+for+push+and+PR%22
+
+.. |Build Status (weekly global test)| image:: https://github.com/computational-metabolomics/dimspy-galaxy/workflows/Weekly%20global%20Tool%20Linting%20and%20Tests/badge.svg
+   :target: https://github.com/computational-metabolomics/dimspy-galaxy/actions?query=workflow%3A%22Weekly+global+Tool+Linting+and+Tests%22
 
 .. |Git| image:: https://img.shields.io/badge/repository-GitHub-blue.svg?style=flat&maxAge=3600
    :target: https://github.com/computational-metabolomics/dimspy
