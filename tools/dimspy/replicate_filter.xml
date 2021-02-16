@@ -1,4 +1,4 @@
-<tool id="dimspy_replicate_filter" name="Replicate Filter" version="@TOOL_VERSION@+galaxy@GALAXY_TOOL_VERSION@">
+<tool id="dimspy_replicate_filter" name="Replicate Filter" version="@TOOL_VERSION@+galaxy1">
     <description> - Remove peaks that fail to appear in at least x-out-of-n (technical) replicates</description>  
     <macros>
         <import>macros.xml</import>
@@ -19,6 +19,7 @@
             --rsd-threshold $rsd_threshold
         #end if
         --report '$report'
+        --ncpu \${GALAXY_SLOTS:-1}
         &&
         dimspy create-sample-list
         --input '$hdf5_file_out'

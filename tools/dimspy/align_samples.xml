@@ -1,4 +1,4 @@
-<tool id="dimspy_align_samples" name="Align Samples" version="@TOOL_VERSION@+galaxy@GALAXY_TOOL_VERSION@">
+<tool id="dimspy_align_samples" name="Align Samples" version="@TOOL_VERSION@+galaxy1">
     <description> - Align peaks across Peaklists</description>
     <macros>
         <import>macros.xml</import>
@@ -13,6 +13,7 @@
             --filelist '$filelist'
         #end if
         --ppm $ppm
+        --ncpu \${GALAXY_SLOTS:-1}
         #if $hdf5_to_txt.standard
             &&
             @HDF5_PM_TO_TXT@
